@@ -1,39 +1,30 @@
 <?php
 
-class MemberController extends Controller
+class ArticleController extends Controller
 {
-    
-    public function init()
-    {
-      if (Yii::app()->user->isGuest) $this->defaultAction="login";
-      else $this->defaultAction = 'profile';
-        parent::init();
-    }
-    
-    
-	public function actionEndregistration()
+	public function actionDelete()
 	{
-		$this->render('endregistration');
+		$this->render('delete');
 	}
 
-	public function actionLogin()
+	public function actionEdit()
 	{
-		$this->render('login');
+		$this->render('edit');
 	}
 
-	public function actionLogout()
+	public function actionFind()
 	{
-		$this->render('logout');
+		$this->render('find');
 	}
 
-	public function actionProfile()
+	public function actionPublicate()
 	{
-		$this->render('profile');
+		$this->render('publicate');
 	}
 
-	public function actionRegestration()
+	public function actionView()
 	{
-		$this->render('regestration');
+		$this->render('view');
 	}
 
 	// Uncomment the following methods and override them if needed

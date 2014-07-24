@@ -81,4 +81,6 @@ return array(
 		// this is used in contact page
 		'adminEmail'=>'pitikov@yandex.ru',
 	),
+	'defaultController'=>'federation',
+	'language'=>'ru'
 );

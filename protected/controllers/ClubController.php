@@ -1,39 +1,38 @@
 <?php
 
-class MemberController extends Controller
+class ClubController extends Controller
 {
     
     public function init()
     {
-      if (Yii::app()->user->isGuest) $this->defaultAction="login";
-      else $this->defaultAction = 'profile';
+	$this->defaultAction = "calendear";
+	$this->breadcrumbs = array("Альпклуб \"Пенза\""=>array("/club"));
         parent::init();
     }
     
-    
-	public function actionEndregistration()
+	public function actionAction()
 	{
-		$this->render('endregistration');
+		$this->render('action');
 	}
 
-	public function actionLogin()
+	public function actionAddaction()
 	{
-		$this->render('login');
+		$this->render('addaction');
 	}
 
-	public function actionLogout()
+	public function actionCalendar()
 	{
-		$this->render('logout');
+		$this->render('calendar');
 	}
 
-	public function actionProfile()
+	public function actionDeleteaction()
 	{
-		$this->render('profile');
+		$this->render('deleteaction');
 	}
 
-	public function actionRegestration()
+	public function actionEditaction()
 	{
-		$this->render('regestration');
+		$this->render('editaction');
 	}
 
 	// Uncomment the following methods and override them if needed
