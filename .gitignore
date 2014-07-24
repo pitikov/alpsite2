@@ -1,0 +1,5 @@
+*~
+*.kdev*
+protected/runtime
+assets
+framework
