@@ -9,6 +9,5 @@
   <div id="clubContent" class = "collumn">
     <h1>Новости клуба</h1>
           Здесь должны быть новости клуба
-
   </div>
 </div>

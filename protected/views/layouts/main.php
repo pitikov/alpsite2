@@ -29,7 +29,7 @@
 	<div id="mainmenu">
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
-				array('label'=>'Федерация', 'url'=>array('/federation/index')),
+				array('label'=>'Федерация Альпинизма Пензенской Области', 'url'=>array('/federation/index')),
 				array('label'=>'Альпклуб "Пенза"', 'url'=>array('/club/calendar')),
 // 				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
 // 				array('label'=>'Contact', 'url'=>array('/site/contact')),
