@@ -31,9 +31,9 @@ class MemberController extends Controller
 		$this->render('profile');
 	}
 
-	public function actionRegestration()
+	public function actionRegistration()
 	{
-		$this->render('regestration');
+		$this->render('registration');
 	}
 
 	// Uncomment the following methods and override them if needed

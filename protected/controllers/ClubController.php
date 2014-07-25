@@ -5,35 +5,35 @@ class ClubController extends Controller
     
     public function init()
     {
-	$this->defaultAction = "calendear";
+	$this->defaultAction = "calendar";
 	$this->breadcrumbs = array("Альпклуб \"Пенза\""=>array("/club"));
         parent::init();
     }
     
-	public function actionAction()
-	{
-		$this->render('action');
-	}
+    public function actionAction()
+    {
+	$this->render('action');
+    }
+    
+    public function actionAddaction()
+    {
+	$this->render('addaction');
+    }
 
-	public function actionAddaction()
-	{
-		$this->render('addaction');
-	}
-
-	public function actionCalendar()
-	{
-		$this->render('calendar');
-	}
-
-	public function actionDeleteaction()
-	{
-		$this->render('deleteaction');
-	}
-
-	public function actionEditaction()
-	{
-		$this->render('editaction');
-	}
+    public function actionCalendar()
+    {
+	$this->render('calendar');
+    }
+    
+    public function actionDeleteaction()
+    {
+	$this->render('deleteaction');
+    }
+    
+    public function actionEditaction()
+    {
+	$this->render('editaction');
+    }
 
 	// Uncomment the following methods and override them if needed
 	/*

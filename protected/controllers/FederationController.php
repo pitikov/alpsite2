@@ -5,6 +5,14 @@ class FederationController extends Controller
   
   public function init()
   {
+      $this->layout='//layouts/column2';
+      
+      $this->menu = array(
+	array('label'=>'Новости', 'url'=>array($this->id.'/index')),
+	array('label'=>'Календарь альпмероприятий', 'url'=>array($this->id.'/calendar')),
+	array('label'=>'Члены федерации', 'url'=>array($this->id.'/members')),
+	
+      );
       $this->defaultAction = "index";
       $this->breadcrumbs = array("Федерация Альпинизма Пензенской Области"=>array("/federation/index"));
       parent::init();

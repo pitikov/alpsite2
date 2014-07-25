@@ -1,12 +1,10 @@
 <?php
 /* @var $this ClubController */
 
-$this->breadcrumbs=array(
-	'Club'=>array('/club'),
-	'Deleteaction',
-);
+array_push($this->breadcrumbs, 'Удалить мероприятие');
+
 ?>
-<h1><?php echo $this->id . '/' . $this->action->id; ?></h1>
+<h1>Удалить мероприятие</h1>
 
 <p>
 	You may change the content of this page by modifying
