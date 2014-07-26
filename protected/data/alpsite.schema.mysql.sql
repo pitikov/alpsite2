@@ -27,3 +27,27 @@ create table `pwdrestore` (
   `ctrlhash` varchar(32) not null comment 'hash of restore passowrd text',
   constraint `fk_pwdrestore` foreign key (`uid`) references `user` (`uid`) on update cascade on delete cascade
 ) engine = 'InnoDb';
+
+-- Календарь альпмероприятий ФАПО
+create table `f_calendar` (
+  `aid` integer primary key not null unique auto_increment comment 'unique number of mountaring actions',
+  `title` varchar(128) not null comment 'title of action',
+  `begin` date not null comment 'date of begin mountaring action',
+  `finish` date not null comment 'date of finish mountaring action',
+  -- tutoral на использование google maps смотри на http://habrahabr.ru/post/110460/
+  `location_lat` float comment 'position from latitude',
+  `location_lng` float comment 'position from logitude',
+  `description` text not null comment 'Description of mountaring action' 
+) engine = 'InnoDb' comment 'calendar of mountaring actions';
+
+create table `c_calendar` (
+  `aid` integer primary key not null unique auto_increment comment 'unique number of club actions',
+  `title` varchar(128) not null comment 'title of action',
+  `begin` timestamp not null comment 'timestamp of begin club action',
+    -- tutoral на использование google maps смотри на http://habrahabr.ru/post/110460/
+  `location_lat` float comment 'position from latitude',
+  `location_lng` float comment 'position from logitude',
+  `manager` integer not null comment 'action manager',
+  `description` text not null comment 'Description of mountaring action',
+  constraint `fk_club_action_manager` foreign key (`manager`) references `user`(`uid`) on update cascade on delete restrict
+) engine = 'InnoDb' comment 'calendar club actions';
