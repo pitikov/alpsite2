@@ -11,7 +11,7 @@ class FederationController extends Controller
 	array('label'=>'Новости', 'url'=>array($this->id.'/index')),
 	array('label'=>'Календарь альпмероприятий', 'url'=>array($this->id.'/calendar')),
 	array('label'=>'Члены федерации', 'url'=>array($this->id.'/members')),
-	
+	array('label'=>'Докуметы', 'url'=>array($this->id.'/documents')),
       );
       $this->defaultAction = "index";
       $this->breadcrumbs = array("Федерация Альпинизма Пензенской Области"=>array("/federation/index"));
@@ -82,6 +82,11 @@ class FederationController extends Controller
 	public function actionMembers()
 	{
 		$this->render('members');
+	}
+	
+	public function actionDocuments()
+	{
+	    $this->render('documents');
 	}
 
 	// Uncomment the following methods and override them if needed

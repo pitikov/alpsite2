@@ -31,8 +31,6 @@
 			'items'=>array(
 				array('label'=>'Федерация Альпинизма Пензенской Области', 'url'=>array('/federation/index')),
 				array('label'=>'Альпклуб "Пенза"', 'url'=>array('/club/calendar')),
-// 				array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
-// 				array('label'=>'Contact', 'url'=>array('/site/contact')),
 				array('label'=>'Войти', 'url'=>array('/member/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Регистрация', 'url'=>array('/member/registration'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>Yii::app()->user->name, 'url'=>array('/member/profile'), 'visible'=>!Yii::app()->user->isGuest),

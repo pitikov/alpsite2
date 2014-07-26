@@ -36,9 +36,11 @@ class User extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('login, name, email, regdata', 'required'),
-			array('login', 'length', 'max'=>16),
+			array('login', 'length', 'min'=>6,'max'=>16),
+			array('login', 'match', 'pattern'=>'/^[A-Za-z0-9_\-\s]+$/', 'message'=>'Допустимы только латинские символы, цифры, подчеркивание и тире'),
 			array('pwdhash, name', 'length', 'max'=>32),
 			array('email', 'length', 'max'=>128),
+			array('email', 'email'),
 			array('dob, sign', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

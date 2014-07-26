@@ -5,8 +5,11 @@ class MemberController extends Controller
     
     public function init()
     {
-      if (Yii::app()->user->isGuest) $this->defaultAction="login";
-      else $this->defaultAction = 'profile';
+	if (Yii::app()->user->isGuest) $this->defaultAction="login";
+	else $this->defaultAction = 'profile';
+	
+	$this->breadcrumbs=array('Управление пользователями'=>array('/member'));
+
         parent::init();
     }
     
@@ -18,7 +21,8 @@ class MemberController extends Controller
 
 	public function actionLogin()
 	{
-		$this->render('login');
+	    // Для OpenId аутенфикации использовать методы описанные http://habrahabr.ru/post/129804/
+	    $this->render('login');
 	}
 
 	public function actionLogout()
@@ -30,11 +34,32 @@ class MemberController extends Controller
 	{
 		$this->render('profile');
 	}
-
+	
 	public function actionRegistration()
 	{
-		$this->render('registration');
-	}
+	    $model=new User('register');
+	    
+	    $model->regdata = date('Y-m-d', time());
+	    // uncomment the following code to enable ajax-based validation
+	    
+	    if(isset($_POST['ajax']) && $_POST['ajax']==='user-registration-form')
+	    {
+		echo CActiveForm::validate($model);
+		Yii::app()->end();
+	    }   
+	    
+	    if(isset($_POST['User']))
+	    {
+		$model->attributes=$_POST['User'];
+		if($model->validate())
+		{ 
+		    // form inputs are valid, do something here
+		    // В случае успеха на указанный E-Mail отправить сообщение с инструкциями по активаци аккаунта и вывести собщенеие о отправке сообщения
+		    $this->redirect('/');
+		}
+	    }
+	    $this->render('registration',array('model'=>$model));
+	} 
 
 	// Uncomment the following methods and override them if needed
 	/*
