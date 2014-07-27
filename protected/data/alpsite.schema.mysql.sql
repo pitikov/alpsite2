@@ -18,7 +18,8 @@ create table `user` (
   `email` varchar(128) not null unique comment 'user email to communication and notification',
   `dob` date comment 'date of bethday', 
   `regdata` timestamp default now() comment 'date of registration',
-  `sign` text default null comment 'user sign'
+  `sign` text default null comment 'user sign',
+  `role` varchar(32) default null comment 'user role hash'
 ) engine = 'InnoDb';
 
 -- Таблица восстановления пароля и/или окончания регистрации

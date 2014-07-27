@@ -11,9 +11,10 @@ class AdminController extends Controller
 	$this->menuName="Администрирование";
 	$this->menu=array(
 	    array('label'=>'Новости', 'url'=>array('/admin/news')),
-	    array('label'=>'Статьи', 'url'=>array('/admin/articles')),
+	    array('label'=>'Публикации', 'url'=>array('/admin/articles')),
 	    array('label'=>'Пользователи', 'url'=>array('/admin/users')),
 	    array('label'=>'Члены федерации', 'url'=>array('/admin/federationmembers')),
+	    array('label'=>'Документы', 'url'=>array('/admin/documents')),
 	    array('label'=>'Рекламные банеры', 'url'=>array('/admin/baners')),
 	    array('label'=>'Ссылки', 'url'=>array('/admin/links')),
 

@@ -12,8 +12,10 @@
  * @property string $dob
  * @property string $regdata
  * @property string $sign
+ * @property string $role
  *
  * The followings are the available model relations:
+ * @property CCalendar[] $cCalendars
  * @property Pwdrestore $pwdrestore
  */
 class User extends CActiveRecord
@@ -38,13 +40,13 @@ class User extends CActiveRecord
 			array('login, name, email, regdata', 'required'),
 			array('login', 'length', 'min'=>6,'max'=>16),
 			array('login', 'match', 'pattern'=>'/^[A-Za-z0-9_\-\s]+$/', 'message'=>'Допустимы только латинские символы, цифры, подчеркивание и тире'),
-			array('pwdhash, name', 'length', 'max'=>32),
+			array('pwdhash, name, role', 'length', 'max'=>32),
 			array('email', 'length', 'max'=>128),
 			array('email', 'email'),
 			array('dob, sign', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('uid, login, pwdhash, name, email, dob, regdata, sign', 'safe', 'on'=>'search'),
+			array('login, name, email, dob, regdata, sign', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -56,6 +58,7 @@ class User extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'cCalendars' => array(self::HAS_MANY, 'CCalendar', 'manager'),
 			'pwdrestore' => array(self::HAS_ONE, 'Pwdrestore', 'uid'),
 		);
 	}
@@ -74,6 +77,7 @@ class User extends CActiveRecord
 			'dob' => 'Дата рождения',
 			'regdata' => 'Дата регистрации',
 			'sign' => 'Подпись',
+			'role' => 'Роль пользователя',
 		);
 	}
 
@@ -103,6 +107,7 @@ class User extends CActiveRecord
 		$criteria->compare('dob',$this->dob,true);
 		$criteria->compare('regdata',$this->regdata,true);
 		$criteria->compare('sign',$this->sign,true);
+		$criteria->compare('role',$this->role,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

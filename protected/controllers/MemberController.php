@@ -18,7 +18,7 @@ class MemberController extends Controller
 		array('label'=>'Восхождения', 'url'=>array('/member/peaklist', 'uid'=>Yii::app()->user->id)),
 		array('label'=>'Сообщения', 'url'=>array('/member/mail', 'uid'=>Yii::app()->user->id, 'folder'=>'inbox')),
 		array('label'=>'Публикации', 'url'=>array('/member/articles', 'uid'=>Yii::app()->user->id)),
-		array('label'=>'Администрирование', 'url'=>array('/admin'), array('visible'=>!Yii::app()->user->isGuest)),
+		array('label'=>'Администрирование', 'url'=>array('/admin'), 'visible'=>Yii::app()->user->isAdmin()),
 	    );
 	}
 	

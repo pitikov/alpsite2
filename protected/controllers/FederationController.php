@@ -39,10 +39,30 @@ class FederationController extends Controller
       $this->render('action');
   }
 
-	public function actionAddaction()
+  public function actionAddaction()
+  {
+    $model=new FederationCalendar('create');
+
+    // uncomment the following code to enable ajax-based validation
+    
+    if(isset($_POST['ajax']) && $_POST['ajax']==='federation-calendar-addaction-form')
+    {
+	echo CActiveForm::validate($model);
+	Yii::app()->end();
+    }
+    
+
+    if(isset($_POST['FederationCalendar']))
+    {
+	$model->attributes=$_POST['FederationCalendar'];
+	if($model->validate())
 	{
-		$this->render('addaction');
+	    // form inputs are valid, do something here
+	    return;
 	}
+    }
+    $this->render('addaction',array('model'=>$model));	
+  }
 
 	public function actionAddmember()
 	{
