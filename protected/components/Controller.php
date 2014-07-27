@@ -10,6 +10,8 @@ class Controller extends CController
 	 * meaning using a single column layout. See 'protected/views/layouts/column1.php'.
 	 */
 	public $layout='//layouts/column1';
+	/** @var string the context menu title string */
+	public $menuName="";
 	/**
 	 * @var array context menu items. This property will be assigned to {@link CMenu::items}.
 	 */

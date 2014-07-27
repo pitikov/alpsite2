@@ -7,6 +7,17 @@ class AdminController extends Controller
     {
 	$this->breadcrumbs = array('Администрирование сайта'=>array('/admin'));
 	$this->defaultAction = "news";
+	$this->layout="//layouts/column2";
+	$this->menuName="Администрирование";
+	$this->menu=array(
+	    array('label'=>'Новости', 'url'=>array('/admin/news')),
+	    array('label'=>'Статьи', 'url'=>array('/admin/articles')),
+	    array('label'=>'Пользователи', 'url'=>array('/admin/users')),
+	    array('label'=>'Члены федерации', 'url'=>array('/admin/federationmembers')),
+	    array('label'=>'Рекламные банеры', 'url'=>array('/admin/baners')),
+	    array('label'=>'Ссылки', 'url'=>array('/admin/links')),
+
+	);
         parent::init();
     }
     
@@ -38,6 +49,11 @@ class AdminController extends Controller
 	public function actionUsers()
 	{
 		$this->render('users');
+	}
+	
+	public function actionFederationmembers()
+	{
+		$this->render('federationmembers');
 	}
 
 	// Uncomment the following methods and override them if needed

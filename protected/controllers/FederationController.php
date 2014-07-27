@@ -6,7 +6,7 @@ class FederationController extends Controller
   public function init()
   {
       $this->layout='//layouts/column2';
-      
+      $this->menuName="ФАПО";
       $this->menu = array(
 	array('label'=>'Новости', 'url'=>array($this->id.'/index')),
 	array('label'=>'Календарь альпмероприятий', 'url'=>array($this->id.'/calendar')),
