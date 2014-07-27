@@ -3,7 +3,8 @@
         
         public function isAdmin()
         {
-	    return true;
+	    if (Yii::app()->user->getName() === 'admin' )  return true;
+	    else return false;
         }
     }
 ?>

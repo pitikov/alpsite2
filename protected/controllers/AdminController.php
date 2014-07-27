@@ -13,11 +13,11 @@ class AdminController extends Controller
 	    array('label'=>'Новости', 'url'=>array('/admin/news')),
 	    array('label'=>'Публикации', 'url'=>array('/admin/articles')),
 	    array('label'=>'Пользователи', 'url'=>array('/admin/users')),
+	    array('label'=>'О федерации', 'url'=>array('/admin/about')),
 	    array('label'=>'Члены федерации', 'url'=>array('/admin/federationmembers')),
 	    array('label'=>'Документы', 'url'=>array('/admin/documents')),
 	    array('label'=>'Рекламные банеры', 'url'=>array('/admin/baners')),
 	    array('label'=>'Ссылки', 'url'=>array('/admin/links')),
-
 	);
         parent::init();
     }
@@ -46,6 +46,11 @@ class AdminController extends Controller
 	{
 		$this->render('news');
 	}
+	
+	public function actionAbout()
+	{
+	    $this->render('about');
+	}
 
 	public function actionUsers()
 	{
@@ -55,6 +60,11 @@ class AdminController extends Controller
 	public function actionFederationmembers()
 	{
 		$this->render('federationmembers');
+	}
+	
+	public function actionDocuments()
+	{
+	    $this->render('documents');
 	}
 
 	// Uncomment the following methods and override them if needed

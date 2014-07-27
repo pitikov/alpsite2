@@ -11,6 +11,7 @@ class FederationController extends Controller
 	array('label'=>'Новости', 'url'=>array($this->id.'/index')),
 	array('label'=>'Календарь альпмероприятий', 'url'=>array($this->id.'/calendar')),
 	array('label'=>'Члены федерации', 'url'=>array($this->id.'/members')),
+	array('label'=>'О федерации', 'url'=>array($this->id.'/about')),
 	array('label'=>'Докуметы', 'url'=>array($this->id.'/documents')),
       );
       $this->defaultAction = "index";
@@ -18,9 +19,14 @@ class FederationController extends Controller
       parent::init();
   }
   
-  public  function actionIndex()
+  public function actionIndex()
   {
       $this->render('index');
+  }
+  
+  public function actionAbout()
+  {
+      $this->render('about');
   }
   
   public function actionError()
