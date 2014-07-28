@@ -13,6 +13,8 @@ class FederationController extends Controller
 	array('label'=>'Члены федерации', 'url'=>array($this->id.'/members')),
 	array('label'=>'О федерации', 'url'=>array($this->id.'/about')),
 	array('label'=>'Докуметы', 'url'=>array($this->id.'/documents')),
+	array('label'=>'Классификатор', 'url'=>array($this->id.'/guidebook')),
+	array('label'=>'Журнал восхождений', 'url'=>array($this->id.'/mountaring')),
       );
       $this->defaultAction = "index";
       $this->breadcrumbs = array("Федерация Альпинизма Пензенской Области"=>array("/federation/index"));
@@ -28,6 +30,16 @@ class FederationController extends Controller
   {
       $this->render('about');
   }
+  
+  public function actionGuidebook()
+  {
+      $this->render('guidebook');
+  }
+  
+  public function actionMountaring()
+  {
+      $this->render('mountaring');
+  }  
   
   public function actionError()
   {
