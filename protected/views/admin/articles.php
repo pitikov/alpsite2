@@ -1,12 +1,9 @@
 <?php
 /* @var $this AdminController */
-
-$this->breadcrumbs=array(
-	'Admin'=>array('/admin'),
-	'Articles',
-);
+$pagename = "Публикации";
+array_push($this->breadcrumbs, $pagename);
 ?>
-<h1><?php echo $this->id . '/' . $this->action->id; ?></h1>
+<h1><?php echo $pagename; ?></h1>
 
 <p>
 	You may change the content of this page by modifying
