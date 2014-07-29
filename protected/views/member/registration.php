@@ -4,8 +4,21 @@
 /* @var $form CActiveForm */
 
     array_push($this->breadcrumbs, 'Регистрация пользователя');
+    if (Yii::app()->user->hasFlash('registration-success')) {
 ?>
-
+<div class="flash-success">
+<?php echo Yii::app()->user->getFlash('registration-success'); ?>
+</div>
+<?php
+    } else {
+	if (Yii::app()->user->hasFlash('registration-deny')) {
+?>
+<div class="flash-deny">
+<?php echo Yii::app()->user->getFlash('registration-deny'); ?>
+</div>
+<?php
+	} else {
+?>
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -35,35 +48,9 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'email'); ?>
-		<?php echo $form->textField($model,'email'); ?>
+		<?php echo $form->emailField($model,'email'); ?>
 		<?php echo $form->error($model,'email'); ?>
 	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'dob'); ?>
-		<?php // echo $form->textField($model,'dob'); 
-		$this->widget('zii.widgets.jui.CJuiDatePicker',array(
-		    'attribute'=>'dob',
-		    'model'=>$model,
-		    'language'=>'ru',
-		    // additional javascript options for the date picker plugin
-		    'options'=>array(
-			'showAnim'=>'fold',
-		    ),
-		    'htmlOptions'=>array(
-			'style'=>'height:20px;'
-		    ),
-		));
-		?>
-		<?php echo $form->error($model,'dob'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'sign'); ?>
-		<?php echo $form->textArea($model,'sign'); ?>
-		<?php echo $form->error($model,'sign'); ?>
-	</div>
-
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Отправить данные'); ?>
@@ -72,3 +59,4 @@
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->
+<?php }} ?>

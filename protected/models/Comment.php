@@ -68,13 +68,13 @@ class Comment extends CActiveRecord
 	{
 		return array(
 			'cid' => 'unique article id',
-			'article' => 'article id',
-			'parent' => 'parent comment',
-			'author' => 'author uid',
-			'dop' => 'published date',
-			'title' => 'Article title',
-			'body' => 'Article body',
-			'rating' => 'Rating',
+			'article' => 'статья',
+			'parent' => '...на комментарий',
+			'author' => 'автор',
+			'dop' => 'опубликованно',
+			'title' => 'заголовок',
+			'body' => 'текст',
+			'rating' => 'рейтинг',
 		);
 	}
 

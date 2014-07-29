@@ -12,11 +12,15 @@
  * @property string $dob
  * @property string $regdata
  * @property string $sign
+ * @property string $avatar
  * @property string $role
  *
  * The followings are the available model relations:
+ * @property Article[] $articles
  * @property CCalendar[] $cCalendars
+ * @property Comment[] $comments
  * @property Pwdrestore $pwdrestore
+ * @property Tags[] $tags
  */
 class User extends CActiveRecord
 {
@@ -37,16 +41,18 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('login, name, email, regdata', 'required'),
+			array('login, name, email', 'required'),
 			array('login', 'length', 'min'=>6,'max'=>16),
 			array('login', 'match', 'pattern'=>'/^[A-Za-z0-9_\-\s]+$/', 'message'=>'Допустимы только латинские символы, цифры, подчеркивание и тире'),
 			array('pwdhash, name, role', 'length', 'max'=>32),
-			array('email', 'length', 'max'=>128),
+			array('email, avatar', 'length', 'max'=>128),
 			array('email', 'email'),
+			array('email, login', 'unique'),
 			array('dob, sign', 'safe'),
+			//array('dob','date'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('login, name, email, dob, regdata, sign', 'safe', 'on'=>'search'),
+			array('uid, login, pwdhash, name, email, dob, regdata, sign, avatar, role', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -58,9 +64,12 @@ class User extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'articles' => array(self::HAS_MANY, 'Article', 'author'),
 			'cCalendars' => array(self::HAS_MANY, 'CCalendar', 'manager'),
+			'comments' => array(self::HAS_MANY, 'Comment', 'author'),
 			'pwdrestore' => array(self::HAS_ONE, 'Pwdrestore', 'uid'),
-		);
+			'tags' => array(self::HAS_MANY, 'Tags', 'user'),
+			);
 	}
 
 	/**
@@ -78,6 +87,7 @@ class User extends CActiveRecord
 			'regdata' => 'Дата регистрации',
 			'sign' => 'Подпись',
 			'role' => 'Роль пользователя',
+			'avatar' => 'Аватар пользователя',
 		);
 	}
 
@@ -107,6 +117,7 @@ class User extends CActiveRecord
 		$criteria->compare('dob',$this->dob,true);
 		$criteria->compare('regdata',$this->regdata,true);
 		$criteria->compare('sign',$this->sign,true);
+		$criteria->compare('avatar',$this->avatar,true);
 		$criteria->compare('role',$this->role,true);
 
 		return new CActiveDataProvider($this, array(
@@ -114,6 +125,18 @@ class User extends CActiveRecord
 		));
 	}
 
+	
+	protected function beforeSave()
+	{
+	    if (count(User::model()->findAll()) === 0) {
+		$this->role= crypt($this->login);
+	    } else {
+		$this->role= crypt($this->regdata);
+	    }
+	    $ret = parent::beforeSave();
+	    return $ret;
+	}
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

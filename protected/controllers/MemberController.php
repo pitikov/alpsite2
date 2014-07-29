@@ -28,9 +28,38 @@ class MemberController extends Controller
     }
     
     
-	public function actionEndregistration()
+	public function actionEndregistration($uid, $ctrlhash)
 	{
-		$this->render('endregistration');
+	    $model=new PwdRequest;
+	    $user = User::model()->findByPk($uid);
+	    $pwdrestore = Pwdrestore::model()->findByPk($uid);
+	    
+	    if (((count($user) === 0) or (count($pwdrestore)===0) or (strcmp($pwdrestore->ctrlhash,$ctrlhash) != 0))and(!Yii::app()->user->hasFlash('registration-success'))) {
+		throw new CHttpException(404,'Указанная запись не найдена');
+	    }
+	    
+	    if(isset($_POST['ajax']) && $_POST['ajax']==='pwd-request-endregistration-form')
+	    {
+		echo CActiveForm::validate($model);
+		Yii::app()->end();
+	    }
+	    
+	    if(isset($_POST['PwdRequest']))
+	    {
+		$model->attributes=$_POST['PwdRequest'];
+		if($model->validate())
+		{
+		    $command = Yii::app()->db->createCommand("update `".User::tableName()."` set `pwdhash`='".crypt($model->password)."' where `uid`={$user->uid};");
+		    if ($command->execute() == 1) {
+			$pwdrestore->delete();
+			Yii::app()->user->setFlash('registration-success', 'Регистрация пользователя успешно завершенна');
+		    } else {
+			Yii::app()->user->setFlash('registration-success', 'Регистрация пользователя проваленна');
+		    }
+		    $this->refresh();
+		}
+	    }
+	    $this->render('endregistration',array('model'=>$model, 'pagename'=>"Окончание регистрации {$user->name}"));
 	}
 
 	public function actionLogin()
@@ -89,9 +118,6 @@ class MemberController extends Controller
 	{
 	    $model=new User('register');
 	    
-	    $model->regdata = date('Y-m-d', time());
-	    // uncomment the following code to enable ajax-based validation
-	    
 	    if(isset($_POST['ajax']) && $_POST['ajax']==='user-registration-form')
 	    {
 		echo CActiveForm::validate($model);
@@ -103,9 +129,17 @@ class MemberController extends Controller
 		$model->attributes=$_POST['User'];
 		if($model->validate())
 		{ 
-		    // form inputs are valid, do something here
-		    // В случае успеха на указанный E-Mail отправить сообщение с инструкциями по активаци аккаунта и вывести собщенеие о отправке сообщения
-		    $this->redirect('/');
+		    if ($model->save()) {
+			// На указанный E-Mail отправить сообщение с инструкциями по активаци аккаунта
+			$command = Yii::app()->db->createCommand("insert into `".Pwdrestore::tableName()."` values ( {$model->uid}, '".crypt($model->dob)."');");
+			
+			$command->execute();
+
+			Yii::app()->user->setFlash('registration-success','На указанный E-mail отправленно письмо с инструкциями по продолжению регистрации.');
+		    } else {
+			Yii::app()->user->setFlash('registration-deny','Ошибка регистрации пользователя.');
+		    }
+		    $this->refresh();
 		}
 	    }
 	    $this->render('registration',array('model'=>$model));
