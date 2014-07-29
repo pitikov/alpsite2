@@ -130,11 +130,25 @@ class MemberController extends Controller
 		if($model->validate())
 		{ 
 		    if ($model->save()) {
+			$ctrlhash = crypt($model->dob);
+			$mail_body = "<html><body><p>При регистрации на сайте ".Yii::app()->name." был указан ваш e-mail.</p>".
+				     "<p>Если это были Вы, то для продолжения регистрации перейдите по <a href=\"".
+				      Yii::app()->request->hostInfo.$this->createUrl("/{$this->id}/endregistration", array(
+					'uid'=>$model->uid, 
+					'ctrlhash'=>$ctrlhash
+				     )).
+				     "\">ссылке</a>.</p><p>Если же это были не Вы, просто проигнорируйте данное сообщение.</p></body></html>";
+			$subject='=?UTF-8?B?'.base64_encode("Регистрация пользователя").'?=';
+			$headers="From: admin '".Yii::app()->request->hostInfo."' <{$model->email}>\r\n".
+			"Reply-To: ".Yii::app()->params['adminEmail'].
+			"\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8";
+			mail($model->email,$subject,$mail_body,$headers);
+			
 			// На указанный E-Mail отправить сообщение с инструкциями по активаци аккаунта
-			$command = Yii::app()->db->createCommand("insert into `".Pwdrestore::tableName()."` values ( {$model->uid}, '".crypt($model->dob)."');");
+			$command = Yii::app()->db->createCommand("insert into `".Pwdrestore::tableName()."` values ( {$model->uid}, '{$ctrlhash}');");
 			
 			$command->execute();
-
+			///@todo Перейти от флэш к статичным страницам
 			Yii::app()->user->setFlash('registration-success','На указанный E-mail отправленно письмо с инструкциями по продолжению регистрации.');
 		    } else {
 			Yii::app()->user->setFlash('registration-deny','Ошибка регистрации пользователя.');
