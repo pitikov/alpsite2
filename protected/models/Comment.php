@@ -1,30 +1,32 @@
 <?php
 
 /**
- * This is the model class for table "article".
+ * This is the model class for table "comment".
  *
- * The followings are the available columns in table 'article':
- * @property integer $artid
+ * The followings are the available columns in table 'comment':
+ * @property integer $cid
+ * @property integer $article
+ * @property integer $parent
  * @property integer $author
  * @property string $dop
  * @property string $title
  * @property string $body
- * @property string $art_location
- * @property integer $comment_cnt
  * @property integer $rating
  *
  * The followings are the available model relations:
+ * @property Article $article0
  * @property User $author0
+ * @property Comment $parent0
  * @property Comment[] $comments
  */
-class Article extends CActiveRecord
+class Comment extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'article';
+		return 'comment';
 	}
 
 	/**
@@ -35,13 +37,12 @@ class Article extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('author, dop, title, body', 'required'),
-			array('author, comment_cnt, rating', 'numerical', 'integerOnly'=>true),
+			array('article, author, dop, title, body', 'required'),
+			array('article, parent, author, rating', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>254),
-			array('art_location', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('artid, author, dop, title, body, art_location, comment_cnt, rating', 'safe', 'on'=>'search'),
+			array('cid, article, parent, author, dop, title, body, rating', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,8 +54,10 @@ class Article extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'article0' => array(self::BELONGS_TO, 'Article', 'article'),
 			'author0' => array(self::BELONGS_TO, 'User', 'author'),
-			'comments' => array(self::HAS_MANY, 'Comment', 'article'),
+			'parent0' => array(self::BELONGS_TO, 'Comment', 'parent'),
+			'comments' => array(self::HAS_MANY, 'Comment', 'parent'),
 		);
 	}
 
@@ -64,14 +67,14 @@ class Article extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'artid' => '№ статьи',
-			'author' => 'автор',
-			'dop' => 'дата публикации',
-			'title' => 'Название',
-			'body' => 'текст',
-			'art_location' => 'раздел',
-			'comment_cnt' => 'комментариев',
-			'rating' => 'рейтинг',
+			'cid' => 'unique article id',
+			'article' => 'article id',
+			'parent' => 'parent comment',
+			'author' => 'author uid',
+			'dop' => 'published date',
+			'title' => 'Article title',
+			'body' => 'Article body',
+			'rating' => 'Rating',
 		);
 	}
 
@@ -93,13 +96,13 @@ class Article extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('artid',$this->artid);
+		$criteria->compare('cid',$this->cid);
+		$criteria->compare('article',$this->article);
+		$criteria->compare('parent',$this->parent);
 		$criteria->compare('author',$this->author);
 		$criteria->compare('dop',$this->dop,true);
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('body',$this->body,true);
-		$criteria->compare('art_location',$this->art_location,true);
-		$criteria->compare('comment_cnt',$this->comment_cnt);
 		$criteria->compare('rating',$this->rating);
 
 		return new CActiveDataProvider($this, array(
@@ -111,15 +114,10 @@ class Article extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Article the static model class
+	 * @return Comment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
-	}
-	
-	public function publicate()
-	{
-	    $this->author = Yii::app()->user->getId();
 	}
 }

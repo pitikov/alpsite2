@@ -2,6 +2,14 @@
 
 class ArticleController extends Controller
 {
+    
+    public function init()
+    {
+	$this->breadcrumbs = array("Статьи и отчеты"=>array('/'.$this->id));
+	$this->defaultAction='publicate';
+        parent::init();
+    }
+    
 	public function actionDelete()
 	{
 		$this->render('delete');
@@ -19,7 +27,28 @@ class ArticleController extends Controller
 
 	public function actionPublicate()
 	{
-		$this->render('publicate');
+	  $model=new Article('publicate');
+	  $model->author = Yii::app()->user->getId();
+	  $model->dop = time();
+
+	  // uncomment the following code to enable ajax-based validation
+	  if(isset($_POST['ajax']) && $_POST['ajax']==='article-publicate-form')
+	  {
+	      echo CActiveForm::validate($model);
+	      Yii::app()->end();
+	  }
+	  
+	  if(isset($_POST['Article']))
+	  {
+	      $model->attributes=$_POST['Article'];
+	      if($model->validate())
+	      {
+		  // form inputs are valid, do something here
+		  return;
+	      }
+	  }
+	  
+	  $this->render('publicate',array('model'=>$model));	
 	}
 
 	public function actionView()

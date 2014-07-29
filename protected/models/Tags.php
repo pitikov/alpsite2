@@ -59,8 +59,8 @@ class Tags extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'user' => 'User',
-			'tag' => 'Tag',
+			'user' => 'пользователь',
+			'tag' => 'тэг',
 		);
 	}
 

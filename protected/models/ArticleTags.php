@@ -56,8 +56,8 @@ class ArticleTags extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'article' => 'Article',
-			'tag' => 'Tag',
+			'article' => 'статья',
+			'tag' => 'тэг',
 		);
 	}
 
