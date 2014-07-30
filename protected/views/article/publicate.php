@@ -31,7 +31,23 @@ array_push($this->breadcrumbs, $pagename);
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'body'); ?>
-		<?php echo $form->textArea($model,'body'); ?>
+		<?php $this->widget('ImperaviRedactorWidget', array(
+			// You can either use it for model attribute
+			'model' => $model,
+			'attribute' => 'body',
+
+			// or just for input field
+			'name' => 'message_body',
+
+			// Some options, see http://imperavi.com/redactor/docs/
+			'options' => array(
+			    'lang' => 'ru',
+			    'toolbar' => true,
+			    'iframe' => false,
+			    'css' => 'wym.css',
+			),
+		    ));
+		?>
 
 		<?php echo $form->error($model,'body'); ?>
 	</div>
