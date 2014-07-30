@@ -55,6 +55,12 @@ return array(
 			'password' => '',
 			'charset' => 'utf8',
 		),
+		'authManager'=>array(
+		    // Будем использовать свой менеджер авторизации
+		    'class' => 'PhpAuthManager',
+		    // Роль по умолчанию. Все, кто не админы, модераторы и юзеры — гости.
+		    'defaultRoles' => array('guest'),
+		),
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'federation/error',

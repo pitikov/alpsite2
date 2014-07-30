@@ -19,6 +19,7 @@
  * @property Article[] $articles
  * @property CCalendar[] $cCalendars
  * @property Comment[] $comments
+ * @property FederationMember[] $federationMembers
  * @property Pwdrestore $pwdrestore
  * @property Tags[] $tags
  */
@@ -67,6 +68,7 @@ class User extends CActiveRecord
 			'articles' => array(self::HAS_MANY, 'Article', 'author'),
 			'cCalendars' => array(self::HAS_MANY, 'CCalendar', 'manager'),
 			'comments' => array(self::HAS_MANY, 'Comment', 'author'),
+			'federationMembers' => array(self::HAS_MANY, 'FederationMember', 'user'),
 			'pwdrestore' => array(self::HAS_ONE, 'Pwdrestore', 'uid'),
 			'tags' => array(self::HAS_MANY, 'Tags', 'user'),
 			);
@@ -129,9 +131,9 @@ class User extends CActiveRecord
 	protected function beforeSave()
 	{
 	    if (count(User::model()->findAll()) === 0) {
-		$this->role= crypt($this->login);
+		$this->setAdmin(true);
 	    } else {
-		$this->role= crypt($this->regdata);
+		$this->setAdmin(false);
 	    }
 	    $ret = parent::beforeSave();
 	    return $ret;
@@ -146,5 +148,23 @@ class User extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+	
+	/** @brief Set administration rights to current user (model)
+	 * @param bool $isAdmin is administration rights value.
+	 * @return true is successed, else false */
+	public function setAdmin($isAdmin) 
+	{
+	    if ($isAdmin === true) {
+		$this->role= crypt($this->login);
+	    } else {
+		$this->role= crypt($this->regdata);
+	    }
+	    return $this->save();
+	}
+	
+	public function isAdmin()
+	{
+	    return ($this->role === crypt($this->login, $this->role));
 	}
 }

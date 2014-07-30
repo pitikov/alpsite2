@@ -13,8 +13,9 @@
  * @property integer $role
  *
  * The followings are the available model relations:
- * @property FederationRole $role0
+ * @property FederationRole $roles
  * @property MountaringMembers[] $mountaringMembers
+ * @property User $users
  */
 class FederationMember extends CActiveRecord
 {
@@ -52,7 +53,8 @@ class FederationMember extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'role0' => array(self::BELONGS_TO, 'FederationRole', 'role'),
+			'roles' => array(self::BELONGS_TO, 'FederationRole', 'role'),
+			'users' => array(self::BELONGS_TO, 'User', 'user'),
 			'mountaringMembers' => array(self::HAS_MANY, 'MountaringMembers', 'member'),
 		);
 	}

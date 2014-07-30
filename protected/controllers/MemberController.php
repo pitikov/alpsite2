@@ -18,7 +18,7 @@ class MemberController extends Controller
 		array('label'=>'Восхождения', 'url'=>array('/member/peaklist', 'uid'=>Yii::app()->user->id)),
 		array('label'=>'Сообщения', 'url'=>array('/member/mail', 'uid'=>Yii::app()->user->id, 'folder'=>'inbox')),
 		array('label'=>'Публикации', 'url'=>array('/member/articles', 'uid'=>Yii::app()->user->id)),
-		array('label'=>'Администрирование', 'url'=>array('/admin'), 'visible'=>Yii::app()->user->isAdmin()),
+		array('label'=>'Администрирование', 'url'=>array('/admin'), /*'visible'=>Yii::app()->user->isAdmin()*/),
 	    );
 	}
 	
@@ -96,7 +96,7 @@ class MemberController extends Controller
 	public function actionLogout()
 	{
 		Yii::app()->user->logout();
-		$this->redirect("./");
+		$this->redirect(Yii::app()->user->returnUrl);
 	}
 
 	public function actionProfile()

@@ -55,7 +55,8 @@ create table `federation_member` (
   `photo` varchar(128) default null comment 'photo path',
   `description` text default null,
   `role` integer default null,
-  constraint `fk_federation_role` foreign key (`role`) references `federation_role` (`id`) on update cascade on delete restrict
+  constraint `fk_federation_role` foreign key (`role`) references `federation_role` (`id`) on update cascade on delete restrict,
+  constraint `fk_federation_member` foreign key (`user`) references `user` (`uid`) on update cascade on delete set null
 ) engine = 'InnoDb';
 
 -- Календарь альпмероприятий ФАПО
