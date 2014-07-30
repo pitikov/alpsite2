@@ -1,6 +1,12 @@
 <?php
 /** @brief Конфигурация менеджера аутенфикации */
     return array(
+	'baned'=>array(
+	    'type'=>CAuthItem::TYPE_ROLE,
+            'description'=>'Baned user',
+            'bizRule'=>null,
+            'data'=>null,
+	),
         'guest'=> array(
             'type'=>CAuthItem::TYPE_ROLE,
             'description'=>'Guest',

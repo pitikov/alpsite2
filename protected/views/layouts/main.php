@@ -34,15 +34,20 @@
 				array('label'=>'Войти', 'url'=>array('/member/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Регистрация', 'url'=>array('/member/registration'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>Yii::app()->user->name, 'url'=>array('/member/profile'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Выйти', 'url'=>array('/member/logout'), 'visible'=>!Yii::app()->user->isGuest)
+				array('label'=>'Выйти', 'url'=>array('/member/logout'), 'visible'=>$this->isUser())
 			),
 		)); ?>
 	</div><!-- mainmenu -->
-	<?php if(isset($this->breadcrumbs)):?>
+	<?php
+	    /*
+	    if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
 			'links'=>$this->breadcrumbs,
 		)); ?><!-- breadcrumbs -->
-	<?php endif?>
+	<?php 
+	    endif
+	    */
+	?>
 
 	<?php echo $content; ?>
 

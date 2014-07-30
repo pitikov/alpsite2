@@ -5,6 +5,7 @@ class AdminController extends Controller
     
     public function init()
     {
+	if (!$this->isUser()) $this->redirect('/');
 	$this->breadcrumbs = array('Администрирование сайта'=>array('/admin'));
 	$this->defaultAction = "articles";
 	$this->layout="//layouts/column2";
@@ -73,30 +74,49 @@ class AdminController extends Controller
 	$this->render('guide');
     }
     
-    // Uncomment the following methods and override them if needed
-    /*
+    
     public function filters()
     {
-	// return the filter configuration for this controller, e.g.:
-	return array(
-	    'inlineFilterName',
-	    array(
-		'class'=>'path.to.FilterClass',
-		'propertyName'=>'propertyValue',
-	    ),
-	);
+        return array(
+            'accessControl'
+        );
     }
     
-    public function actions()
+    public function accessRules()
     {
-	// return external action classes, e.g.:
-	return array(
-	    'action1'=>'path.to.ActionClass',
-	    'action2'=>array(
-		'class'=>'path.to.AnotherActionClass',
-		'propertyName'=>'propertyValue',
+        return array(
+	    array(
+		'allow',
+		'actions'=>array(
+		    'articles',
+		    'baners',
+		    'database',
+		    'links',
+		    'about',
+		    'users',
+		    'federationmembers',
+		    'documents',
+		    'mountaring',
+		    'guide',
+		 ),
+		'roles'=>array('admin'),
 	    ),
-	);
+            array(
+		'deny',
+		'actions'=>array(
+		    'articles',
+		    'baners',
+		    'database',
+		    'links',
+		    'about',
+		    'users',
+		    'federationmembers',
+		    'documents',
+		    'mountaring',
+		    'guide',
+		 ),
+		'users'=>array('*'),
+	    ),
+        );
     }
-    */
 }

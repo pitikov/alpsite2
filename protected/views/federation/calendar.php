@@ -4,12 +4,12 @@ array_push($this->breadcrumbs, 'Календарь альпмероприяти�
 ?>
 <h1>Календарь альпмероприятий ФАПО</h1>
 <?php
-  echo CHtml::link('Добавить', array('/federation/addaction'));
+  if ($this->isFapo()) echo CHtml::link('Добавить', array('/federation/addaction'));
 ?>
 <p>
 	You may change the content of this page by modifying
 	the file <tt><?php echo __FILE__; ?></tt>.
 </p>
 <?php
-  echo CHtml::link('Добавить', array('/federation/addaction'));
+  if ($this->isFapo()) echo CHtml::link('Добавить', array('/federation/addaction'));
 ?>

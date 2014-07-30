@@ -5,6 +5,7 @@ class ClubController extends Controller
     
     public function init()
     {
+	$this->layout = '//layouts/column2';
 	$this->defaultAction = "calendar";
 	$this->breadcrumbs = array("Альпклуб \"Пенза\""=>array("/club"));
         parent::init();

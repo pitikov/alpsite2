@@ -5,12 +5,11 @@ class MemberController extends Controller
     
     public function init()
     {
+	$this->layout = '//layouts/column2';
 	if (Yii::app()->user->isGuest) {
 	    $this->defaultAction="login";
-	    $this->layout = '//layouts/column1';
 	} else {
 	    $this->defaultAction = 'profile';
-	    $this->layout = '//layouts/column2';
 	    $this->menuName = 'Кабинет пользователя';
 	    
 	    $this->menu = array(
@@ -18,7 +17,7 @@ class MemberController extends Controller
 		array('label'=>'Восхождения', 'url'=>array('/member/peaklist', 'uid'=>Yii::app()->user->id)),
 		array('label'=>'Сообщения', 'url'=>array('/member/mail', 'uid'=>Yii::app()->user->id, 'folder'=>'inbox')),
 		array('label'=>'Публикации', 'url'=>array('/member/articles', 'uid'=>Yii::app()->user->id)),
-		array('label'=>'Администрирование', 'url'=>array('/admin'), /*'visible'=>Yii::app()->user->isAdmin()*/),
+		array('label'=>'Администрирование', 'url'=>array('/admin'), 'visible'=>$this->isAdmin()),
 	    );
 	}
 	
@@ -86,6 +85,11 @@ class MemberController extends Controller
 		// display the login form
 		$this->render('login',array('model'=>$model));
 
+	}
+	
+	public function actionPwdrestore()
+	{
+	    $this->render('pwdrestore');
 	}
 
 	public function actionArticles()

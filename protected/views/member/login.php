@@ -39,6 +39,7 @@ array_push($this->breadcrumbs, 'Авторизация');
 		<?php echo $form->label($model,'rememberMe'); ?>
 		<?php echo $form->error($model,'rememberMe'); ?>
 	</div>
+	<?php echo CHtml::link('Восстановить пароль', array($this->id.'/pwdrestore')); ?>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Войти'); ?>
