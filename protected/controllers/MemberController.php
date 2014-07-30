@@ -16,7 +16,7 @@ class MemberController extends Controller
 		array('label'=>'Профиль', 'url'=>array('/member/profile')),
 		array('label'=>'Членство в федерации', 'url'=>array('/member/federationprofile'), 'visible'=>$this->isFapo()),
 		array('label'=>'Восхождения', 'url'=>array('/member/peaklist')),
-		array('label'=>'Сообщения', 'url'=>array('/member/mail', 'folder'=>'inbox')),
+		array('label'=>'Сообщения', 'url'=>array('/member/mail')),
 		array('label'=>'Публикации', 'url'=>array('/member/articles')),
 		array('label'=>'Администрирование', 'url'=>array('/admin'), 'visible'=>$this->isAdmin()),
 	    );
@@ -146,7 +146,7 @@ class MemberController extends Controller
 	    $this->render('peaklist');
 	}
 	
-	public function actionMail($folder)
+	public function actionMail()
 	{
 	    $this->render('mail');
 	}
