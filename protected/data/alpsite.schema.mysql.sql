@@ -55,6 +55,8 @@ create table `federation_member` (
   `photo` varchar(128) default null comment 'photo path',
   `description` text default null,
   `role` integer default null,
+  `memberfrom` date default null,
+  `memberto` date default null,
   constraint `fk_federation_role` foreign key (`role`) references `federation_role` (`id`) on update cascade on delete restrict,
   constraint `fk_federation_member` foreign key (`user`) references `user` (`uid`) on update cascade on delete set null
 ) engine = 'InnoDb';
@@ -184,4 +186,21 @@ create table `mountaring_members` (
   constraint `fk_mountaring` foreign key (`mountaring`) references `mountaring` (`id`) on update cascade on delete cascade,
   constraint `fk_mountaring_member` foreign key (`member`) references `federation_member` (`id`) on update cascade on delete restrict,
   constraint `uq_mountaring_member` unique key (`mountaring`, `member`, `name`)  
+) engine = 'InnoDb';
+
+-- site mail
+create table `mail` (
+  `id` integer primary key not null unique auto_increment,
+  `user` integer not null,
+  `sender` integer not null,
+  `receiver` integer not null,
+  `subject` varchar(128) not null,
+  `body` text not null,
+  `sended` timestamp default now() not null,
+  `folder` enum('inbox', 'outbox') not null,
+  `trash` boolean default false,
+  constraint `uq_mail` unique key (`subject`, `sender`, `sended`, `receiver`, `user`),
+  constraint `fk_mail_user` foreign key (`user`) references `user` (`uid`) on update cascade on delete restrict,
+  constraint `fk_mail_sender` foreign key (`sender`) references `user` (`uid`) on update cascade on delete restrict,
+  constraint `fk_mail_receiver` foreign key (`receiver`) references `user` (`uid`) on update cascade on delete restrict
 ) engine = 'InnoDb';

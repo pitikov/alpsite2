@@ -13,10 +13,11 @@ class MemberController extends Controller
 	    $this->menuName = 'Кабинет пользователя';
 	    
 	    $this->menu = array(
-		array('label'=>'Профиль', 'url'=>array('/member/profile', 'uid'=>Yii::app()->user->id)),
-		array('label'=>'Восхождения', 'url'=>array('/member/peaklist', 'uid'=>Yii::app()->user->id)),
-		array('label'=>'Сообщения', 'url'=>array('/member/mail', 'uid'=>Yii::app()->user->id, 'folder'=>'inbox')),
-		array('label'=>'Публикации', 'url'=>array('/member/articles', 'uid'=>Yii::app()->user->id)),
+		array('label'=>'Профиль', 'url'=>array('/member/profile')),
+		array('label'=>'Членство в федерации', 'url'=>array('/member/federationprofile'), 'visible'=>$this->isFapo()),
+		array('label'=>'Восхождения', 'url'=>array('/member/peaklist')),
+		array('label'=>'Сообщения', 'url'=>array('/member/mail', 'folder'=>'inbox')),
+		array('label'=>'Публикации', 'url'=>array('/member/articles')),
 		array('label'=>'Администрирование', 'url'=>array('/admin'), 'visible'=>$this->isAdmin()),
 	    );
 	}
@@ -32,6 +33,9 @@ class MemberController extends Controller
 	    $model=new PwdRequest;
 	    $user = User::model()->findByPk($uid);
 	    $pwdrestore = Pwdrestore::model()->findByPk($uid);
+	    $pagename = "Окончание регистрации";
+	    
+	    if (isset($_POST['pwdrestore'])) $pagename = "Восстановление пароля";
 	    
 	    if (((count($user) === 0) or (count($pwdrestore)===0) or (strcmp($pwdrestore->ctrlhash,$ctrlhash) != 0))and(!Yii::app()->user->hasFlash('registration-success'))) {
 		throw new CHttpException(404,'Указанная запись не найдена');
@@ -51,14 +55,13 @@ class MemberController extends Controller
 		    $command = Yii::app()->db->createCommand("update `".User::tableName()."` set `pwdhash`='".crypt($model->password)."' where `uid`={$user->uid};");
 		    if ($command->execute() == 1) {
 			$pwdrestore->delete();
-			Yii::app()->user->setFlash('registration-success', 'Регистрация пользователя успешно завершенна');
+			Yii::app()->user->setFlash('registration-success', "{$pagename} успешно завершенно");
 		    } else {
-			Yii::app()->user->setFlash('registration-success', 'Регистрация пользователя проваленна');
+			Yii::app()->user->setFlash('registration-success', "{$pagename} проваленно");
 		    }
-		    $this->refresh();
 		}
 	    }
-	    $this->render('endregistration',array('model'=>$model, 'pagename'=>"Окончание регистрации {$user->name}"));
+	    $this->render('endregistration',array('model'=>$model, 'pagename'=>"{$pagename} {$user->name}"));
 	}
 
 	public function actionLogin()
@@ -89,7 +92,37 @@ class MemberController extends Controller
 	
 	public function actionPwdrestore()
 	{
-	    $this->render('pwdrestore');
+	    $model=new PwdRestoreForm;
+	    
+	    if(isset($_POST['PwdRestoreForm']))
+	    {
+		$model->attributes=$_POST['PwdRestoreForm'];
+		if($model->validate())
+		{
+		    $user = User::model()->find('`login`=:User or `email`=:User', array(':User'=>$model->user));
+		    $ctrlhash = crypt($user->dob);
+		    $mail_body = "<html><body><p>Кто-то, возможно это были Вы, на сайте ".Yii::app()->name." активировал процедуру восстановления пароля.</p>".
+				 "<p>Если это были Вы, то для продолжения перейдите по <a href=\"".
+				 Yii::app()->request->hostInfo.$this->createUrl("/{$this->id}/endregistration", array(
+				    'uid'=>$user->uid, 
+				    'ctrlhash'=>$ctrlhash,
+				    'pwdrestore'
+				 )).
+				 "\">ссылке</a>.</p><p>Если же это были не Вы, просто проигнорируйте данное сообщение.</p></body></html>";
+		    $subject='=?UTF-8?B?'.base64_encode("Регистрация пользователя").'?=';
+		    $headers="From: admin '".Yii::app()->request->hostInfo."' <".Yii::app()->params['adminEmail'].">\r\n".
+			     "Reply-To: ".Yii::app()->params['adminEmail'].
+			     "\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8";
+		    mail($user->email,$subject,$mail_body,$headers);
+		    
+		    $command = Yii::app()->db->createCommand("delete from `".Pwdrestore::tableName()."` where `uid`= {$user->uid};");
+		    $command->execute();
+		    $command = Yii::app()->db->createCommand("insert into `".Pwdrestore::tableName()."` values ( {$user->uid}, '{$ctrlhash}');");
+		    $command->execute();
+		    Yii::app()->user->setFlash('registration-success', 'На указанный E-Mail высланно письмо с инструкций по восстановленю пароля');
+		}
+	    }
+	    $this->render('pwdrestore',array('model'=>$model));	
 	}
 
 	public function actionArticles()
@@ -113,7 +146,7 @@ class MemberController extends Controller
 	    $this->render('peaklist');
 	}
 	
-	public function actionMail($uid, $folder)
+	public function actionMail($folder)
 	{
 	    $this->render('mail');
 	}
@@ -143,25 +176,27 @@ class MemberController extends Controller
 				     )).
 				     "\">ссылке</a>.</p><p>Если же это были не Вы, просто проигнорируйте данное сообщение.</p></body></html>";
 			$subject='=?UTF-8?B?'.base64_encode("Регистрация пользователя").'?=';
-			$headers="From: admin '".Yii::app()->request->hostInfo."' <{$model->email}>\r\n".
+			$headers="From: admin '".Yii::app()->request->hostInfo."' <".Yii::app()->params['adminEmail'].">\r\n".
 			"Reply-To: ".Yii::app()->params['adminEmail'].
 			"\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8";
 			mail($model->email,$subject,$mail_body,$headers);
 			
-			// На указанный E-Mail отправить сообщение с инструкциями по активаци аккаунта
 			$command = Yii::app()->db->createCommand("insert into `".Pwdrestore::tableName()."` values ( {$model->uid}, '{$ctrlhash}');");
 			
 			$command->execute();
-			///@todo Перейти от флэш к статичным страницам
 			Yii::app()->user->setFlash('registration-success','На указанный E-mail отправленно письмо с инструкциями по продолжению регистрации.');
 		    } else {
 			Yii::app()->user->setFlash('registration-deny','Ошибка регистрации пользователя.');
 		    }
-		    $this->refresh();
 		}
 	    }
 	    $this->render('registration',array('model'=>$model));
 	} 
+	
+	public function actionFederationprofile()
+	{
+	    $this->render('federationprofile');
+	}
 
 	// Uncomment the following methods and override them if needed
 	/*

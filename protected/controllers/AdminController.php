@@ -14,6 +14,7 @@ class AdminController extends Controller
 	    array('label'=>'Публикации', 'url'=>array('/admin/articles')),
 	    array('label'=>'Пользователи', 'url'=>array('/admin/users')),
 	    array('label'=>'О федерации', 'url'=>array('/admin/about')),
+	    array('label'=>'Должности федерации', 'url'=>array('/admin/roles')),
 	    array('label'=>'Члены федерации', 'url'=>array('/admin/federationmembers')),
 	    array('label'=>'Классификатор', 'url'=>array('/admin/guide')),
     	    array('label'=>'Книга выходов', 'url'=>array('/admin/mountaring')),
@@ -74,6 +75,10 @@ class AdminController extends Controller
 	$this->render('guide');
     }
     
+    public function actionRoles()
+    {
+	$this->render('roles');
+    }
     
     public function filters()
     {
@@ -94,6 +99,7 @@ class AdminController extends Controller
 		    'links',
 		    'about',
 		    'users',
+		    'roles',
 		    'federationmembers',
 		    'documents',
 		    'mountaring',
@@ -110,6 +116,7 @@ class AdminController extends Controller
 		    'links',
 		    'about',
 		    'users',
+		    'roles',
 		    'federationmembers',
 		    'documents',
 		    'mountaring',
