@@ -22,6 +22,7 @@
  * @property FederationMember[] $federationMembers
  * @property Pwdrestore $pwdrestore
  * @property Tags[] $tags
+ * @property Mail[] $mail
  */
 class User extends CActiveRecord
 {
@@ -71,6 +72,7 @@ class User extends CActiveRecord
 			'federationMembers' => array(self::HAS_MANY, 'FederationMember', 'user'),
 			'pwdrestore' => array(self::HAS_ONE, 'Pwdrestore', 'uid'),
 			'tags' => array(self::HAS_MANY, 'Tags', 'user'),
+			'mail' => array(self::HAS_MANY, 'Mail', 'user'),
 			);
 	}
 

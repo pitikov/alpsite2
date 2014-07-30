@@ -15,9 +15,9 @@
  * @property integer $trash
  *
  * The followings are the available model relations:
- * @property User $user0
- * @property User $sender0
- * @property User $receiver0
+ * @property User $User
+ * @property User $Sender
+ * @property User $Receiver
  */
 class Mail extends CActiveRecord
 {
@@ -55,9 +55,9 @@ class Mail extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'user0' => array(self::BELONGS_TO, 'User', 'user'),
-			'sender0' => array(self::BELONGS_TO, 'User', 'sender'),
-			'receiver0' => array(self::BELONGS_TO, 'User', 'receiver'),
+			'User' => array(self::BELONGS_TO, 'User', 'user'),
+			'Sender' => array(self::BELONGS_TO, 'User', 'sender'),
+			'Receiver' => array(self::BELONGS_TO, 'User', 'receiver'),
 		);
 	}
 
@@ -68,14 +68,14 @@ class Mail extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'user' => 'User',
-			'sender' => 'Sender',
-			'receiver' => 'Receiver',
-			'subject' => 'Subject',
-			'body' => 'Body',
-			'sended' => 'Sended',
-			'folder' => 'Folder',
-			'trash' => 'Trash',
+			'user' => 'владелец',
+			'sender' => 'отправитель',
+			'receiver' => 'получатель',
+			'subject' => 'тема',
+			'body' => 'текст',
+			'sended' => 'отпрвленно',
+			'folder' => 'папка',
+			'trash' => 'удаленно',
 		);
 	}
 
