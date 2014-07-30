@@ -1,5 +1,5 @@
 *~
 *.kdev*
 protected/runtime
-assets
+/assets
 framework

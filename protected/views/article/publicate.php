@@ -19,21 +19,9 @@ array_push($this->breadcrumbs, $pagename);
 	'enableAjaxValidation'=>true,
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<p class="note">Поля, отмеченные <span class="required">*</span>, обязательны для заполнения.</p>
 
 	<?php echo $form->errorSummary($model); ?>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'author'); ?>
-		<?php echo $form->textField($model,'author'); ?>
-		<?php echo $form->error($model,'author'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'dop'); ?>
-		<?php echo $form->textField($model,'dop'); ?>
-		<?php echo $form->error($model,'dop'); ?>
-	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'title'); ?>
@@ -44,15 +32,9 @@ array_push($this->breadcrumbs, $pagename);
 	<div class="row">
 		<?php echo $form->labelEx($model,'body'); ?>
 		<?php echo $form->textArea($model,'body'); ?>
+
 		<?php echo $form->error($model,'body'); ?>
 	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'art_location'); ?>
-		<?php echo $form->textField($model,'art_location'); ?>
-		<?php echo $form->error($model,'art_location'); ?>
-	</div>
-
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Сохранить'); ?>
