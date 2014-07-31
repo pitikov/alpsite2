@@ -37,10 +37,46 @@ class FederationController extends Controller
       $this->render('guidebook');
   }
   
+  public function actionAddregion()
+  {
+      $this->render('guidebook');
+  }
+  
+  public function actionDeleteregion()
+  {
+      $this->render('guidebook');
+  }
+  
+  public function actionAddmount()
+  {
+      $this->render('guidebook');
+  }
+  
+  public function actionDeletemount()
+  {
+      $this->render('guidebook');
+  }
+  
+  public function actionAddroute()
+  {
+      $this->render('guidebook');
+  }
+  
+  public function actionDeleteroute()
+  {
+      $this->render('guidebook');
+  }
+  
+  public function actionEditroute()
+  {
+      $this->render('editroute');
+  }
+  
   public function actionMountaring()
   {
       $this->render('mountaring');
-  }  
+  }
+  
   
   public function actionError()
   {
@@ -82,49 +118,122 @@ class FederationController extends Controller
     }
     $this->render('addaction',array('model'=>$model));	
   }
+  
+  public function actionAddmember()
+  {
+      $this->render('addmember');
+  }
+  
+  public function actionCalendar()
+  {
+      $this->render('calendar');
+  }
 
-	public function actionAddmember()
-	{
-		$this->render('addmember');
-	}
+  public function actionDeleteaction()
+  {
+      $this->render('deleteaction');
+  }
+  
+  public function actionDeletemember()
+  {
+      $this->render('deletemember');
+  }
+  
+  public function actionEditaction()
+  {
+      $this->render('editaction');
+  }
+  
+  public function actionEditmember()
+  {
+      $this->render('editmember');
+  }
+  
+  public function actionMember()
+  {
+      $this->render('member');
+  }
+  
+  public function actionMembers()
+  {
+      $this->render('members');
+  }
+  
+  public function actionDocuments()
+  {
+      $this->render('documents');
+  }
 
-	public function actionCalendar()
-	{
-		$this->render('calendar');
-	}
-
-	public function actionDeleteaction()
-	{
-		$this->render('deleteaction');
-	}
-
-	public function actionDeletemember()
-	{
-		$this->render('deletemember');
-	}
-
-	public function actionEditaction()
-	{
-		$this->render('editaction');
-	}
-
-	public function actionEditmember()
-	{
-		$this->render('editmember');
-	}
-
-	public function actionMember()
-	{
-		$this->render('member');
-	}
-
-	public function actionMembers()
-	{
-		$this->render('members');
-	}
-	
-	public function actionDocuments()
-	{
-	    $this->render('documents');
-	}
+  public function actionLoaddocument()
+  {
+      $this->render('documents');
+  }
+  
+  public function actionDeletedocument()
+  {
+      $this->render('documents');
+  }
+ 
+  public function filters()
+  {
+      return array(
+	  'accessControl'
+      );
+  }
+  
+  public function accessRules()
+  {
+      return array(
+	  array(
+	      'allow',
+	      'actions'=>array(
+		  'deletemember',
+		  'deleteaction',
+		  'addmember', 
+		  'editmember', 
+		  'loaddocument', 
+		  'deletedocument',
+		  'deleteregion',
+		  'deletemount',
+		  'deleteroute',
+		  'addaction', 
+		  'editaction',
+	      ),
+	      'roles'=>array('admin'),
+	  ),
+	  array(
+	      'allow',
+	      'actions'=>array(
+		  'addaction', 
+		  'editaction',
+		  'addregion',
+		  'addmount',
+		  'addroute',
+		  'editroute',
+	      ),
+	      'roles'=>array('fapo'),
+	  ),
+	  array(
+	      'deny',
+	      'actions'=>array(
+		  'deletemember',
+		  'deleteaction',
+		  'addmember', 
+		  'editmember', 
+		  'loaddocument', 
+		  'deletedocument',
+		  'deleteregion',
+		  'deletemount',
+		  'deleteroute',
+		  'addaction', 
+		  'editaction',
+		  'addregion',
+		  'addmount',
+		  'addroute',
+		  'editroute',
+	      ),
+	      'roles'=>array('guest'),
+	  )
+      );
+  }
 }

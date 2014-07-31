@@ -1,20 +1,116 @@
 <?php
-/* @var $this MemberController */
-$pagename = 'Профиль пользователя '.Yii::app()->user->getName();
-array_push($this->breadcrumbs, $pagename)
-?>
-<h1><?php echo $pagename;?></h1>
+/* @var $this UserController */
+/* @var $model User */
+/* @var $form CActiveForm */
+$pagename = "Профиль пользователя \"{$model->login}\"";
 
-<p>
-    Здесь должен быть виджет вкладок профиля пользователя
-</p><p>
-	You may change the content of this page by modifying
-	the file <tt><?php echo __FILE__; ?></tt>.
-</p>
-<?php
-    print_r(Yii::app()->user->model());
-    echo "<br/>Role = ".Yii::app()->user->getRole();
-    if($this->isAdmin()) echo "<h1>hello, I'm administrator</h1>";
-    if($this->isUser()) echo "<h1>hello, I'm user</h1>";
-    if($this->isFapo()) echo "<h1>hello, I'm federation member</h1>";
+array_push($this->breadcrumbs, $pagename);
 ?>
+<div class="form">
+
+<?php $form=$this->beginWidget('CActiveForm', array(
+	'id'=>'user-profile-form',
+	// Please note: When you enable ajax validation, make sure the corresponding
+	// controller action is handling ajax validation correctly.
+	// See class documentation of CActiveForm for details on this,
+	// you need to use the performAjaxValidation()-method described there.
+	'enableAjaxValidation'=>true,
+)); ?>
+
+	
+
+	<?php echo $form->errorSummary($model); ?>
+	<table>
+	  <thead><h1><?php echo $pagename; ?></h1></thead>
+	  <caption><p class="note">Поля, отмеченные <span class="required">*</span>, обязательны для заполнения.</p></caption>
+	  <tbody>
+	  <tr>
+	    <td width='35%'>
+		<?php echo $form->labelEx($model,'login'); ?>
+	    </td><td>
+		<?php //echo $form->textLabel($model,'login'); ?>
+		<?php echo $model->login; ?>
+		<?php echo $form->error($model,'login'); ?>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+		<?php echo $form->labelEx($model,'regdata'); ?>
+		<?php //echo $form->textLabel($model,'regdata'); ?>
+	    </td><td>
+		<?php echo $model->regdata; ?>
+		<?php echo $form->error($model,'regdata'); ?>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+		<?php echo $form->labelEx($model,'role'); ?>
+	    </td><td>
+		<?php if ($this->isAdmin()) { ?><div class='memberrole' id='admin'>Администратор</div><?php } ?>
+		<?php if ($this->isFapo()) { ?><div class='memberrole' id='fapo'>Член ФАПО</div><?php } ?>
+		<?php echo $form->error($model,'role'); ?>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+		<?php echo $form->labelEx($model,'avatar'); ?>
+	    </td><td>
+		<?php echo $form->textField($model,'avatar'); ?>
+		<?php echo $form->error($model,'avatar'); ?>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+		<?php echo $form->labelEx($model,'name'); ?>
+	    </td><td>
+		<?php echo $form->textField($model,'name'); ?>
+		<?php echo $form->error($model,'name'); ?>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+		<?php echo $form->labelEx($model,'email'); ?>
+	    </td><td>
+		<?php echo $form->emailField($model,'email'); ?>
+		<?php echo $form->error($model,'email'); ?>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+		<?php echo $form->labelEx($model,'dob'); ?>
+	    </td><td>
+		<?php //echo $form->dateField($model,'dob'); 
+		    $this->widget('zii.widgets.jui.CJuiDatePicker', 
+				  array(
+				      'model'=>$model,
+				      'attribute'=>'dob',
+				      'name'=>'DateOfBethday',
+				      // additional javascript options for the date picker plugin
+				      'options'=>array(
+					  'showAnim'=>'fold',
+				      ),
+				      'htmlOptions'=>array(
+					  'style'=>'height:20px;'
+				      ),
+				      'language'=>'ru',
+		    ));
+		
+		?>
+		<?php echo $form->error($model,'dob'); ?>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+		<?php echo $form->labelEx($model,'sign'); ?>
+		<div class='hint'>Краткое сообщение - девиз, отображаемое после каждой вашей записи в комментариях</div>
+	    </td><td>
+		<?php echo $form->textArea($model,'sign'); ?>
+		<?php echo $form->error($model,'sign'); ?>
+	    </td>
+	  </tr>
+	  </tbody>
+	</table>
+	<?php echo CHtml::submitButton('Сохранить'); ?>
+
+<?php $this->endWidget(); ?>
+</div><!-- form -->

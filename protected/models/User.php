@@ -46,7 +46,7 @@ class User extends CActiveRecord
 			array('login, name, email', 'required'),
 			array('login', 'length', 'min'=>6,'max'=>16),
 			array('login', 'match', 'pattern'=>'/^[A-Za-z0-9_\-\s]+$/', 'message'=>'Допустимы только латинские символы, цифры, подчеркивание и тире'),
-			array('pwdhash, name, role', 'length', 'max'=>32),
+			array('name', 'length', 'max'=>32),
 			array('email, avatar', 'length', 'max'=>128),
 			array('email', 'email'),
 			array('email, login', 'unique'),

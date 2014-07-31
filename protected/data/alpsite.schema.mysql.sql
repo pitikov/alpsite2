@@ -201,7 +201,8 @@ create table `mail` (
   `sended` timestamp default now() not null,
   `folder` enum('inbox', 'outbox') not null,
   `trash` boolean default false,
-  constraint `uq_mail` unique key (`subject`, `sender`, `sended`, `receiver`, `user`),
+  `unread` boolean default true,
+  constraint `uq_mail` unique key (`subject`, `sender`, `sended`, `receiver`, `user`, `folder`),
   constraint `fk_mail_user` foreign key (`user`) references `user` (`uid`) on update cascade on delete restrict,
   constraint `fk_mail_sender` foreign key (`sender`) references `user` (`uid`) on update cascade on delete restrict,
   constraint `fk_mail_receiver` foreign key (`receiver`) references `user` (`uid`) on update cascade on delete restrict

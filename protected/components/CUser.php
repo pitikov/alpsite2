@@ -2,6 +2,13 @@
     class CUser extends CWebUser {
 	private $_model = null;
 	
+	public function init()
+	{
+	    $this->loginUrl = array('/member/login');
+	    parent::init();
+	}
+	
+	
 	private function getModel()
 	{
 	    if($this->_model === null && !$this->isGuest) {
@@ -10,7 +17,7 @@
 	    return $this->_model;
 	}
 	
-	public  function model()
+	public function model()
 	{
 	    return $this->getModel();
 	}

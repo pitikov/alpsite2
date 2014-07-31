@@ -12,7 +12,8 @@
  * @property string $body
  * @property string $sended
  * @property string $folder
- * @property integer $trash
+ * @property boolean $trash
+ * @property boolean $unread
  *
  * The local propertys:
  * @property boolean $check;
@@ -24,7 +25,7 @@
  */
 class Mail extends CActiveRecord
 {
-	private $check = false;
+	public $check = false;
 	
 	/**
 	 * @return string the associated database table name
@@ -42,14 +43,14 @@ class Mail extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user, sender, receiver, subject, body, sended, folder', 'required'),
-			array('user, sender, receiver, trash', 'numerical', 'integerOnly'=>true),
+			array('user, sender, receiver, subject, body, folder', 'required'),
+			array('user, sender, receiver', 'numerical', 'integerOnly'=>true),
 			array('subject', 'length', 'max'=>128),
 			array('folder', 'length', 'max'=>6),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, user, sender, receiver, subject, body, sended, folder, trash', 'safe', 'on'=>'search'),
-			array('check', 'boolean'),
+			array('id, user, sender, receiver, subject, body, sended, folder, trash, unread', 'safe', 'on'=>'search'),
+			array('check, unread, trash', 'boolean'),
 		);
 	}
 
@@ -83,6 +84,7 @@ class Mail extends CActiveRecord
 			'folder' => 'папка',
 			'trash' => 'удаленно',
 			'check' => 'выделение',
+			'unread' => 'не прочитанно',
 		);
 	}
 
@@ -113,6 +115,7 @@ class Mail extends CActiveRecord
 		$criteria->compare('sended',$this->sended,true);
 		$criteria->compare('folder',$this->folder,true);
 		$criteria->compare('trash',$this->trash);
+		$criteria->compare('unrea',$this->unread);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

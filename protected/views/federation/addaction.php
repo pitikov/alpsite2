@@ -40,9 +40,9 @@ array_push($this->breadcrumbs, $pagename);
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'description'); ?>
-		<?php echo $form->textField($model,'description'); ?>
-		<?php echo $form->error($model,'description'); ?>
+		<?php echo $form->labelEx($model,'article'); ?>
+		<?php echo $form->textField($model,'article'); ?>
+		<?php echo $form->error($model,'article'); ?>
 	</div>
 
 	<div class="row">

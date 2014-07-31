@@ -138,7 +138,25 @@ class MemberController extends Controller
 
 	public function actionProfile()
 	{
-		$this->render('profile');
+	    $model=Yii::app()->user->model();
+	    
+	    if(isset($_POST['ajax']) && $_POST['ajax']==='user-profile-form')
+	    {
+		echo CActiveForm::validate($model);
+		Yii::app()->end();
+	    }
+	    
+	    if(isset($_POST['User']))
+	    {
+		$model->attributes=$_POST['User'];
+		if($model->validate())
+		{
+		    // form inputs are valid, do something here
+		    return;
+		}
+	    
+	    }
+	    $this->render('profile',array('model'=>$model));
 	}
 	
 	public function actionPeaklist()
@@ -148,7 +166,69 @@ class MemberController extends Controller
 	
 	public function actionMail()
 	{
-	    $this->render('mail');
+	    $model=new Mail('sendmail');
+	    $model->user=Yii::app()->user->getId();
+	    $model->sender = $model->user;
+	    $model->folder = 'outbox';
+	    
+	    $inbox = new CActiveDataProvider('Mail',
+		array(
+		    'criteria'=>array(
+		        'condition'=>"user = {$model->user} and folder = 'inbox' and trash=false",
+		        'order'=>'sended DESC',
+		    )
+		)
+	    );
+	    $outbox = new CActiveDataProvider('Mail',
+		array(
+		    'criteria'=>array(
+		        'condition'=>"user = {$model->user} and folder = 'outbox' and trash=false",
+		        'order'=>'sended DESC',
+		    )
+		)
+	    );
+	    $trash = new CActiveDataProvider('Mail',
+		array(
+		    'criteria'=>array(
+		        'condition'=>"user = {$model->user} and trash=true",
+		        'order'=>'sended DESC',
+		    )
+		)
+	    );	  
+	    
+	    if(isset($_POST['ajax']) && $_POST['ajax']==='mail-sendmail-form')
+	    {
+		echo CActiveForm::validate($model);
+		Yii::app()->end();
+	    }
+	    
+	    if(isset($_POST['Mail']))
+	    {
+		$model->attributes=$_POST['Mail'];
+		    if($model->validate())
+		    {
+		      if ($model->save()) {
+			$msg = new Mail();
+			$msg->user = $model->receiver;
+			$msg->sender = $model->sender;
+			$msg->receiver = $model->receiver;
+			$msg->sended = $model->sended;
+			$msg->subject = $model->subject;
+			$msg->body = $model->body;
+			$msg->folder = 'inbox';
+			$msg->save();
+			/// @todo Отправить сообщение (положить в отправленные и копию получателю во входящие), а так-же выслать получателю на e-mail
+			/// @todo Обновить DataProvider-ы
+			//$this->refresh();
+			Yii::app()->user->setFlash('flash-send-mail','Сообщение отправленно.');
+			$model = new Mail('sendmail');
+			$model->user=Yii::app()->user->getId();
+			$model->sender = $model->user;
+			$model->folder = 'outbox';
+		      }
+		    }
+	    }
+	    $this->render('mail',array('model'=>$model, 'inbox'=>$inbox, 'outbox'=>$outbox, 'trash'=>$trash));
 	}
 	
 	public function actionRegistration()
