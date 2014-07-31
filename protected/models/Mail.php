@@ -14,6 +14,9 @@
  * @property string $folder
  * @property integer $trash
  *
+ * The local propertys:
+ * @property boolean $check;
+ *
  * The followings are the available model relations:
  * @property User $User
  * @property User $Sender
@@ -21,6 +24,8 @@
  */
 class Mail extends CActiveRecord
 {
+	private $check = false;
+	
 	/**
 	 * @return string the associated database table name
 	 */
@@ -44,6 +49,7 @@ class Mail extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, user, sender, receiver, subject, body, sended, folder, trash', 'safe', 'on'=>'search'),
+			array('check', 'boolean'),
 		);
 	}
 
@@ -76,6 +82,7 @@ class Mail extends CActiveRecord
 			'sended' => 'отпрвленно',
 			'folder' => 'папка',
 			'trash' => 'удаленно',
+			'check' => 'выделение',
 		);
 	}
 
