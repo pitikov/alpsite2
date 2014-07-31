@@ -10,9 +10,10 @@
  * @property double $location_lat
  * @property double $location_lng
  * @property integer $manager
- * @property string $description
+ * @property integer $article
  *
  * The followings are the available model relations:
+ * @property Article $article0
  * @property User $manager0
  */
 class ClubCalendar extends CActiveRecord
@@ -33,13 +34,13 @@ class ClubCalendar extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('title, begin, manager, description', 'required'),
-			array('manager', 'numerical', 'integerOnly'=>true),
+			array('title, begin, manager, article', 'required'),
+			array('manager, article', 'numerical', 'integerOnly'=>true),
 			array('location_lat, location_lng', 'numerical'),
 			array('title', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('aid, title, begin, location_lat, location_lng, manager, description', 'safe', 'on'=>'search'),
+			array('aid, title, begin, location_lat, location_lng, manager, article', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -51,6 +52,7 @@ class ClubCalendar extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'article0' => array(self::BELONGS_TO, 'Article', 'article'),
 			'manager0' => array(self::BELONGS_TO, 'User', 'manager'),
 		);
 	}
@@ -67,7 +69,7 @@ class ClubCalendar extends CActiveRecord
 			'location_lat' => 'position from latitude',
 			'location_lng' => 'position from logitude',
 			'manager' => 'action manager',
-			'description' => 'Description of mountaring action',
+			'article' => 'Description of club action',
 		);
 	}
 
@@ -95,7 +97,7 @@ class ClubCalendar extends CActiveRecord
 		$criteria->compare('location_lat',$this->location_lat);
 		$criteria->compare('location_lng',$this->location_lng);
 		$criteria->compare('manager',$this->manager);
-		$criteria->compare('description',$this->description,true);
+		$criteria->compare('article',$this->article);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

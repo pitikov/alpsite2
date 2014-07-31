@@ -61,31 +61,6 @@ create table `federation_member` (
   constraint `fk_federation_member` foreign key (`user`) references `user` (`uid`) on update cascade on delete set null
 ) engine = 'InnoDb';
 
--- Календарь альпмероприятий ФАПО
-create table `f_calendar` (
-  `aid` integer primary key not null unique auto_increment comment 'unique number of mountaring actions',
-  `title` varchar(128) not null comment 'title of action',
-  `begin` date not null comment 'date of begin mountaring action',
-  `finish` date not null comment 'date of finish mountaring action',
-  -- tutoral на использование google maps смотри на http://habrahabr.ru/post/110460/
-  `location_lat` float comment 'position from latitude',
-  `location_lng` float comment 'position from logitude',
-  `description` text not null comment 'Description of mountaring action' 
-) engine = 'InnoDb' comment 'calendar of mountaring actions';
-
--- Календарь мероприятий клуба
-create table `c_calendar` (
-  `aid` integer primary key not null unique auto_increment comment 'unique number of club actions',
-  `title` varchar(128) not null comment 'title of action',
-  `begin` timestamp not null comment 'timestamp of begin club action',
-    -- tutoral на использование google maps смотри на http://habrahabr.ru/post/110460/
-  `location_lat` float comment 'position from latitude',
-  `location_lng` float comment 'position from logitude',
-  `manager` integer not null comment 'action manager',
-  `description` text not null comment 'Description of mountaring action',
-  constraint `fk_club_action_manager` foreign key (`manager`) references `user`(`uid`) on update cascade on delete restrict
-) engine = 'InnoDb' comment 'calendar club actions';
-
 -- Статьи на сайте
 create table `article` (
   `artid` integer primary key not null unique auto_increment comment 'unique article id',
@@ -93,7 +68,7 @@ create table `article` (
   `dop` timestamp not null default now() comment 'published date',
   `title` varchar(254) not null comment 'Article title',
   `body` text not null comment 'Article body',
-  `art_location` enum('about','federation','club') not null default 'federation',
+  `art_location` enum('about','federation','club','calendar') not null default 'federation',
   `comment_cnt` integer default 0,
   `rating` integer default 0,
   constraint `fk_article_author` foreign key (`author`) references `user`(`uid`) on update cascade on delete restrict
@@ -122,6 +97,33 @@ create table `article_tags` (
   constraint `fk_tag_article` foreign key (`article`) references `article`(`artid`) on update cascade on delete cascade,
   constraint `fk_tag_tag` foreign key (`article`) references `tags`(`id`) on update cascade on delete cascade
 ) engine = 'InnoDb';
+
+-- Календарь альпмероприятий ФАПО
+create table `f_calendar` (
+  `aid` integer primary key not null unique auto_increment comment 'unique number of mountaring actions',
+  `title` varchar(128) not null comment 'title of action',
+  `begin` date not null comment 'date of begin mountaring action',
+  `finish` date not null comment 'date of finish mountaring action',
+  -- tutoral на использование google maps смотри на http://habrahabr.ru/post/110460/
+  `location_lat` float comment 'position from latitude',
+  `location_lng` float comment 'position from logitude',
+  `article` int not null comment 'Description of mountaring action',
+  constraint `fk_fcal_article` foreign key (`article`) references `article`(`artid`) on update cascade on delete restrict
+) engine = 'InnoDb' comment 'calendar of mountaring actions';
+
+-- Календарь мероприятий клуба
+create table `c_calendar` (
+  `aid` integer primary key not null unique auto_increment comment 'unique number of club actions',
+  `title` varchar(128) not null comment 'title of action',
+  `begin` timestamp not null comment 'timestamp of begin club action',
+    -- tutoral на использование google maps смотри на http://habrahabr.ru/post/110460/
+  `location_lat` float comment 'position from latitude',
+  `location_lng` float comment 'position from logitude',
+  `manager` integer not null comment 'action manager',
+  `article` int not null comment 'Description of club action',
+  constraint `fk_ccal_article` foreign key (`article`) references `article`(`artid`) on update cascade on delete restrict,
+  constraint `fk_club_action_manager` foreign key (`manager`) references `user`(`uid`) on update cascade on delete restrict
+) engine = 'InnoDb' comment 'calendar club actions';
 
 create table `links` (
   `id` integer primary key not null unique auto_increment,

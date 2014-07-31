@@ -10,7 +10,10 @@
  * @property string $finish
  * @property double $location_lat
  * @property double $location_lng
- * @property string $description
+ * @property integer $article
+ *
+ * The followings are the available model relations:
+ * @property Article $article0
  */
 class FederationCalendar extends CActiveRecord
 {
@@ -30,12 +33,13 @@ class FederationCalendar extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('title, begin, finish, description', 'required'),
+			array('title, begin, finish, article', 'required'),
+			array('article', 'numerical', 'integerOnly'=>true),
 			array('location_lat, location_lng', 'numerical'),
 			array('title', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('title, begin, finish, location_lat, location_lng', 'safe', 'on'=>'search'),
+			array('aid, title, begin, finish, location_lat, location_lng, article', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -47,6 +51,7 @@ class FederationCalendar extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'article0' => array(self::BELONGS_TO, 'Article', 'article'),
 		);
 	}
 
@@ -57,12 +62,12 @@ class FederationCalendar extends CActiveRecord
 	{
 		return array(
 			'aid' => 'unique number of mountaring actions',
-			'title' => 'Название а/м',
-			'begin' => 'Дата начала а/м',
-			'finish' => 'Дата окончания а/м',
-			'location_lat' => 'широта',
-			'location_lng' => 'долгота',
-			'description' => 'Описание',
+			'title' => 'title of action',
+			'begin' => 'date of begin mountaring action',
+			'finish' => 'date of finish mountaring action',
+			'location_lat' => 'position from latitude',
+			'location_lng' => 'position from logitude',
+			'article' => 'Description of mountaring action',
 		);
 	}
 
@@ -90,7 +95,7 @@ class FederationCalendar extends CActiveRecord
 		$criteria->compare('finish',$this->finish,true);
 		$criteria->compare('location_lat',$this->location_lat);
 		$criteria->compare('location_lng',$this->location_lng);
-		$criteria->compare('description',$this->description,true);
+		$criteria->compare('article',$this->article);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

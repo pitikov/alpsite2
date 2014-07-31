@@ -15,8 +15,9 @@
  *
  * The followings are the available model relations:
  * @property User $author0
+ * @property CCalendar[] $cCalendars
  * @property Comment[] $comments
- */
+ * @property FCalendar[] $fCalendars */
 class Article extends CActiveRecord
 {
 	/**
@@ -54,7 +55,9 @@ class Article extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'author0' => array(self::BELONGS_TO, 'User', 'author'),
+			'cCalendars' => array(self::HAS_MANY, 'CCalendar', 'article'),
 			'comments' => array(self::HAS_MANY, 'Comment', 'article'),
+			'fCalendars' => array(self::HAS_MANY, 'FCalendar', 'article'),
 		);
 	}
 
