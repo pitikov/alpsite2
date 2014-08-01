@@ -40,7 +40,7 @@ class FederationMember extends CActiveRecord
 			array('name', 'required'),
 			array('user, role', 'numerical', 'integerOnly'=>true),
 			array('name, photo', 'length', 'max'=>128),
-			array('dob, description, memberfrom, membert', 'safe'),
+			array('dob, description, memberfrom, memberto', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, user, name, dob, photo, description, role', 'safe', 'on'=>'search'),

@@ -275,7 +275,26 @@ class MemberController extends Controller
 	
 	public function actionFederationprofile()
 	{
-	    $this->render('federationprofile');
+	    //$model=new FederationMember;
+	    $model = FederationMember::model()->find('user=:User', array(':User'=>Yii::app()->user->getId()));
+	    
+	    if(isset($_POST['ajax']) && $_POST['ajax']==='federation-member-federationprofile-form')
+	    {
+		echo CActiveForm::validate($model);
+		Yii::app()->end();
+	    }
+	    
+	    
+	    if(isset($_POST['FederationMember']))
+	    {
+		$model->attributes=$_POST['FederationMember'];
+		if($model->validate())
+		{
+		    // form inputs are valid, do something here
+		    return;
+		}
+	    }
+	    $this->render('federationprofile',array('model'=>$model));
 	}
 
 	public function filters()

@@ -79,8 +79,7 @@ array_push($this->breadcrumbs, $pagename);
 	    <td>
 		<?php echo $form->labelEx($model,'dob'); ?>
 	    </td><td>
-		<?php //echo $form->dateField($model,'dob'); 
-		    $this->widget('zii.widgets.jui.CJuiDatePicker', 
+		<?php $this->widget('zii.widgets.jui.CJuiDatePicker', 
 				  array(
 				      'model'=>$model,
 				      'attribute'=>'dob',
