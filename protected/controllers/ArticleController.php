@@ -7,6 +7,7 @@ class ArticleController extends Controller
     {
 	$this->breadcrumbs = array("Статьи и отчеты"=>array('/'.$this->id));
 	$this->defaultAction='publicate';
+	$this->layout = '//layouts/column2';
         parent::init();
     }
     
