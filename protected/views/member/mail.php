@@ -35,7 +35,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     ),
 ));
 ?>
-
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -48,18 +47,23 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 )); ?>
 
     <?php echo $form->errorSummary($model); ?>
-
-    <div class="row">
-        <?php echo $form->labelEx($model,'receiver'); ?>
+<table>
+  <tr>
+    <td>
+        <?php echo $form->label($model,'receiver'); ?>
+    </td><td>
         <?php echo $form->textField($model,'receiver'); ?>
         <?php echo $form->error($model,'receiver'); ?>
-    </div>
-
-    <div class="row">
-        <?php echo $form->labelEx($model,'subject'); ?>
+    </td>
+  </tr><tr>
+    <td>
+        <?php echo $form->label($model,'subject'); ?>
+    </td><td>
         <?php echo $form->textField($model,'subject'); ?>
         <?php echo $form->error($model,'subject'); ?>
-    </div>
+    </td>
+  </tr>
+</table>
 
     <div class="row">
         <?php echo $form->labelEx($model,'body'); ?>
