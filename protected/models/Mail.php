@@ -149,9 +149,8 @@ class Mail extends CActiveRecord
 	
 	public function find($attribute, $params)
 	{
-	    /// @todo выделить email из строки пользователя
-	    $find = 'pitikov@yandex.ru';
-	    $receiver = User::model()->find('email = :Search', array(':Search'=>$find));
+	    $find = (str_getcsv('evgeniy (E.A.Pitikov) <pitikov@yandex.ru>',' '));
+	    $receiver = User::model()->find('login = :Search', array(':Search'=>$find[0]));
 	    $label = $this->getAttributeLabel($attribute);
 	    if ($receiver===null) {
 		//$this->addError('receiversearch', "{$label} отсутствует в базе данных");
