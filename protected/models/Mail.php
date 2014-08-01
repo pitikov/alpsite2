@@ -149,7 +149,7 @@ class Mail extends CActiveRecord
 	
 	public function find($attribute, $params)
 	{
-	    $find = (str_getcsv('evgeniy (E.A.Pitikov) <pitikov@yandex.ru>',' '));
+	    $find = (str_getcsv($this->receiversearch,' '));
 	    $receiver = User::model()->find('login = :Search', array(':Search'=>$find[0]));
 	    $label = $this->getAttributeLabel($attribute);
 	    if ($receiver===null) {
