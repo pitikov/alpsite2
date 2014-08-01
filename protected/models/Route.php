@@ -13,7 +13,7 @@
  *
  * The followings are the available model relations:
  * @property Mountaring[] $mountarings
- * @property Mountain $mountain0
+ * @property Mountain $RouteMountain
  */
 class Route extends CActiveRecord
 {
@@ -38,6 +38,7 @@ class Route extends CActiveRecord
 			array('title', 'length', 'max'=>128),
 			array('difficulty', 'length', 'max'=>3),
 			array('description', 'safe'),
+			array('mountain','existsed'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, mountain, title, difficulty, winter, description', 'safe', 'on'=>'search'),
@@ -53,7 +54,7 @@ class Route extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'mountarings' => array(self::HAS_MANY, 'Mountaring', 'route'),
-			'mountain0' => array(self::BELONGS_TO, 'Mountain', 'mountain'),
+			'RouteMountain' => array(self::BELONGS_TO, 'Mountain', 'mountain'),
 		);
 	}
 
@@ -64,11 +65,11 @@ class Route extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'mountain' => 'Mountain',
-			'title' => 'mountaring route title',
-			'difficulty' => 'Difficulty',
-			'winter' => 'Winter',
-			'description' => 'Description',
+			'mountain' => 'вершина',
+			'title' => 'маршрут',
+			'difficulty' => 'к.с.',
+			'winter' => 'зимний',
+			'description' => 'описание',
 		);
 	}
 
@@ -110,6 +111,15 @@ class Route extends CActiveRecord
 	 */
 	public static function model($className=__CLASS__)
 	{
-		return parent::model($className);
+	    return parent::model($className);
+	}
+	
+	public function existsed($attribute, $params)
+	{
+	    $mountain = Mountain::model()->findByPk($this->mountain);
+	    if ($mountain===null) {
+		$label = $this->getAttributeLabel($attribute);
+		$this->addError($attribute, "{$label} отсутствует в базе данных");
+	    }
 	}
 }

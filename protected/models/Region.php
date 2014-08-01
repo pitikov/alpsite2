@@ -57,8 +57,8 @@ class Region extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'title' => 'Region title',
-			'description' => 'Description',
+			'title' => 'Горный район',
+			'description' => 'описание',
 		);
 	}
 

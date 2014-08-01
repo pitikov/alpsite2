@@ -10,7 +10,7 @@
  * @property string $description
  *
  * The followings are the available model relations:
- * @property Route $route0
+ * @property Route $mountaringRoute
  * @property MountaringMembers[] $mountaringMembers
  */
 class Mountaring extends CActiveRecord
@@ -34,6 +34,7 @@ class Mountaring extends CActiveRecord
 			array('date, route', 'required'),
 			array('route', 'numerical', 'integerOnly'=>true),
 			array('description', 'safe'),
+			array('route','existed'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, date, route, description', 'safe', 'on'=>'search'),
@@ -48,7 +49,7 @@ class Mountaring extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'route0' => array(self::BELONGS_TO, 'Route', 'route'),
+			'mountaringRoute' => array(self::BELONGS_TO, 'Route', 'route'),
 			'mountaringMembers' => array(self::HAS_MANY, 'MountaringMembers', 'mountaring'),
 		);
 	}
@@ -59,10 +60,10 @@ class Mountaring extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'date' => 'Date',
-			'route' => 'Route',
-			'description' => 'Description',
+			'id' => '№',
+			'date' => 'дата',
+			'route' => 'по маршруту',
+			'description' => 'Описание',
 		);
 	}
 
@@ -102,6 +103,14 @@ class Mountaring extends CActiveRecord
 	 */
 	public static function model($className=__CLASS__)
 	{
-		return parent::model($className);
+	    return parent::model($className);
+	}
+	
+	public function existed($attribute, $params)
+	{
+	    $route = Route::model()->findByPk($this->route);
+	    if ($route===null) {
+		$this->addError($attribute, "Указанный маршрут отсутствует в базе данных");
+	    }
 	}
 }

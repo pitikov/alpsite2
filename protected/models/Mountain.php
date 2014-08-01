@@ -12,8 +12,8 @@
  * @property string $description
  *
  * The followings are the available model relations:
- * @property Region $region0
- * @property Route[] $routes
+ * @property Region $MountaringRegion
+ * @property Route[] $Routes
  */
 class Mountain extends CActiveRecord
 {
@@ -38,6 +38,7 @@ class Mountain extends CActiveRecord
 			array('location_lat, location_lng', 'numerical'),
 			array('title', 'length', 'max'=>128),
 			array('description', 'safe'),
+			array('region','existed'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, region, title, location_lat, location_lng, description', 'safe', 'on'=>'search'),
@@ -52,8 +53,8 @@ class Mountain extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'region0' => array(self::BELONGS_TO, 'Region', 'region'),
-			'routes' => array(self::HAS_MANY, 'Route', 'mountain'),
+			'MountaringRegion' => array(self::BELONGS_TO, 'Region', 'region'),
+			'Routes' => array(self::HAS_MANY, 'Route', 'mountain'),
 		);
 	}
 
@@ -64,11 +65,11 @@ class Mountain extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'region' => 'Region',
-			'title' => 'mountain title',
-			'location_lat' => 'position from latitude',
-			'location_lng' => 'position from logitude',
-			'description' => 'Description',
+			'region' => 'район',
+			'title' => 'вершина',
+			'location_lat' => 'широта',
+			'location_lng' => 'долгота',
+			'description' => 'описание',
 		);
 	}
 
@@ -112,4 +113,12 @@ class Mountain extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+	
+	public function existed($attribute,$params)
+	{
+	    $region = Region::model()->findByPk($this->region);
+	    $label = $this->getAttributeLabel($attribute);
+	    if ($region===null) $this->addError('region', "{$label} отсутствует в базе данных");
+	}
+	
 }

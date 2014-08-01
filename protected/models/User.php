@@ -43,6 +43,7 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			/// @todo Для имен пользователя разрешить только буквы русского и английского алфавита, пробел и тире
 			array('login, name, email', 'required'),
 			array('login', 'length', 'min'=>6,'max'=>16),
 			array('login', 'match', 'pattern'=>'/^[A-Za-z0-9_\-\s]+$/', 'message'=>'Допустимы только латинские символы, цифры, подчеркивание и тире'),
