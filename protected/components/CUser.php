@@ -46,5 +46,11 @@
 	    }
 	    return $role;
 	}
+	
+	public function email()
+	{
+	    if(!($this->model()===null)) return $this->model()->email;
+	    else return null;
+	}
     }
 ?>
