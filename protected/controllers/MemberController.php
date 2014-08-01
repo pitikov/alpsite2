@@ -250,9 +250,16 @@ class MemberController extends Controller
 			$msg->body = $model->body;
 			$msg->folder = 'inbox';
 			$msg->save();
-			/// @todo Отправить сообщение (положить в отправленные и копию получателю во входящие), а так-же выслать получателю на e-mail
-			/// @todo Обновить DataProvider-ы
-			//$this->refresh();
+			
+			$mail_body = "<html><body><h1>{$model->subject}</h1>{$model->body}<hr/>Писмо отправленно с сайта '".Yii::app()->getBaseUrl(true)."'</body></html>";
+			$subject='=?UTF-8?B?'.base64_encode($model->subject).'?=';
+			
+			$headers="From: ".Yii::app()->user->model()->login." <".Yii::app()->user->email().">\r\n".
+			"Reply-To: ".Yii::app()->user->email().
+			"\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8";
+			$receiver = User::model()->findByPk($model->receiver);
+			mail($receiver->email, $subject, $mail_body, $headers);
+			
 			Yii::app()->user->setFlash('flash-send-mail','Сообщение отправленно.');
 			$model = new Mail('sendmail');
 			$model->user=Yii::app()->user->getId();

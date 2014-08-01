@@ -98,7 +98,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 		  ),
 		));
 	    echo $form->error($model,'body'); 
-	 ?>
+	?>
     </div>
 
     <div class="row buttons">
