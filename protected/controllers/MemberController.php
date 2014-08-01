@@ -161,7 +161,32 @@ class MemberController extends Controller
 	
 	public function actionPeaklist()
 	{
-	    $this->render('peaklist');
+	    /// @todo Делать выборку по восхождениям исходя из участия в них текущего пользователя
+	    $mountaring = new CActiveDataProvider('Mountaring',
+		array('criteria'=>array(
+		    /*'condition'=>array(
+		    ),*/
+		))
+	    );
+	    $mountaringModel=new Mountaring;
+	    
+	    if(isset($_POST['ajax']) && $_POST['ajax']==='mountaring-mountaring-form')
+	    {
+		echo CActiveForm::validate($mountaringModel);
+		Yii::app()->end();
+	    }
+	    
+	    if(isset($_POST['Mountaring']))
+	    {
+		$mountaringModel->attributes=$_POST['Mountaring'];
+		if($mountaringModel->validate())
+		{
+		    // form inputs are valid, do something here
+		    return;
+		}
+	    }
+	    
+	    $this->render('peaklist', array('model'=>$mountaringModel,'peaklist'=>$mountaring));
 	}
 	
 	public function actionMail()
@@ -170,6 +195,14 @@ class MemberController extends Controller
 	    $model->user=Yii::app()->user->getId();
 	    $model->sender = $model->user;
 	    $model->folder = 'outbox';
+	    
+	    $users = User::model()->findAll();
+	    $userlist = array();
+	    
+	    foreach($users as $user) {
+	        array_push($userlist, "{$user->login} ({$user->name}) <{$user->email}>");
+	    }
+	    
 	    
 	    $inbox = new CActiveDataProvider('Mail',
 		array(
@@ -228,7 +261,7 @@ class MemberController extends Controller
 		      }
 		    }
 	    }
-	    $this->render('mail',array('model'=>$model, 'inbox'=>$inbox, 'outbox'=>$outbox, 'trash'=>$trash));
+	    $this->render('mail',array('model'=>$model, 'inbox'=>$inbox, 'outbox'=>$outbox, 'trash'=>$trash, 'userlist'=>$userlist));
 	}
 	
 	public function actionRegistration()

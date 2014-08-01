@@ -50,10 +50,25 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <table>
   <tr>
     <td>
-        <?php echo $form->label($model,'receiver'); ?>
+        <?php echo $form->label($model,'receiversearch'); ?>
     </td><td>
-        <?php echo $form->textField($model,'receiver'); ?>
-        <?php echo $form->error($model,'receiver'); ?>
+        <?php //echo $form->textField($model,'receiversearch'); 
+	  $this->widget('zii.widgets.jui.CJuiAutoComplete', 
+	      array(
+		  'model'=>$model,
+		  'attribute'=>'receiversearch',
+		  'name'=>'mailReceiverSearch',
+		  'source'=>$userlist,
+	      // additional javascript options for the autocomplete plugin
+	      'options'=>array(
+		  'minLength'=>'2',
+	      ),
+	      'htmlOptions'=>array(
+		  'style'=>'height:20px;'
+	      ),
+	  ));
+        ?>
+        <?php echo $form->error($model,'receiversearch'); ?>
     </td>
   </tr><tr>
     <td>
@@ -66,8 +81,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 </table>
 
     <div class="row">
-        <?php echo $form->labelEx($model,'body'); ?>
-        <?php $this->widget('ImperaviRedactorWidget', array(
+        <?php 
+	    $this->widget('ImperaviRedactorWidget', array(
 	    // You can either use it for model attribute
 		'model' => $model,
 		'attribute' => 'body',
@@ -82,8 +97,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 		    'css' => 'wym.css',
 		  ),
 		));
-		?>
-        <?php echo $form->error($model,'body'); ?>
+	    echo $form->error($model,'body'); 
+	 ?>
     </div>
 
     <div class="row buttons">

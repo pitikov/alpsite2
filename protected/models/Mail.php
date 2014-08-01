@@ -25,6 +25,9 @@
  */
 class Mail extends CActiveRecord
 {
+	/// Поиск получателя по совпадению с Email, login, или имя пользователя
+	public $receiversearch;
+	
 	public $check = false;
 	
 	/**
@@ -43,7 +46,9 @@ class Mail extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user, sender, receiver, subject, body, folder', 'required'),
+			array('user, sender, subject, body, folder', 'required'),
+			array('receiversearch', 'find', 'on'=>'sendmail'),
+			array('receiver','existed'),
 			array('user, sender, receiver', 'numerical', 'integerOnly'=>true),
 			array('subject', 'length', 'max'=>128),
 			array('folder', 'length', 'max'=>6),
@@ -78,6 +83,7 @@ class Mail extends CActiveRecord
 			'user' => 'владелец',
 			'sender' => 'отправитель',
 			'receiver' => 'получатель',
+			'receiversearch' => 'получатель',
 			'subject' => 'тема',
 			'body' => 'текст',
 			'sended' => 'отпрвленно',
@@ -130,6 +136,27 @@ class Mail extends CActiveRecord
 	 */
 	public static function model($className=__CLASS__)
 	{
-		return parent::model($className);
+	    return parent::model($className);
+	}
+	
+	/** Проверка на наличие записи в БД */
+	public function existed($attribute, $params)
+	{
+	    $receiver = User::model()->findByPk($this->receiver);
+	    $label = $this->getAttributeLabel($attribute);
+	    if ($receiver===null) $this->addError('receiversearch', "{$label} отсутствует в базе данных");
+	}
+	
+	public function find($attribute, $params)
+	{
+	    /// @todo выделить email из строки пользователя
+	    $find = 'pitikov@yandex.ru';
+	    $receiver = User::model()->find('email = :Search', array(':Search'=>$find));
+	    $label = $this->getAttributeLabel($attribute);
+	    if ($receiver===null) {
+		//$this->addError('receiversearch', "{$label} отсутствует в базе данных");
+	    } else {
+		$this->receiver = $receiver->uid;
+	    }
 	}
 }
