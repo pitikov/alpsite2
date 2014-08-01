@@ -28,7 +28,8 @@ class FederationController extends Controller
   
   public function actionAbout()
   {
-      $body = null;
+      $aboutArticle = Article::model()->find('art_location=:Theme', array(':Theme'=>'about'));
+      $body=$aboutArticle===null?"<div id='about-blank'>Контент данной странице не задан. Обратитесь к администратору сайта для устраненния этой проблеммы.</div>":$aboutArticle->body;
       $this->render('about', array('body'=>$body));
   }
   
