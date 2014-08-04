@@ -60,15 +60,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <div class="row buttons">
     <?php echo CHtml::submitButton('Добавить'); ?>
 </div>
-<?php if (Yii::app()->user->hasFlash('flash-baner-add-success')) { ?>
-<div class="flash-success">
-    <?php echo Yii::app()->user->getFlash('flash-baner-add-success'); ?>
-</div>
-<?php } else if (Yii::app()->user->hasFlash('flash-baner-add-error')) { ?>
-<div class="flash-error">
-    <?php echo Yii::app()->user->getFlash('flash-baner-add-error'); ?>
-</div>
-<?php } ?>
 <?php $this->endWidget('baners-baners-form'); ?>
 </div><!-- form -->
 <?php 

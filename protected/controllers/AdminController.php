@@ -47,16 +47,13 @@ class AdminController extends Controller
 	if(isset($_POST['Baners']))
 	{
 	    $model->attributes=$_POST['Baners'];
-	    if($model->validate())
-	    {
-		if ($model->save()) {
-		  $model=new Baners('add');
-		  $model->position = count(Baners::model()->findAll()) + 1;
-		  $model->on_show = true;
-		  Yii::app()->user->setFlash('flash-baner-add-success', 'Банер успешно добавлен');
-		} else {
-		    Yii::app()->user->setFlash('flash-baner-add-error', 'Ошибка добавления банера');
-		}
+	    if($model->validate() && $model->save()) {
+		$model=new Baners('add');
+		$model->position = count(Baners::model()->findAll()) + 1;
+		$model->on_show = true;
+		Yii::app()->user->setFlash('flash-baner-add-success', 'Банер успешно добавлен');
+	    } else {
+		Yii::app()->user->setFlash('flash-baner-add-error', 'Ошибка добавления банера');
 	    }
 	}
 	$this->render('baners',array('model'=>$model, 'dataProvider'=>$banersProvider));
@@ -66,11 +63,32 @@ class AdminController extends Controller
     {
 	$this->render('database');
     }
-
+    
     public function actionLinks()
     {
-	$this->render('links');
-    }
+	$model=new Links('add');
+	$linksProvider = new CActiveDataProvider('Links');
+	$model->position = count($linksProvider->data)+1;
+	
+	if(isset($_POST['ajax']) && $_POST['ajax']==='links-links-form')
+	{
+	    echo CActiveForm::validate($model);
+	    Yii::app()->end();
+	}
+	
+	if(isset($_POST['Links']))
+	{
+	    $model->attributes=$_POST['Links'];
+	    if($model->validate() && $model->save()) {
+		Yii::app()->user->setFlash('flash-link-add-success', 'Графическая ссылка успешно добавленна.');
+		$model = new Links('add');
+		$model->position = count($linksProvider->data)+1;
+	    } else {
+		Yii::app()->user->setFlash('flash-link-add-error', 'Ошибка добавления графической ссылки.');
+	    }	    
+	}
+	$this->render('links',array('model'=>$model, 'dataProvider'=>$linksProvider));
+    } 
     
     public function actionAbout()
     {
