@@ -43,8 +43,8 @@ class Controller extends CController
 	
 	protected function beforeAction($action)
 	{
-	    $this->banerList = Baners::model()->findAll(array('order'=>'position ASC'));
-	    $this->linkList = Links::model()->findAll(array('order'=>'position ASC'));
+	    $this->banerList = Baners::model()->findAll(array('condition'=>'on_show=true','order'=>'position ASC', 'limit'=>3));
+	    $this->linkList = Links::model()->findAll(array('condition'=>'on_show=true', 'order'=>'position ASC', 'limit'=>10));
 	    $ret = parent::beforeAction($action);
 	    return $ret;
 	}

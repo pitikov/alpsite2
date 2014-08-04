@@ -23,9 +23,12 @@
 		    foreach($this->banerList as $baner) {
 		        echo $baner->body;
 		    }
-		    
+		} 
+		if (count($this->linkList)>0) {
+		    foreach($this->linkList as $link) {
+			echo CHtml::link(CHtml::image($link->image, $link->title), $link->url, array('title'=>$link->title));
+		    }
 		}
-		echo 'Здесь будут графические ссылки на дружественные сайты, но не более десяти';
 	?>
 	</div><!-- sidebar -->
 </div>

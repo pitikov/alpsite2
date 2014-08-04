@@ -34,6 +34,8 @@ class Links extends CActiveRecord
 			array('on_show','boolean'),
 			array('title', 'length', 'max'=>128),
 			array('url, image', 'length', 'max'=>254),
+			array('url, image', 'unique'),
+//			array('url, image', 'url'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, title, url, image, on_show, position', 'safe', 'on'=>'search'),
