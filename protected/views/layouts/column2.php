@@ -17,8 +17,14 @@
 		));
 		$this->endWidget();
 		
-		// Здесь осуществить вывод банеров рекламной сети, но не более трех. В случае отсутствия вывести приглашение к размещении рекламы
-		echo CHtml::image('/images/banerfree.png', 'Здесь могла бы быть ваша реклама');
+		if (count($this->banerList)==0) {
+		    echo CHtml::image('/images/banerfree.png', 'Здесь могла бы быть ваша реклама');
+		} else {
+		    foreach($this->banerList as $baner) {
+		        echo $baner->body;
+		    }
+		    
+		}
 		echo 'Здесь будут графические ссылки на дружественные сайты, но не более десяти';
 	?>
 	</div><!-- sidebar -->

@@ -8,14 +8,18 @@ $pagename = 'Рекламные банеры';
 array_push($this->breadcrumbs, $pagename);
 ?>
 <h1><?php echo $pagename; ?></h1>
+<?php $this->widget('zii.widgets.grid.CGridView', array('dataProvider'=>$dataProvider,)); ?>
 
-<?php 
-    $this->beginWidget('system.web.widgets.CClipWidget', array('id'=>'Список банеров')); 
-    $this->widget('zii.widgets.grid.CGridView', array('dataProvider'=>$dataProvider,));
-    $this->endWidget(); 
+<?php
+$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+    'id'=>'BannerAddDialog',
+    // additional javascript options for the dialog plugin
+    'options'=>array(
+        'title'=>'Новый баннер',
+        'autoOpen'=>false,
+    ),
+));
 ?>
-
-<?php $this->beginWidget('system.web.widgets.CClipWidget', array('id'=>'Добавление банера')); ?>
 <div class="form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
@@ -26,6 +30,8 @@ array_push($this->breadcrumbs, $pagename);
 	// you need to use the performAjaxValidation()-method described there.
 	'enableAjaxValidation'=>true,
 )); ?>
+<h1>Добавление рекламного баннера</h1>
+<p class='note'>Вставте полученный у рекламодателя код банера в текстовое поле и нажмите кнопку &quot;Добавить&quot;</p>
 <table>
   <caption>
 	<p class="note">Поля, отмеченные <span class="required">*</span>, обязательны для заполнения.</p>
@@ -50,6 +56,7 @@ array_push($this->breadcrumbs, $pagename);
   </tbody>
 </table>
 
+
 <div class="row buttons">
     <?php echo CHtml::submitButton('Добавить'); ?>
 </div>
@@ -64,11 +71,19 @@ array_push($this->breadcrumbs, $pagename);
 <?php } ?>
 <?php $this->endWidget('baners-baners-form'); ?>
 </div><!-- form -->
-<?php $this->endWidget(); ?>
+<?php 
+$this->endWidget('zii.widgets.jui.CJuiDialog');
 
-<?php
-$tabParameters = array();
-foreach($this->clips as $key=>$clip)
-    $tabParameters['tab'.(count($tabParameters)+1)] = array('title'=>$key, 'content'=>$clip);
-?>
-<?php $this->widget('system.web.widgets.CTabView', array('tabs'=>$tabParameters)); ?>
+// the link that may open the dialog
+echo CHtml::link('Добавить баннер', '#', array(
+   'onclick'=>'$("#BannerAddDialog").dialog("open"); return false;',
+));
+if (Yii::app()->user->hasFlash('flash-baner-add-success')) { ?>
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('flash-baner-add-success'); ?>
+</div>
+<?php } else if (Yii::app()->user->hasFlash('flash-baner-add-error')) { ?>
+<div class="flash-error">
+    <?php echo Yii::app()->user->getFlash('flash-baner-add-error'); ?>
+</div>
+<?php } ?>
