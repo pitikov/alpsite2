@@ -23,6 +23,9 @@ class Controller extends CController
 	 */
 	public $breadcrumbs=array();
 	
+	public $banerList = array();
+	public $linkList = array();
+	
 	public function isAdmin()
 	{
 	    return Yii::app()->user->checkAccess('admin');
@@ -36,5 +39,14 @@ class Controller extends CController
 	public function isUser()
 	{
 	    return !Yii::app()->user->isGuest;
+	}	
+	
+	protected function beforeAction($action)
+	{
+	    $this->banerList = Baners::model()->findAll(array('order'=>'position ASC'));
+	    $this->linkList = Links::model()->findAll(array('order'=>'position ASC'));
+	    $ret = parent::beforeAction($action);
+	    return $ret;
 	}
+	
 }

@@ -32,7 +32,34 @@ class AdminController extends Controller
     
     public function actionBaners()
     {
-	$this->render('baners');
+	$model=new Baners('add');
+	
+	$banersProvider = new CActiveDataProvider('Baners');
+	$model->position = count(Baners::model()->findAll()) + 1;
+	$model->on_show = true;
+	
+	if(isset($_POST['ajax']) && $_POST['ajax']==='baners-baners-form')
+	{
+	    echo CActiveForm::validate($model);
+	    Yii::app()->end();
+	}
+	
+	if(isset($_POST['Baners']))
+	{
+	    $model->attributes=$_POST['Baners'];
+	    if($model->validate())
+	    {
+		if ($model->save()) {
+		  $model=new Baners('add');
+		  $model->position = count(Baners::model()->findAll()) + 1;
+		  $model->on_show = true;
+		  Yii::app()->user->setFlash('flash-baner-add-success', 'Банер успешно добавлен');
+		} else {
+		    Yii::app()->user->setFlash('flash-baner-add-error', 'Ошибка добавления банера');
+		}
+	    }
+	}
+	$this->render('baners',array('model'=>$model, 'dataProvider'=>$banersProvider));
     }
     
     public function actionDatabase()
