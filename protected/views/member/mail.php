@@ -114,13 +114,14 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 // the link that may open the dialog
 echo CHtml::link('Написать сообщение', '#', array(
    'onclick'=>'$("#SendMailDialog").dialog("open"); return false;',
-));
-if (Yii::app()->user->hasFlash('flash-send-mail')) {
-?>
+)); ?>
+<?php if (Yii::app()->user->hasFlash('flash-send-mail')) { ?>
 <div class="flash-success">
     <?php echo Yii::app()->user->getFlash('flash-send-mail'); ?>
 </div>
-
-<?php
-}
-?>
+<?php } ?>
+<?php if (Yii::app()->user->hasFlash('flash-send-mail-error')) { ?>
+<div class="flash-error">
+    <?php echo Yii::app()->user->getFlash('flash-send-mail-error'); ?>
+</div>
+<?php } ?>

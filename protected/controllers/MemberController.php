@@ -238,9 +238,7 @@ class MemberController extends Controller
 	    if(isset($_POST['Mail']))
 	    {
 		$model->attributes=$_POST['Mail'];
-		    if($model->validate())
-		    {
-		      if ($model->save()) {
+		    if($model->validate() && $model->save()) {
 			$msg = new Mail();
 			$msg->user = $model->receiver;
 			$msg->sender = $model->sender;
@@ -265,7 +263,9 @@ class MemberController extends Controller
 			$model->user=Yii::app()->user->getId();
 			$model->sender = $model->user;
 			$model->folder = 'outbox';
-		      }
+		      
+		    } else {
+			Yii::app()->user->setFlash('flash-send-mail-error','Ошибка отправки сообщения.');
 		    }
 	    }
 	    $this->render('mail',array('model'=>$model, 'inbox'=>$inbox, 'outbox'=>$outbox, 'trash'=>$trash, 'userlist'=>$userlist));
