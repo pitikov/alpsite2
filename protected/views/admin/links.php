@@ -17,6 +17,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'options'=>array(
         'title'=>'Новая ссылка',
         'autoOpen'=>false,
+        'modal' => true,
     ),
 ));
 ?>

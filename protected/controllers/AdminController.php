@@ -112,7 +112,6 @@ class AdminController extends Controller
 	    if($model->validate())
 	    {
 		if ($model->save()) Yii::app()->user->setFlash('flash-about-save', 'Данные успешно сохраненны.');
-
 	    }
 	}
 	$this->render('about',array('model'=>$model));
