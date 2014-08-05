@@ -14,7 +14,7 @@
  * @property integer $rating
  *
  * The followings are the available model relations:
- * @property User $author0
+ * @property User $articleAuthor
  * @property CCalendar[] $cCalendars
  * @property Comment[] $comments
  * @property FCalendar[] $fCalendars */
@@ -36,7 +36,7 @@ class Article extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('author, dop, title, body', 'required'),
+			array('author, title, body', 'required'),
 			array('author, comment_cnt, rating', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>254),
 			array('art_location', 'length', 'max'=>10),
@@ -54,7 +54,7 @@ class Article extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'author0' => array(self::BELONGS_TO, 'User', 'author'),
+			'articleAuthor' => array(self::BELONGS_TO, 'User', 'author'),
 			'cCalendars' => array(self::HAS_MANY, 'CCalendar', 'article'),
 			'comments' => array(self::HAS_MANY, 'Comment', 'article'),
 			'fCalendars' => array(self::HAS_MANY, 'FCalendar', 'article'),
