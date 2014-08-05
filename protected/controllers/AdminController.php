@@ -92,8 +92,31 @@ class AdminController extends Controller
     
     public function actionAbout()
     {
-	$this->render('about');
-    }
+	$model = Article::model()->find('art_location = :About', array(':About'=>'about'));
+	if ($model === null) {
+	    $model=new Article;
+	    $model->author = Yii::app()->user->getId();
+	    $model->title = 'About federation';
+	    $model->art_location = 'about';
+	}
+	
+	if(isset($_POST['ajax']) && $_POST['ajax']==='article-about-form')
+	{
+	    echo CActiveForm::validate($model);
+	    Yii::app()->end();
+	}
+	
+	if(isset($_POST['Article']))
+	{
+	    $model->attributes=$_POST['Article'];
+	    if($model->validate())
+	    {
+		if ($model->save()) Yii::app()->user->setFlash('flash-about-save', 'Данные успешно сохраненны.');
+
+	    }
+	}
+	$this->render('about',array('model'=>$model));
+    } 
     
     public function actionUsers()
     {
