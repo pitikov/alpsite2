@@ -6,12 +6,7 @@ $this->breadcrumbs=array(
 	'Database',
 );
 ?>
-<h1><?php echo $this->id . '/' . $this->action->id; ?></h1>
 
-<p>
-	You may change the content of this page by modifying
-	the file <tt><?php echo __FILE__; ?></tt>.
-</p>
 <?php
 $this->widget('ext.easymap.EasyMap', array(
     'key' => '', /*Insert your developer API key for google map*/
@@ -22,5 +17,10 @@ $this->widget('ext.easymap.EasyMap', array(
     'zoom' => '10', /*Zoom level. Default is 7*/
     'width' => '700', /*Map height*/
     'height' => '600', /*Map width*/
-    'markertitle' => '', /*Title of the place marker*/
-));?>
+    'markertitle' => 'Моя точка', /*Title of the place marker*/
+));
+?>
+<?php 
+$this->widget('ext.OSM.OSM');
+
+?>
