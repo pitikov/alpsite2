@@ -11,16 +11,17 @@ class AdminController extends Controller
 	$this->layout="//layouts/column2";
 	$this->menuName="Администрирование";
 	$this->menu=array(
-	    array('label'=>'Публикации', 'url'=>array('/admin/articles')),
-	    array('label'=>'Пользователи', 'url'=>array('/admin/users')),
-	    array('label'=>'О федерации', 'url'=>array('/admin/about')),
-	    array('label'=>'Должности федерации', 'url'=>array('/admin/roles')),
-	    array('label'=>'Члены федерации', 'url'=>array('/admin/federationmembers')),
-	    array('label'=>'Классификатор', 'url'=>array('/admin/guide')),
-    	    array('label'=>'Книга выходов', 'url'=>array('/admin/mountaring')),
-	    array('label'=>'Документы', 'url'=>array('/admin/documents')),
-	    array('label'=>'Рекламные банеры', 'url'=>array('/admin/baners')),
-	    array('label'=>'Ссылки', 'url'=>array('/admin/links')),
+	    array('label'=>'Публикации', 'url'=>array("/{$this->id}/articles")),
+	    array('label'=>'Пользователи', 'url'=>array("/{$this->id}/users")),
+	    array('label'=>'О федерации', 'url'=>array("/{$this->id}/about")),
+	    array('label'=>'Должности федерации', 'url'=>array("/{$this->id}/roles")),
+	    array('label'=>'Члены федерации', 'url'=>array("/{$this->id}/federationmembers")),
+	    array('label'=>'Классификатор', 'url'=>array("/{$this->id}/guide")),
+    	    array('label'=>'Книга выходов', 'url'=>array("/{$this->id}/mountaring")),
+	    array('label'=>'Документы', 'url'=>array("/{$this->id}/documents")),
+	    array('label'=>'Рекламные банеры', 'url'=>array("/{$this->id}/baners")),
+	    array('label'=>'Ссылки', 'url'=>array("/{$this->id}/links")),
+	    array('label'=>'База данных', 'url'=>array("/{$this->id}/database"))
 	);
         parent::init();
     }
