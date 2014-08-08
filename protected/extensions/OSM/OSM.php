@@ -10,16 +10,33 @@ class OSM extends CWidget {
     /** @property $id Имя идентификатора контейнера */
     public $id = 'OpenStreetMapCanvas';
     
-    protected $layers=array('osm'=>array(), 'google'=>array(), 'markers'=>array(), 'wms'=>array(), 'route'=>array());
-    protected $width=700;
-    protected $height=500;
+    public $layers=array(
+	'osm'=>array(
+	    'title'=>'OpenStreetMap',
+	),
+	'google'=>array(
+	    'title'=>'GoogleMaps гибрид'
+	), 
+	'markers'=>array(
+	    'title'=>'Точки пользователя',
+	    'points'=>array(),
+	),
+	'route'=>array(
+	    'title'=>'Маршруты',
+	    'points'=>array(),
+	)
+    );
+    public $width=700;
+    public $height=500;
+    public $position=array('lon'=>5008810.59272, 'lat'=>7021711.41236);
+    public $zoom=11;
 
     public function init()
     {    
 ?>
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
 <?php if (isset($this->layers['google'])) { ?>
-<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+  <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
 <?php } ?>
 <div id='<?php echo $this->id; ?>' style='width:<?php echo $this->width;?>px; height:<?php echo $this->height;?>px;'></div>
 <script>
@@ -34,7 +51,7 @@ class OSM extends CWidget {
 
   <?php if (isset($this->layers['google'])) { ?>
  
-  var gmap = new OpenLayers.Layer.Google("Google Hybrid",
+  var gmap = new OpenLayers.Layer.Google("GoogleMaps",
                 {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20}
             );
   map.addLayer(gmap);
@@ -53,7 +70,10 @@ class OSM extends CWidget {
   map.addControl(new OpenLayers.Control.ScaleLine());
   map.addControl(new OpenLayers.Control.Navigation());
   map.addControl(new OpenLayers.Control.PanZoomBar());
-  map.addControl(new OpenLayers.Control.MousePosition());
+  map.addControl(new OpenLayers.Control.MousePosition({
+    prefix: 'Координаты: '
+    }
+));
   map.addControl(new OpenLayers.Control.Attribution());
   map.addControl(new OpenLayers.Control.ArgParser());   
 
@@ -66,22 +86,13 @@ class OSM extends CWidget {
   markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon.clone()));
   @endcode
 */
-  map.zoomToMaxExtent();
+  map.setCenter([<?php echo $this->position['lon']; ?>, <?php echo $this->position['lat']; ?>],<?php echo $this->zoom; ?>);
+  
+  
 </script>
 	     
-	 <?php
-
-    }
-    
-    
-    public function __construct($owner = null, $params = null )
-    {
-	if (is_array($params)) {
-	    if (isset($params['id']) and is_string($params['id'])) $this->id = $params['id'];
-	}
-        parent::__construct($owner);
-    }
-    
+<?php }
+// end of init()    
     
 }
 
