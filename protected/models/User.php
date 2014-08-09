@@ -134,9 +134,9 @@ class User extends CActiveRecord
 	protected function beforeSave()
 	{
 	    if (count(User::model()->findAll()) === 0) {
-		$this->setAdmin(true);
+		$this->role= crypt($this->login);
 	    } else {
-		$this->setAdmin(false);
+		$this->role= crypt($this->regdata);
 	    }
 	    $ret = parent::beforeSave();
 	    return $ret;
