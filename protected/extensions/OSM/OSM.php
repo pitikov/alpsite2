@@ -31,16 +31,10 @@ class OSM extends CWidget {
     public $position=array('lon'=>5008810.59272, 'lat'=>7021711.41236);
     public $zoom=11;
     public $findEngine=false;
-
+    
     public function init()
-    {   
-    if ($this->findEngine) {
-?>
-<b>Поиск:</b><input type='text' value='Введите название и нажмите "ввод"'/>
-<div id='find_return'>
-<!-- Здесь разместить вывод результатов поиска -->
-</div>
-<?php } // end findEngine ?>
+    { 
+    ?>
 <script src="http://openlayers.org/api/OpenLayers.js"></script>
 <?php if (isset($this->layers['google'])) { ?>
   <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
@@ -48,11 +42,12 @@ class OSM extends CWidget {
 <div id='<?php echo $this->id; ?>' style='width:<?php echo $this->width;?>px; height:<?php echo $this->height;?>px;'></div>
 <script>
 
-  var map = new OpenLayers.Map('<?php echo $this->id; ?>', { controls: [] });
+  var map = new OpenLayers.Map('<?php echo $this->id; ?>', { controls: []});
 
   <?php if (isset($this->layers['osm'])) { ?>
   var osm = new OpenLayers.Layer.OSM("<?php if (isset($this->layers['osm']['title'])) echo $this->layers['osm']['title']; else echo "OSM карта"; ?>");
   map.addLayer(osm);
+
   <?php } ?>
 
 
@@ -79,15 +74,13 @@ class OSM extends CWidget {
     
   // В дальнейшем сделать проверку на количество слоев на карте и всавлять, если список слоев содержит более одного слоя
   <?php if (count($this->layers)>1) { ?>
-  map.addControl(new OpenLayers.Control.LayerSwitcher());
+  map.addControl(new OpenLayers.Control.LayerSwitcher( {title: 'Отображаемые слои'} ));
   <?php } ?>
   map.addControl(new OpenLayers.Control.ScaleLine());
   map.addControl(new OpenLayers.Control.Navigation());
   map.addControl(new OpenLayers.Control.PanZoomBar());
-  map.addControl(new OpenLayers.Control.MousePosition({
-    prefix: 'Координаты: '
-    }
-));
+  /// Привести вывод координат к UTM виду
+  map.addControl(new OpenLayers.Control.MousePosition());
   map.addControl(new OpenLayers.Control.Attribution());
   map.addControl(new OpenLayers.Control.ArgParser());   
 
@@ -102,11 +95,29 @@ class OSM extends CWidget {
 */
   map.setCenter([<?php echo $this->position['lon']; ?>, <?php echo $this->position['lat']; ?>],<?php echo $this->zoom; ?>);
   
-  
 </script>
-<?php }
-// end of init()    
-    /// @todo Здесь разместить вкладки точек пользователя и маршрута
+<br/> 
+    <?php 
+    $this->widget('CTabView', array(
+    'tabs'=>array(
+	'tabSearch'=>array(
+            'title'=>'Поиск',
+            //'view'=>'view1',
+            //'data'=>array('model'=>$model),
+            //'url'=>'http://nominatim.openstreetmap.org/search?q=Пенза&format=xml'
+        ),
+	'tabMarkers'=>array(
+            'title'=>'Маркеры',
+//             'view'=>'./views/find',
+            //'data'=>array('model'=>$model),
+        ),
+        'tabRotes'=>array(
+            'title'=>'Маршруты',
+           // 'url'=>'http://www.yiiframework.com/',
+        ),
+    ),
+));
+    } // end of init()    
 }
 
 ?>
