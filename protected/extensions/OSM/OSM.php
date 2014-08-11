@@ -133,10 +133,10 @@ class OSM extends CWidget {
 			  
 			  var size = new OpenLayers.Size(21,25);
 			  var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-			  var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
-			  if (item.icon) icon = new OpenLayers.icon(item.icons, size, offset);
-			  //searchLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon));
-			  searchLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon.clone()));
+			  if (item.icon) icon = new OpenLayers.Icon(item.icon, size, offset);
+			  else var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
+
+			  searchLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(item.lon,item.lat),icon));
     
 		      });
 		      searchLayer.setVisibility(true);
