@@ -8,5 +8,5 @@ $this->breadcrumbs=array(
 ?>
 
 <?php 
-    $this->widget('ext.OSM.OSM', array());
+    $this->widget('ext.OSM.OSM');
 ?>
