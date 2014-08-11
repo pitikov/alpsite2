@@ -30,21 +30,23 @@ class OSM extends CWidget {
     public $height=500;
     public $position=array('lon'=>5008810.59272, 'lat'=>7021711.41236);
     public $zoom=11;
-    public $findEngine=false;
+    public $findEngine=true;
+    public $search;
 
     public function init()
     {   
-    if ($this->findEngine) {
-?>
-<b>Поиск:</b><input type='text' value='Введите название и нажмите "ввод"'/>
-<div id='find_return'>
-<!-- Здесь разместить вывод результатов поиска -->
-</div>
-<?php } // end findEngine ?>
-<script src="http://openlayers.org/api/OpenLayers.js"></script>
-<?php if (isset($this->layers['google'])) { ?>
-  <script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
-<?php } ?>
+    	if ($this->findEngine) {
+	    echo "Поиск:".CHtml::textField('GeoSearchNode').CHtml::button('Найти',array('id'=>'GeoSearchButton'));
+	    echo '<div id="GeoSearchResult"></div>';
+	} // end findEngine
+	
+	$clientScripts = Yii::app()->clientScript;
+	$clientScripts->registerScriptFile('http://openlayers.org/api/OpenLayers.js');
+	Yii::app()->getClientScript()->registerCoreScript('jquery'); 
+	
+	if (isset($this->layers['google'])) { 
+	    $clientScripts->registerScriptFile("http://maps.google.com/maps/api/js?v=3&amp;sensor=false");
+	} ?>
 <div id='<?php echo $this->id; ?>' style='width:<?php echo $this->width;?>px; height:<?php echo $this->height;?>px;'></div>
 <script>
 
@@ -101,10 +103,41 @@ class OSM extends CWidget {
   @endcode
 */
   map.setCenter([<?php echo $this->position['lon']; ?>, <?php echo $this->position['lat']; ?>],<?php echo $this->zoom; ?>);
+
+  var $geoNone = $("input#GeoSearchNode");
+  var $searchButton = $("input#GeoSearchButton");
+  var $searchresults = $("#GeoSearchResult");
   
+  $searchButton.click(function(event) {
+      if ($geoNone.val() == '') {
+	  alert("Введите название искомого объекта");
+      } else {
+	  var $node = $geoNone.val();
+	  jQuery.getJSON('http://nominatim.openstreetmap.org/search',{q:$node, format:'json'},
+	      function(data, textStatus){
+		  if (textStatus == 'success') {
+		      $searchresults.html('<h3>Результаты поиска "'+$node+'"</h3>');
+		      jQuery.each(data, function(count, item){
+			  $searchresults.append('<div id="OSM'+item.osm_id+'"/>');
+			  var osm_node = $("#OSM"+item.osm_id);
+			  if (item.icon) osm_node.append('<img src="'+item.icon+'"/>');
+			  osm_node.append(item.display_name);
+			  osm_node.append('<br/>');
+			  osm_node.append('Координаты: <span id="lon">'+item.lon +'</span>; <span id=lat>'+item.lat+'</span>');
+		      });
+		  } else {
+		      alert('Ошибка обработки запросса на стороне сервера');
+		      $searchresults.html('');
+		  }
+	      }
+	  );
+      }
+  })
   
 </script>
-<?php }
+<?php 
+
+    }
 // end of init()    
     /// @todo Здесь разместить вкладки точек пользователя и маршрута
 }
