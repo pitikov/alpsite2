@@ -36,7 +36,7 @@ class OSM extends CWidget {
     public function init()
     {   
     	if ($this->findEngine) {
-	    echo "Поиск:".CHtml::textField('GeoSearchNode').CHtml::button('Найти',array('id'=>'GeoSearchButton'));
+	    echo "Поиск:".CHtml::textField('GeoSearchNode').CHtml::button('Найти',array('id'=>'GeoSearchButton')).CHtml::button('Очистить',array('id'=>'GeoSearchCleanButton'));
 	    echo '<div id="GeoSearchResult"></div>';
 	} // end findEngine
 	
@@ -55,9 +55,15 @@ class OSM extends CWidget {
   <?php if (isset($this->layers['osm'])) { ?>
   var osm = new OpenLayers.Layer.OSM("<?php if (isset($this->layers['osm']['title'])) echo $this->layers['osm']['title']; else echo "OSM карта"; ?>");
   map.addLayer(osm);
-  <?php } ?>
-
-
+  <?php } 
+  if ($this->findEngine) {
+  ?>
+  var searchLayer = new OpenLayers.Layer.Markers("Результаты поиска",{name:'searchLayer'});
+  map.addLayer(searchLayer);
+  searchLayer.setVisibility(false);
+  <?php
+  }
+  ?>
   <?php if (isset($this->layers['google'])) { ?>
  
   var gmap = new OpenLayers.Layer.Google("<?php if (isset($this->layers['google']['title'])) echo $this->layers['google']['title']; else echo "GoogleMaps гибрид"; ?>",
@@ -118,13 +124,23 @@ class OSM extends CWidget {
 		  if (textStatus == 'success') {
 		      $searchresults.html('<h3>Результаты поиска "'+$node+'"</h3>');
 		      jQuery.each(data, function(count, item){
-			  $searchresults.append('<div id="OSM'+item.osm_id+'"/>');
+			  $searchresults.append('<div id="OSM'+item.osm_id+'" class="OsmSearchNode"/>');
 			  var osm_node = $("#OSM"+item.osm_id);
 			  if (item.icon) osm_node.append('<img src="'+item.icon+'"/>');
 			  osm_node.append(item.display_name);
 			  osm_node.append('<br/>');
 			  osm_node.append('Координаты: <span id="lon">'+item.lon +'</span>; <span id=lat>'+item.lat+'</span>');
+			  
+			  var size = new OpenLayers.Size(21,25);
+			  var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+			  var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
+			  if (item.icon) icon = new OpenLayers.icon(item.icons, size, offset);
+			  //searchLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon));
+			  searchLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon.clone()));
+    
 		      });
+		      searchLayer.setVisibility(true);
+
 		  } else {
 		      alert('Ошибка обработки запросса на стороне сервера');
 		      $searchresults.html('');
@@ -132,8 +148,12 @@ class OSM extends CWidget {
 	      }
 	  );
       }
-  })
+  });
   
+  $('input#GeoSearchCleanButton').click(function(){
+      $searchresults.html('');
+      searchLayer.setVisibility(false);
+  });
 </script>
 <?php 
 
