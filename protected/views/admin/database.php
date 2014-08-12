@@ -8,5 +8,5 @@ $this->breadcrumbs=array(
 ?>
 
 <?php 
-    $this->widget('ext.OSM.OSM', array('findEngine'=>true, 'layers'=>array('osm'=>array(),'google'=>array(), 'outdor'=>array('label'=>'Outdor карта'))));
+    $this->widget('ext.OSM.OSM', array('findEngine'=>true/*, 'layers'=>array('osm'=>array(),'google'=>array(), 'outdor'=>array('label'=>'Outdor карта'))*/));
 ?>

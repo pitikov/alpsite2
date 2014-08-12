@@ -45,7 +45,7 @@ class OSM extends CWidget {
     public $zoom=11;
     public $findEngine=true;
     public $search;
-
+    
     public function init()
     {   
 
@@ -57,8 +57,8 @@ class OSM extends CWidget {
 		    'title'=>'Поиск по карте',
 		    'autoOpen'=>false,
 		),
-	    ));
-	    echo "Поиск:".CHtml::textField('GeoSearchNode').CHtml::button('Найти',array('id'=>'GeoSearchButton')).CHtml::button('Очистить',array('id'=>'GeoSearchCleanButton'));
+	    ));	   
+	    echo "Поиск:".CHtml::textField('GeoSearchNode', $this->search).CHtml::button('Найти',array('id'=>'GeoSearchButton')).CHtml::button('Очистить',array('id'=>'GeoSearchCleanButton'));
 	    echo '<div id="GeoSearchResult"></div>';
 	    $this->endWidget('zii.widgets.jui.CJuiDialog');
 	    echo CHtml::link('Поиск по карте', '#', array('onclick'=>'$("#osmSearchDialog").dialog("open"); return false;',));
@@ -173,7 +173,7 @@ class OSM extends CWidget {
   var $geoNone = $("input#GeoSearchNode");
   var $searchButton = $("input#GeoSearchButton");
   var $searchresults = $("#GeoSearchResult");
-  
+    
   $searchButton.click(function(event) {
       if ($geoNone.val() == '') {
 	  alert("Введите название искомого объекта");
@@ -181,14 +181,15 @@ class OSM extends CWidget {
 	  var $node = $geoNone.val();
 	  searchLayer.clearMarkers();
 	  $searchresults.html('');
+	  var $viewport = map.getExtent().transform(map.projection, map.displayProjection);
 	  /// @todo Выводить индикатор поиска
-	  jQuery.getJSON('http://nominatim.openstreetmap.org/search',{q:$node, format:'json', limit:100},
+	  jQuery.getJSON('http://nominatim.openstreetmap.org/search',{q:$node, format:'json', limit:25},
 	      function(data, textStatus){
 		  /// @todo Убрать индикатор поиска
 		  if (textStatus == 'success') {
 		      $searchresults.html('<h3>Результаты поиска "'+$node+'"</h3>');
 		      jQuery.each(data, function(count, item){
-			  $searchresults.append('<div id="OSM'+item.osm_id+'" class="OsmSearchNode"/>');
+			  $searchresults.append('<div id="OSM'+item.osm_id+'" class="OsmSearchNode" osm_type="'+item.osm_type+'" osm_id = "'+item.osm_id+'" place_id="'+item.place_id+'" importance="'+item.importance+'" />');
 			  var osm_node = $("#OSM"+item.osm_id);
 			  if (item.icon) osm_node.append('<img src="'+item.icon+'"/>');
 			  else osm_node.append('<img src="http://www.openlayers.org/dev/img/marker.png"/>');
@@ -204,7 +205,7 @@ class OSM extends CWidget {
 			  
 			  var point = new OpenLayers.Geometry.Point(item.lon, item.lat);
 			  //Помним что карта отображается в одной проекции, а с данными работает в другой проекции. 
-			  point.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+			  point.transform(map.displayProjection, map.projection);
 
 			  searchLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(point.x,point.y),icon));
     
@@ -231,7 +232,7 @@ class OSM extends CWidget {
     var lat = $("#"+obj.id + "_LAT").text();
     var point = new OpenLayers.Geometry.Point(lon, lat);
     //Помним что карта отображается в одной проекции, а с данными работает в другой проекции. 
-    point.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+    point.transform(map.displayProjection, map.projection);
     map.setCenter([point.x, point.y], map.zoom);
   }
   
