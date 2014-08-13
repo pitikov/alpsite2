@@ -22,6 +22,7 @@ return array(
 		'ext.eauth.*',
 		'ext.eauth.services.*',
 		'ext.imperavi-redactor-widget.ImperaviRedactorWidget',
+		'ext.OSM.*',
 	),
 
 	'modules'=>array(
@@ -181,19 +182,19 @@ return array(
 			  'client_secret' => '...',
 			  'title' => 'Однокласники',
 		),
+	    ),
 	),
-    ),
-    // Defaults to Widgets
-    'widgetFactory' => array(
-	'widgets' => array(
-	    'ERedactorWidget' => array(
-		'options'=>array(
-		    'lang'=>'ru',
+	// Defaults to Widgets
+	'widgetFactory' => array(
+	    'widgets' => array(
+		'ERedactorWidget' => array(
+		    'options'=>array(
+			'lang'=>'ru',
 			'buttons'=>array(
-			    'formatting', '|', 'bold', 'italic', 'deleted', '|',
+			    'formatting', '|', 'bold', 'italic', 'deleted', '|',			    
 			    'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
 			    'image', 'video', 'link', '|', 'html',
-                        ),
+			),
                     ),
                 ),
             ),
