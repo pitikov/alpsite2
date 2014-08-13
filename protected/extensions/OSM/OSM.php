@@ -17,10 +17,7 @@ class OSM extends CWidget {
 	'cycleMap'=>array(
 	    'title'=>'ВелоКарта',
 	),
-	'outdor'=>array(
-	    'title'=>'Outdor карта',
-	),
-	'high'=>array(
+	'outdoor'=>array(
 	    'title'=>'OutDoors карта',
 	),
 	'google'=>array(
@@ -41,6 +38,7 @@ class OSM extends CWidget {
     );
     public $width=700;
     public $height=500;
+    /// @todo Для унификации принимать данные в utm проекции
     public $position=array('lon'=>5008810.59272, 'lat'=>7021711.41236);
     public $zoom=11;
     public $findEngine=true;
@@ -48,6 +46,12 @@ class OSM extends CWidget {
     
     public function init()
     {   
+	$clientScripts = Yii::app()->clientScript;
+	$clientScripts->registerScriptFile('http://openlayers.org/api/OpenLayers.js');
+	Yii::app()->getClientScript()->registerCoreScript('jquery'); 
+	if (isset($this->layers['google'])) { 
+	    $clientScripts->registerScriptFile("http://maps.google.com/maps/api/js?v=3&amp;sensor=false");
+	}
 
     	if ($this->findEngine) {
 	    $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
@@ -63,14 +67,8 @@ class OSM extends CWidget {
 	    $this->endWidget('zii.widgets.jui.CJuiDialog');
 	    echo CHtml::link('Поиск по карте', '#', array('onclick'=>'$("#osmSearchDialog").dialog("open"); return false;',));
 	} // end findEngine
-
-	$clientScripts = Yii::app()->clientScript;
-	$clientScripts->registerScriptFile('http://openlayers.org/api/OpenLayers.js');
-	Yii::app()->getClientScript()->registerCoreScript('jquery'); 
 	
-	if (isset($this->layers['google'])) { 
-	    $clientScripts->registerScriptFile("http://maps.google.com/maps/api/js?v=3&amp;sensor=false");
-	} ?>
+	 ?>
 	<a name='map'>
 	    <div id='<?php echo $this->id; ?>' style='width:<?php echo $this->width;?>px; height:<?php echo $this->height;?>px;'></div>
 	</a>
@@ -92,12 +90,12 @@ class OSM extends CWidget {
    "http://c.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png"]);
   map.addLayer(openCycle);
   <?php } 
-  if (isset($this->layers['outdor'])) { ?>
-  var outdor = new OpenLayers.Layer.OSM("<?php if (isset($this->layers['outdor']['title'])) echo $this->layers['outdor']['title']; else echo "OutDoors карта"; ?>",
+  if (isset($this->layers['outdoor'])) { ?>
+  var outdoor = new OpenLayers.Layer.OSM("<?php if (isset($this->layers['outdoor']['title'])) echo $this->layers['outdoor']['title']; else echo "OutDoors карта"; ?>",
       ['http://a.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png',
       'http://b.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png',
       'http://c.tile.thunderforest.com/outdoors/${z}/${x}/${y}.png']);
-  map.addLayer(outdor);
+  map.addLayer(outdoor);
   <?php } 
   if (isset($this->layers['transport'])) { ?>
   var transport = new OpenLayers.Layer.OSM("<?php if (isset($this->layers['transport']['title'])) echo $this->layers['transport']['title']; else echo "Общественный транспорт"; ?>",
@@ -158,17 +156,24 @@ class OSM extends CWidget {
   //map.addControl(new OpenLayers.Control.Attribution());
   map.addControl(new OpenLayers.Control.ArgParser());   
 
-  /** Marker example
-  @code 
-  var size = new OpenLayers.Size(21,25);
-  var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-  var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
-  markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon));
-  markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon.clone()));
-  @endcode
-*/
-
   map.setCenter([<?php echo $this->position['lon']; ?>, <?php echo $this->position['lat']; ?>],<?php echo $this->zoom; ?>);
+ 
+  var popup;
+  map.events.register('click', map, function(e){
+      if (popup) map.removePopup(popup);
+      var whatThis = map.getLonLatFromViewPortPx(e.xy);
+      var whatThis2 = whatThis.clone().transform(map.projection, map.displayProjection);
+      jQuery.getJSON('http://nominatim.openstreetmap.org/reverse',
+	  {format:'json', addressdetails:1, lat:whatThis2.lat, lon:whatThis2.lon,zoom:map.getZoom(), osm_type:'N'},
+	  function(data, textStatus){
+ 	      popup = new OpenLayers.Popup(data.osm_id, whatThis, new OpenLayers.Size(200,100), data.display_name, true);
+ 	      //popup.autoSize = true;
+ 	      popup.minSize = new OpenLayers.Size(150,30);
+ 	      popup.minSize = new OpenLayers.Size(200,300);
+ 	      popup.closeOnMove = false;
+ 	      map.addPopup(popup);
+	  });
+  });
 
   var $geoNone = $("input#GeoSearchNode");
   var $searchButton = $("input#GeoSearchButton");
@@ -182,26 +187,29 @@ class OSM extends CWidget {
 	  searchLayer.clearMarkers();
 	  $searchresults.html('');
 	  var $viewport = map.getExtent().transform(map.projection, map.displayProjection);
-	  /// @todo Выводить индикатор поиска
-	  jQuery.getJSON('http://nominatim.openstreetmap.org/search',{q:$node, format:'json', limit:25},
+	  /** @todo Выводить индикатор поиска
+	  @todo Добавить возможность тонкой настройки поиска (ограничение по классу/типу искомого объекта, а так-же поиск по видимой терретории) */
+	  jQuery.getJSON('http://nominatim.openstreetmap.org/search',{q:$node, format:'json', limit:100},
 	      function(data, textStatus){
 		  /// @todo Убрать индикатор поиска
 		  if (textStatus == 'success') {
 		      $searchresults.html('<h3>Результаты поиска "'+$node+'"</h3>');
 		      jQuery.each(data, function(count, item){
-			  $searchresults.append('<div id="OSM'+item.osm_id+'" class="OsmSearchNode" osm_type="'+item.osm_type+'" osm_id = "'+item.osm_id+'" place_id="'+item.place_id+'" importance="'+item.importance+'" />');
+			  $searchresults.append('<div id="OSM'+item.osm_id+'" class="OsmSearchNode" item_class="'+ item.class+'"item_type="'+item.type+'" osm_type="'+item.osm_type+'" osm_id = "'+item.osm_id+'" place_id="'+item.place_id+'" importance="'+item.importance+'" />');
 			  var osm_node = $("#OSM"+item.osm_id);
-			  if (item.icon) osm_node.append('<img src="'+item.icon+'"/>');
-			  else osm_node.append('<img src="http://www.openlayers.org/dev/img/marker.png"/>');
+			  /// @todo По типу/виду найденного объекта при необходимости формировать префикс
+			  /// @todo при отсутствии иконки от поисковика по типу виду найденного объекта подставить иконку из имеющихся
+			  if (!item.icon) item.icon = "http://www.openlayers.org/dev/img/marker.png";
+			  osm_node.append('<img src="'+item.icon+'"/>');
 			  var osm_id = 'OSM_POINT_'+item.osm_id;
+			  if (item.type == 'river') osm_node.append('Река ');
 			  osm_node.append(item.display_name);
 			  osm_node.append('<br/>');
 			  osm_node.append('Координаты: <a id="'+ osm_id+'" href="#map" onclick="mapToPoint(this);"><span id="'+ osm_id + '_LON">'+item.lon +'</span>; <span id="' + osm_id +'_LAT">'+item.lat+'</span></a>');
 			  
 			  var size = new OpenLayers.Size(21,25);
 			  var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-			  if (item.icon) icon = new OpenLayers.Icon(item.icon, size, offset);
-			  else var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
+			  icon = new OpenLayers.Icon(item.icon, size, offset);
 			  
 			  var point = new OpenLayers.Geometry.Point(item.lon, item.lat);
 			  //Помним что карта отображается в одной проекции, а с данными работает в другой проекции. 
@@ -235,16 +243,13 @@ class OSM extends CWidget {
     point.transform(map.displayProjection, map.projection);
     map.setCenter([point.x, point.y], map.zoom);
   }
-  
-  function searchDialog() {
-      $("#osmSearchDialog").dialog("open");
-  }
+    
 </script>
 <?php 
 
     }
 // end of init()    
-    /// @todo Здесь разместить вкладки точек пользователя и маршрута
+    
 }
 
 ?>
