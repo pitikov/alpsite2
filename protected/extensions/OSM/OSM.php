@@ -78,7 +78,7 @@ class OSM extends CWidget {
 	projection: new OpenLayers.Projection('EPSG:900913'),
         displayProjection: new OpenLayers.Projection("EPSG:4326")
   });
-  /// @todo Сделать возможным добавление слоев не по массивам а поп перечислению
+  /// @todo Сделать возможным добавление слоев не по массивам а по перечислению
 
   <?php if (isset($this->layers['osm'])) { ?>
   var osm = new OpenLayers.Layer.OSM("<?php if (isset($this->layers['osm']['title'])) echo $this->layers['osm']['title']; else echo "OSM карта"; ?>");
@@ -110,6 +110,10 @@ class OSM extends CWidget {
   var searchLayer = new OpenLayers.Layer.Markers("Результаты поиска",{name:'searchLayer'});
   map.addLayer(searchLayer);
   searchLayer.setVisibility(false);
+  var searchVectorLayer = new OpenLayers.Layer.Vector('Найденные объекты');
+  map.addLayer(searchVectorLayer);
+  searchVectorLayer.setVisibility(false);
+
   <?php
   }
   ?>
@@ -164,7 +168,13 @@ class OSM extends CWidget {
       var whatThis = map.getLonLatFromViewPortPx(e.xy);
       var whatThis2 = whatThis.clone().transform(map.projection, map.displayProjection);
       jQuery.getJSON('http://nominatim.openstreetmap.org/reverse',
-	  {format:'json', addressdetails:1, lat:whatThis2.lat, lon:whatThis2.lon,zoom:map.getZoom(), osm_type:'N'},
+	  {
+	      format:'json',
+	      addressdetails:1,
+	      lat:whatThis2.lat, 
+	      lon:whatThis2.lon,
+	      zoom:map.getZoom(),
+	  },
 	  function(data, textStatus){
  	      popup = new OpenLayers.Popup(data.osm_id, whatThis, new OpenLayers.Size(200,100), data.display_name, true);
  	      //popup.autoSize = true;
@@ -178,18 +188,30 @@ class OSM extends CWidget {
   var $geoNone = $("input#GeoSearchNode");
   var $searchButton = $("input#GeoSearchButton");
   var $searchresults = $("#GeoSearchResult");
-    
+  var jsonObj = new OpenLayers.Format.GeoJSON({
+      'internalProjection': map.projection, 
+      'externalProjection': map.displayProjection
+  });
+  
   $searchButton.click(function(event) {
       if ($geoNone.val() == '') {
 	  alert("Введите название искомого объекта");
       } else {
 	  var $node = $geoNone.val();
 	  searchLayer.clearMarkers();
+	  searchVectorLayer.removeAllFeatures();
 	  $searchresults.html('');
 	  var $viewport = map.getExtent().transform(map.projection, map.displayProjection);
 	  /** @todo Выводить индикатор поиска
 	  @todo Добавить возможность тонкой настройки поиска (ограничение по классу/типу искомого объекта, а так-же поиск по видимой терретории) */
-	  jQuery.getJSON('http://nominatim.openstreetmap.org/search',{q:$node, format:'json', limit:100},
+	  jQuery.getJSON('http://nominatim.openstreetmap.org/search',
+	      {
+		  q:$node, 
+		  format:'json', 
+		  limit:100,
+		  'accept-language':'ru',
+		  polygon_geojson:1
+	      },
 	      function(data, textStatus){
 		  /// @todo Убрать индикатор поиска
 		  if (textStatus == 'success') {
@@ -207,18 +229,23 @@ class OSM extends CWidget {
 			  osm_node.append('<br/>');
 			  osm_node.append('Координаты: <a id="'+ osm_id+'" href="#map" onclick="mapToPoint(this);"><span id="'+ osm_id + '_LON">'+item.lon +'</span>; <span id="' + osm_id +'_LAT">'+item.lat+'</span></a>');
 			  
-			  var size = new OpenLayers.Size(21,25);
-			  var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-			  icon = new OpenLayers.Icon(item.icon, size, offset);
-			  
-			  var point = new OpenLayers.Geometry.Point(item.lon, item.lat);
-			  //Помним что карта отображается в одной проекции, а с данными работает в другой проекции. 
-			  point.transform(map.displayProjection, map.projection);
-
-			  searchLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(point.x,point.y),icon));
-    
+			  //if (item.geojson.type=='Point') {
+			      var size = new OpenLayers.Size(21,25);
+			      var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+			      icon = new OpenLayers.Icon(item.icon, size, offset);
+			      
+			      var point = new OpenLayers.Geometry.Point(item.lon, item.lat);
+			      //Помним что карта отображается в одной проекции, а с данными работает в другой проекции. 
+			      point.transform(map.displayProjection, map.projection);
+			      
+			      searchLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(point.x,point.y),icon));
+			 // } else {
+			  if (item.geojson.type!='Point') {
+			      searchVectorLayer.addFeatures(jsonObj.read(item.geojson));
+			  }
 		      });
 		      searchLayer.setVisibility(true);
+		      searchVectorLayer.setVisibility(true);
 
 		  } else {
 		      alert('Ошибка обработки запросса на стороне сервера');
@@ -232,6 +259,7 @@ class OSM extends CWidget {
   $('input#GeoSearchCleanButton').click(function(){
       $searchresults.html('');
       searchLayer.setVisibility(false);
+      searchVectorLayer.setVisibility(false);
       searchLayer.clearMarkers();
   });
   
