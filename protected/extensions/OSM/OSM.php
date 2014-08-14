@@ -52,6 +52,8 @@ class OSM extends CWidget {
 	if (isset($this->layers['google'])) { 
 	    $clientScripts->registerScriptFile("http://maps.google.com/maps/api/js?v=3&amp;sensor=false");
 	}
+	
+	$processingGif = Yii::app()->assetManager->publish(Yii::getPathOfAlias('ext.OSM.assets').'/img/progress.gif');
 
     	if ($this->findEngine) {
 	    $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
@@ -200,10 +202,9 @@ class OSM extends CWidget {
 	  var $node = $geoNone.val();
 	  searchLayer.clearMarkers();
 	  searchVectorLayer.removeAllFeatures();
-	  $searchresults.html('');
+	  $searchresults.html('<img src="<?php echo $processingGif;?>">');
 	  var $viewport = map.getExtent().transform(map.projection, map.displayProjection);
-	  /** @todo Выводить индикатор поиска
-	  @todo Добавить возможность тонкой настройки поиска (ограничение по классу/типу искомого объекта, а так-же поиск по видимой терретории) */
+	  /// @todo Добавить возможность тонкой настройки поиска (ограничение по классу/типу искомого объекта, а так-же поиск по видимой терретории)
 	  jQuery.getJSON('http://nominatim.openstreetmap.org/search',
 	      {
 		  q:$node, 
@@ -213,7 +214,6 @@ class OSM extends CWidget {
 		  polygon_geojson:1
 	      },
 	      function(data, textStatus){
-		  /// @todo Убрать индикатор поиска
 		  if (textStatus == 'success') {
 		      $searchresults.html('<h3>Результаты поиска "'+$node+'"</h3>');
 		      jQuery.each(data, function(count, item){
