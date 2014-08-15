@@ -43,7 +43,7 @@ class OSM extends CWidget {
     public $zoom=11;
     public $findEngine=true;
     public $search;
-    
+      
     public function init()
     {   
 	$clientScripts = Yii::app()->clientScript;
@@ -54,6 +54,7 @@ class OSM extends CWidget {
 	}
 	
 	$processingGif = Yii::app()->assetManager->publish(Yii::getPathOfAlias('ext.OSM.assets').'/img/progress.gif');
+	$GeoSymbolsLib = Yii::app()->assetManager->publish(Yii::getPathOfAlias('ext.OSM.assets').'/symbols');
 
     	if ($this->findEngine) {
 	    $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
@@ -221,7 +222,7 @@ class OSM extends CWidget {
 			  var osm_node = $("#OSM"+item.osm_id);
 			  /// @todo По типу/виду найденного объекта при необходимости формировать префикс
 			  /// @todo при отсутствии иконки от поисковика по типу виду найденного объекта подставить иконку из имеющихся
-			  if (!item.icon) item.icon = "http://www.openlayers.org/dev/img/marker.png";
+			  if (!item.icon) item.icon = iconAutofix(item);
 			  osm_node.append('<img src="'+item.icon+'"/>');
 			  var osm_id = 'OSM_POINT_'+item.osm_id;
 			  if (item.type == 'river') osm_node.append('Река ');
@@ -272,6 +273,24 @@ class OSM extends CWidget {
     map.setCenter([point.x, point.y], map.zoom);
   }
     
+  function iconAutofix(item) {
+    if (!item.icon) {
+      if (item.class == 'tourism') {
+	  if(item.type== 'alpine_hut') return '<?php echo $GeoSymbolsLib;?>/alpinehut.p.16.png';
+      }
+      if (item.class == 'waterway') {
+	  if(item.type== 'river') return '<?php echo $GeoSymbolsLib;?>/river.png';
+      }
+      if (item.class == 'highway') {
+	  if(item.type== 'pedestrian') return '';
+	  if(item.type== 'residental') return '';
+      }
+      if (item.class == 'amenity') {
+	  if(item.type== 'shelter') return '<?php echo $GeoSymbolsLib;?>/shelter2.p.16.png';
+      }
+      return 'http://www.openlayers.org/dev/img/marker.png';
+    } else return item.icon;
+   }
 </script>
 <?php 
 
