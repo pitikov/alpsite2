@@ -144,8 +144,26 @@ class AdminController extends Controller
     }
     
     public function actionRoles()
-    {
-	$this->render('roles');
+    {	
+	$new_role=new FederationRole;
+	
+	if(isset($_POST['ajax']) && $_POST['ajax']==='federation-role-role-form')
+	{
+	    echo CActiveForm::validate($model);
+	    Yii::app()->end();
+	}
+	
+	if(isset($_POST['FederationRole']))
+	{
+	    $new_role->attributes=$_POST['FederationRole'];
+	    if($new_role->validate())
+	    {
+		// form inputs are valid, do something here
+		return;
+	    }
+	}
+	$roleProvider = new CActiveDataProvider('FederationRole');
+	$this->render('roles', array('roleProvider'=>$roleProvider, 'new_role'=>$new_role));
     }
     
     public function filters()
