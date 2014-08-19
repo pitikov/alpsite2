@@ -32,6 +32,7 @@ class FederationRole extends CActiveRecord
 			array('title, position', 'required'),
 			array('position', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>128),
+			array('title, position', 'unique'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, title, position', 'safe', 'on'=>'search'),

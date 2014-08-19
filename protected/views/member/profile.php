@@ -110,6 +110,15 @@ array_push($this->breadcrumbs, $pagename);
 	  </tbody>
 	</table>
 	<?php echo CHtml::submitButton('Сохранить'); ?>
-
+<?php if (Yii::app()->user->hasFlash('flash-profile-success')) { ?>
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('flash-profile-success'); ?>
+</div>
+<?php } ?>
+<?php if (Yii::app()->user->hasFlash('flash-profile-error')) { ?>
+<div class="flash-error">
+    <?php echo Yii::app()->user->getFlash('flash-profile-error'); ?>
+</div>
+<?php } ?>
 <?php $this->endWidget(); ?>
 </div><!-- form -->

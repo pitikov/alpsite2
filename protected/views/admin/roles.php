@@ -15,6 +15,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'title'=>'Должность',
         'autoOpen'=>false,
         'modal'=>true,
+
     ),
 ));
 ?>
@@ -47,3 +48,13 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <?php
 $this->endWidget('zii.widgets.jui.CJuiDialog');
 ?>
+<?php if (Yii::app()->user->hasFlash('flash-role-save-success')) { ?>
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('flash-role-save-success'); ?>
+</div>
+<?php } ?>
+<?php if (Yii::app()->user->hasFlash('flash-role-save-error')) { ?>
+<div class="flash-error">
+    <?php echo Yii::app()->user->getFlash('flash-role-save-error'); ?>
+</div>
+<?php } ?>

@@ -156,11 +156,10 @@ class AdminController extends Controller
 	if(isset($_POST['FederationRole']))
 	{
 	    $new_role->attributes=$_POST['FederationRole'];
-	    if($new_role->validate())
-	    {
-		$new_role->save();
-// 		// form inputs are valid, do something here
-// 		return;
+	    if($new_role->validate() && $new_role->save()) {
+		Yii::app()->user->setFlash('flash-role-save-success', 'Данные успешно сохраненны.');
+	    } else {
+		Yii::app()->user->setFlash('flash-role-save-error', 'Ошибка сохранения данных.');
 	    }
 	}
 	$roleProvider = new CActiveDataProvider('FederationRole');
