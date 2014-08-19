@@ -1,5 +1,5 @@
 <?php
-$pagename = 'Журнал восхождений';
+$pagename = 'Книга выходов';
 
 array_push($this->breadcrumbs, $pagename);
 ?>

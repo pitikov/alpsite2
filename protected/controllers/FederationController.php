@@ -14,7 +14,7 @@ class FederationController extends Controller
 	array('label'=>'О федерации', 'url'=>array($this->id.'/about')),
 	array('label'=>'Докуметы', 'url'=>array($this->id.'/documents')),
 	array('label'=>'Классификатор', 'url'=>array($this->id.'/guidebook')),
-	array('label'=>'Журнал восхождений', 'url'=>array($this->id.'/mountaring')),
+	array('label'=>'Книга выходов', 'url'=>array($this->id.'/mountaring')),
       );
       $this->defaultAction = "index";
       $this->breadcrumbs = array("Федерация Альпинизма Пензенской Области"=>array("/federation/index"));
