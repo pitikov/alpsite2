@@ -153,8 +153,8 @@ class User extends CActiveRecord
 	    if ($this->dob !='') {
 		$dob = explode('.',$this->dob);
 		if(isset($dob[2])) $this->dob = "{$dob[2]}-{$dob[1]}-{$dob[0]}";
-		else unset($this->dob);
-	    } else unset($this->dob);
+		else $this->dob = null;
+	    } else $this->dob = null;
 
 	    $ret = parent::beforeSave();
 	    return $ret;

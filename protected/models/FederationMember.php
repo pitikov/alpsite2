@@ -137,19 +137,18 @@ class FederationMember extends CActiveRecord
 	    if ($this->dob !='') {
 		$dob = explode('.',$this->dob);
 		if(isset($dob[2])) $this->dob = "{$dob[2]}-{$dob[1]}-{$dob[0]}";
-		else unset($this->dob);
-	    }else unset($this->dob);
+		else $this->dob = null;
+	    }else $this->dob = null;
 	    if ($this->memberfrom !='') {
 		$mf= explode('.',$this->memberfrom);
 		if(isset($mf[2])) $this->memberfrom = "{$mf[2]}-{$mf[1]}-{$mf[0]}";
-		else unset($this->memberfrom);
-	    }else unset($this->memberfrom);
+		else $this->memberfrom = null;
+	    }else $this->memberfrom = null;
 	    if ($this->memberto!='') {
 		$mt = explode('.',$this->memberto);
 		if(isset($mt[2])) $this->memberto = "{$mt[2]}-{$mt[1]}-{$mt[0]}";
-		else unset($this->memberto);
-	    } else unset($this->memberto);
-	    //die(print_r($this));
+		else $this->memberto = null;
+	    } else $this->memberto = null;
 	    $ret = parent::beforeSave();
 	    return $ret;
 	}
