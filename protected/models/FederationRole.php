@@ -56,9 +56,9 @@ class FederationRole extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
+			'id' => '№',
 			'title' => 'Должность',
-			'position' => 'Position on top',
+			'position' => 'порядок',
 		);
 	}
 
@@ -99,4 +99,25 @@ class FederationRole extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+	
+	
+	
+	protected function beforeValidate()
+	{
+	    if ($this->isNewRecord) {
+		$maxValue = $this->model()->find(array(
+		    'select'=>'position',
+		    'order'=>'position desc',
+		));
+		if (isset($maxValue)) {
+		    $this->position = $maxValue->position+1;
+		} else {
+		    $this->position = 1;
+		}		
+	    }
+	    $ret = parent::beforeValidate();
+	    return $ret;
+	}
+	
+	
 }

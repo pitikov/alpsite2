@@ -158,8 +158,9 @@ class AdminController extends Controller
 	    $new_role->attributes=$_POST['FederationRole'];
 	    if($new_role->validate())
 	    {
-		// form inputs are valid, do something here
-		return;
+		$new_role->save();
+// 		// form inputs are valid, do something here
+// 		return;
 	    }
 	}
 	$roleProvider = new CActiveDataProvider('FederationRole');
