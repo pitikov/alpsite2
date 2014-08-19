@@ -152,9 +152,9 @@ class MemberController extends Controller
 		if($model->validate())
 		{
 		    if ($model->save()) {
-			Yii::app()->user->setFlash('profile-success','Данные профиля сохраненны.');
+			Yii::app()->user->setFlash('flash-profile-success','Данные профиля сохраненны.');
 		    } else {
-		    	Yii::app()->user->setFlash('profile-error','Ошибка сохранения профиля.');
+		    	Yii::app()->user->setFlash('flash-profile-error','Ошибка сохранения профиля.');
 		    }
 		}
 	    
@@ -320,6 +320,12 @@ class MemberController extends Controller
 	{
 	    //$model=new FederationMember;
 	    $model = FederationMember::model()->find('user=:User', array(':User'=>Yii::app()->user->getId()));
+	    $roles = FederationRole::model()->findAll();
+	    $roleList = array();
+	    foreach($roles as $role) {
+		$roleList[$role->id]=$role->title;
+	    }
+	    
 	    
 	    if(isset($_POST['ajax']) && $_POST['ajax']==='federation-member-federationprofile-form')
 	    {
@@ -334,13 +340,13 @@ class MemberController extends Controller
 		if($model->validate())
 		{
 		    if ($model->save()) {
-			Yii::app()->user->setFlash('federation-profile-success','Данные профиля сохраненны.');
+			Yii::app()->user->setFlash('flash-federation-profile-success','Данные профиля сохраненны.');
 		    } else {
-		    	Yii::app()->user->setFlash('federation-profile-error','Ошибка сохранения профиля.');
+		    	Yii::app()->user->setFlash('flash-federation-profile-error','Ошибка сохранения профиля.');
 		    }
 		}
 	    }
-	    $this->render('federationprofile',array('model'=>$model));
+	    $this->render('federationprofile',array('model'=>$model, 'roles'=>$roleList));
 	}
 
 	public function filters()

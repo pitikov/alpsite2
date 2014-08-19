@@ -57,7 +57,7 @@ class FederationRole extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'title' => 'title of role',
+			'title' => 'Должность',
 			'position' => 'Position on top',
 		);
 	}

@@ -44,7 +44,7 @@ array_push($this->breadcrumbs, $pagename);
 	<?php echo $form->labelEx($model,'role'); ?>
       </td>
       <td>
-	<?php echo $form->textField($model,'role'); ?>
+	<?php echo $form->dropDownList($model,'role', $roles); ?>
 	<?php echo $form->error($model,'role'); ?>
       </td>
     </tr>
@@ -146,7 +146,16 @@ array_push($this->breadcrumbs, $pagename);
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Сохранить'); ?>
 	</div>
-
+<?php if (Yii::app()->user->hasFlash('flash-federation-profile-success')) { ?>
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('flash-federation-profile-success'); ?>
+</div>
+<?php } ?>
+<?php if (Yii::app()->user->hasFlash('flash-federation-profile-error')) { ?>
+<div class="flash-error">
+    <?php echo Yii::app()->user->getFlash('flash-federation-profile-error'); ?>
+</div>
+<?php } ?>
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->
