@@ -26,6 +26,7 @@
  */
 class User extends CActiveRecord
 {
+	public $regdate;
 	
 	/**
 	 * @return string the associated database table name
@@ -89,7 +90,8 @@ class User extends CActiveRecord
 			'name' => 'Имя пользователя',
 			'email' => 'E-Mail',
 			'dob' => 'Дата рождения',
-			'regdata' => 'Дата регистрации',
+// 			'regdata' => 'Дата регистрации',
+			'regdate' => 'Дата регистрации',
 			'sign' => 'Подпись',
 			'role' => 'Роль пользователя',
 			'avatar' => 'Аватар пользователя',
@@ -131,13 +133,29 @@ class User extends CActiveRecord
 	}
 
 	
+	protected function afterFind()
+	{
+	    $this->toView();
+	    parent::afterFind();
+	}
+	
+	
 	protected function beforeSave()
 	{
-	    if (count(User::model()->findAll()) === 0) {
-		$this->role= crypt($this->login);
-	    } else {
-		$this->role= crypt($this->regdata);
+	    if ($this->isNewRecord) {
+		if (count(User::model()->findAll()) === 0) {
+		    $this->role= crypt($this->login);
+		} else {
+		    $this->role= crypt($this->regdata);
+		}
 	    }
+	    
+	    if ($this->dob !='') {
+		$dob = explode('.',$this->dob);
+		if(isset($dob[2])) $this->dob = "{$dob[2]}-{$dob[1]}-{$dob[0]}";
+		else unset($this->dob);
+	    } else unset($this->dob);
+
 	    $ret = parent::beforeSave();
 	    return $ret;
 	}
@@ -170,4 +188,23 @@ class User extends CActiveRecord
 	{
 	    return ($this->role === crypt($this->login, $this->role));
 	}
+	
+	protected function toView()
+	{
+	    if ($this->dob !='') {
+		$dob = explode('-',$this->dob);
+		if(isset($dob[2])) $this->dob = "{$dob[2]}.{$dob[1]}.{$dob[0]}";
+	    }
+	    $regdate = explode(" ", $this->regdata);
+	    $date = explode('-', $regdate[0]);
+	    $this->regdate = "{$date[2]}.{$date[1]}.{$date[0]} в {$regdate[1]}";
+	}
+	
+	
+	protected function afterSave()
+	{
+	    $this->toView();
+	    parent::afterSave();
+	}
+	
 }

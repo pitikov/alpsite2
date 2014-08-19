@@ -122,4 +122,58 @@ class FederationMember extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+	
+	
+	protected function afterFind()
+	{
+	    $this->toView();  
+	    
+	    parent::afterFind();
+	}
+	
+	
+	protected function beforeSave()
+	{
+	    if ($this->dob !='') {
+		$dob = explode('.',$this->dob);
+		if(isset($dob[2])) $this->dob = "{$dob[2]}-{$dob[1]}-{$dob[0]}";
+		else unset($this->dob);
+	    }else unset($this->dob);
+	    if ($this->memberfrom !='') {
+		$mf= explode('.',$this->memberfrom);
+		if(isset($mf[2])) $this->memberfrom = "{$mf[2]}-{$mf[1]}-{$mf[0]}";
+		else unset($this->memberfrom);
+	    }else unset($this->memberfrom);
+	    if ($this->memberto!='') {
+		$mt = explode('.',$this->memberto);
+		if(isset($mt[2])) $this->memberto = "{$mt[2]}-{$mt[1]}-{$mt[0]}";
+		else unset($this->memberto);
+	    } else unset($this->memberto);
+	    //die(print_r($this));
+	    $ret = parent::beforeSave();
+	    return $ret;
+	}
+	
+	
+	protected function afterSave()
+	{
+	  parent::afterSave();
+	  $this->toView();
+	}
+	
+	protected function toView()
+	{
+	    if ($this->dob !='') {
+		$dob = explode('-',$this->dob);
+		if(isset($dob[2])) $this->dob = "{$dob[2]}.{$dob[1]}.{$dob[0]}";
+	    }
+	    if ($this->memberfrom !='') {
+		$mf= explode('-',$this->memberfrom);
+		if(isset($mf[2])) $this->memberfrom = "{$mf[2]}.{$mf[1]}.{$mf[0]}";
+	    }
+	    if ($this->memberto!='') {
+		$mt = explode('-',$this->memberto);
+		if(isset($mt[2])) $this->memberto = "{$mt[2]}.{$mt[1]}.{$mt[0]}";
+	    }
+	}
 }

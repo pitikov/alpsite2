@@ -35,11 +35,11 @@ array_push($this->breadcrumbs, $pagename);
 	  </tr>
 	  <tr>
 	    <td>
-		<?php echo $form->labelEx($model,'regdata'); ?>
+		<?php echo $form->labelEx($model,'regdate'); ?>
 		<?php //echo $form->textLabel($model,'regdata'); ?>
 	    </td><td>
-		<?php echo $model->regdata; ?>
-		<?php echo $form->error($model,'regdata'); ?>
+		<?php echo $model->regdate; ?>
+		<?php echo $form->error($model,'regdate'); ?>
 	    </td>
 	  </tr>
 	  <tr>

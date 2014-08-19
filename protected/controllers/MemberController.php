@@ -151,8 +151,11 @@ class MemberController extends Controller
 		$model->attributes=$_POST['User'];
 		if($model->validate())
 		{
-		    // form inputs are valid, do something here
-		    return;
+		    if ($model->save()) {
+			Yii::app()->user->setFlash('profile-success','Данные профиля сохраненны.');
+		    } else {
+		    	Yii::app()->user->setFlash('profile-error','Ошибка сохранения профиля.');
+		    }
 		}
 	    
 	    }
@@ -330,8 +333,11 @@ class MemberController extends Controller
 		$model->attributes=$_POST['FederationMember'];
 		if($model->validate())
 		{
-		    // form inputs are valid, do something here
-		    return;
+		    if ($model->save()) {
+			Yii::app()->user->setFlash('federation-profile-success','Данные профиля сохраненны.');
+		    } else {
+		    	Yii::app()->user->setFlash('federation-profile-error','Ошибка сохранения профиля.');
+		    }
 		}
 	    }
 	    $this->render('federationprofile',array('model'=>$model));
@@ -374,6 +380,5 @@ class MemberController extends Controller
 		    'roles'=>array('guest'),
 		),
 	    );
-	}
-	
+	}	
 }
