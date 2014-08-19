@@ -70,7 +70,6 @@ class MemberController extends Controller
 	    
 		$model=new LoginForm;
 
-		// if it is ajax validation request
 		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
 		{
 			echo CActiveForm::validate($model);
@@ -318,10 +317,9 @@ class MemberController extends Controller
 	
 	public function actionFederationprofile()
 	{
-	    //$model=new FederationMember;
 	    $model = FederationMember::model()->find('user=:User', array(':User'=>Yii::app()->user->getId()));
 	    $roles = FederationRole::model()->findAll();
-	    $roleList = array();
+	    $roleList = array(null=>'-- выберите занимаюмую должность --');
 	    foreach($roles as $role) {
 		$roleList[$role->id]=$role->title;
 	    }
