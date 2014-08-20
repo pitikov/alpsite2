@@ -10,7 +10,8 @@ $fromprofile = 'Взять из профиля';
 <div class="form">
 <script>
 function profileFoto() {
-  $('#FederationMember_photo').val('<?php echo Yii::app()->user->model()->avatar;?>');
+  $('input#FederationMember_photo').val('<?php echo Yii::app()->user->model()->avatar;?>');
+  $('img#FederationMember_photo').attr('src','<?php echo Yii::app()->user->model()->avatar;?>');
 };
 function profileName() {
   $('#FederationMember_name').val('<?php echo Yii::app()->user->model()->name;?>');
@@ -36,8 +37,9 @@ function profileDob() {
 	<?php echo $form->labelEx($model,'photo'); ?>
       </td>
       <td>
-	<?php echo $form->textField($model,'photo').
-	CHtml::link(CHtml::image('/images/getfromprofile.png',$fromprofile, array('title'=>$fromprofile)), '#', array('onclick'=>'profileFoto();')); ?>
+	<?php echo CHtml::link(CHtml::image($model->photo, 'Фото', array('title'=>'Щелкните мышью для изменения', 'id'=>'FederationMember_photo')), '#', array('onclick'=>'loadavatar()')); ?>
+	<?php echo $form->hiddenField($model, 'photo');
+	echo CHtml::link(CHtml::image('/images/getfromprofile.png',$fromprofile, array('title'=>$fromprofile)), '#', array('onclick'=>'profileFoto();')); ?>
 	<?php echo $form->error($model,'photo'); ?>
       </td>
     </tr>

@@ -158,7 +158,15 @@ class MemberController extends Controller
 		}
 	    
 	    }
-	    $this->render('profile',array('model'=>$model));
+	    
+	    $avatar=new Document;
+	    if(isset($_POST['Document'])){
+		$avatar->attributes=$_POST['Document'];
+		$avatar->document=CUploadedFile::getInstance($avatar,'document');
+		    /// @todo Сохранять в заданную папку под "своим" именем, после чего фиксим и сохраняем модель
+		    $avatar->document->saveAs('/upload/avatar.png');
+	    }
+	    $this->render('profile',array('model'=>$model, 'avatar'=>$avatar));
 	}
 	
 	public function actionPeaklist()

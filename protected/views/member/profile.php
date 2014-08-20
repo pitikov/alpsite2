@@ -55,7 +55,8 @@ array_push($this->breadcrumbs, $pagename);
 	    <td>
 		<?php echo $form->labelEx($model,'avatar'); ?>
 	    </td><td>
-		<?php echo $form->textField($model,'avatar'); ?>
+		<?php echo CHtml::link(CHtml::image($model->avatar, 'Фото', array('title'=>'Щелкните мышью для изменения')), '#', array('onclick'=>'$("#avatarDialog").dialog("open"); return false;')); ?>
+		<?php echo $form->hiddenField($model, 'avatar'); ?>
 		<?php echo $form->error($model,'avatar'); ?>
 	    </td>
 	  </tr>
@@ -122,3 +123,28 @@ array_push($this->breadcrumbs, $pagename);
 <?php } ?>
 <?php $this->endWidget(); ?>
 </div><!-- form -->
+<?php
+$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+    'id'=>'avatarDialog',
+    // additional javascript options for the dialog plugin
+    'options'=>array(
+        'title'=>'Загрузка аватарки',
+        'autoOpen'=>false,
+        'modal'=>true,
+        'buttons'=>array(
+	    'Загрузить'=>'js:function(){$("#avatarDialog").dialog("close"); $("#formAvatarUpload").submit();}',
+        ),
+    ),
+));
+?>
+<?php echo CHtml::form('','post',array('enctype'=>'multipart/form-data', 'id'=>'formAvatarUpload')); ?>
+<?php echo CHtml::activeFileField($avatar, 'document'); ?>
+<?php echo CHtml::endForm(); ?>
+<?php $this->endWidget('avatarDialog');?>
+
+<script>
+function setAvatar(){
+    $('#avatarDialog').dialog("close");
+}
+</script>
+
