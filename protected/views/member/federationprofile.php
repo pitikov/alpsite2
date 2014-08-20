@@ -4,10 +4,21 @@
 /* @var $form CActiveForm */
 $pagename = "Членство в ФАПО";
 array_push($this->breadcrumbs, $pagename);
+$fromprofile = 'Взять из профиля';
 ?>
 <h1><?php echo $pagename; ?></h1>
 <div class="form">
-
+<script>
+function profileFoto() {
+  $('#FederationMember_photo').val('<?php echo Yii::app()->user->model()->avatar;?>');
+};
+function profileName() {
+  $('#FederationMember_name').val('<?php echo Yii::app()->user->model()->name;?>');
+};
+function profileDob() {
+  $('#DateOfBethday').val('<?php echo Yii::app()->user->model()->dob;?>');
+};
+</script>
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'federation-member-federationprofile-form',
 	// Please note: When you enable ajax validation, make sure the corresponding
@@ -25,7 +36,8 @@ array_push($this->breadcrumbs, $pagename);
 	<?php echo $form->labelEx($model,'photo'); ?>
       </td>
       <td>
-	<?php echo $form->textField($model,'photo'); ?>
+	<?php echo $form->textField($model,'photo').
+	CHtml::link(CHtml::image('/images/getfromprofile.png',$fromprofile, array('title'=>$fromprofile)), '#', array('onclick'=>'profileFoto();')); ?>
 	<?php echo $form->error($model,'photo'); ?>
       </td>
     </tr>
@@ -35,7 +47,8 @@ array_push($this->breadcrumbs, $pagename);
 	<?php echo $form->labelEx($model,'name'); ?>
       </td>
       <td>
-	<?php echo $form->textField($model,'name'); ?>
+	<?php echo $form->textField($model,'name').
+	CHtml::link(CHtml::image('/images/getfromprofile.png',$fromprofile, array('title'=>$fromprofile)), '#', array('onclick'=>'profileName();')); ?>
 	<?php echo $form->error($model,'name'); ?>
       </td>
     </tr>
@@ -66,7 +79,8 @@ array_push($this->breadcrumbs, $pagename);
 					  'style'=>'height:20px;'
 				      ),
 				      'language'=>'ru',
-	)); ?>
+	));
+	echo CHtml::link(CHtml::image('/images/getfromprofile.png',$fromprofile, array('title'=>$fromprofile)), '#', array('onclick'=>'profileDob();')); ?>
 	<?php echo $form->error($model,'dob'); ?>
       </td>
     </tr>
