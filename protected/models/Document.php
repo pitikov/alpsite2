@@ -7,12 +7,12 @@
  * @property string $document
  * @property integer $owner
  * @property string $description
+ * @property integer $private
  * @property string $type
  * @property string $file_name
- * @property integer $show_in_list
  *
  * The followings are the available model relations:
- * @property User $documentOowner
+ * @property User $documentOwner
  */
 class Document extends CActiveRecord
 {
@@ -39,13 +39,14 @@ class Document extends CActiveRecord
 	// will receive user inputs.
 	
 	return array(
-	    array('document, owner, description', 'required'),
-	    array('owner, show_in_list', 'numerical', 'integerOnly'=>true),
+	    array('document, owner, description, private', 'required'),
+	    array('private', 'boolean'),
+	    array('owner', 'numerical', 'integerOnly'=>true),
 	    array('document, file_name', 'length', 'max'=>128),
 	    array('type', 'length', 'max'=>3),
 	    // The following rule is used by search().
 	    // @todo Please remove those attributes that should not be searched.
-	    array('document, owner, description, type, file_name, show_in_list', 'safe', 'on'=>'search'),
+	    array('document, owner, description, type, file_name, private', 'safe', 'on'=>'search'),
 	);
     }
     
@@ -56,7 +57,7 @@ class Document extends CActiveRecord
     {
 	// NOTE: you may need to adjust the relation name and the related
 	// class name for the relations automatically generated below.
-	return array('documentOowner' => array(self::BELONGS_TO, 'User', 'owner'),);
+	return array('documentOwner' => array(self::BELONGS_TO, 'User', 'owner'),);
     }
     
     /**
@@ -68,9 +69,9 @@ class Document extends CActiveRecord
 	  'document' => 'документ в ФС сайта',
 	  'owner' => 'владелец',
 	  'description' => 'описание',
+	  'private' => 'личный',
 	  'type' => 'тип',
 	  'file_name' => 'файл',
-	  'show_in_list' => 'показать в списке',
 	);
     }
 
@@ -97,7 +98,7 @@ class Document extends CActiveRecord
 	$criteria->compare('description',$this->description,true);
 	$criteria->compare('type',$this->type,true);
 	$criteria->compare('file_name',$this->file_name,true);
-	$criteria->compare('show_in_list',$this->show_in_list);
+	$criteria->compare('private',$this->private));
 	
 	return new CActiveDataProvider($this, array(
 	    'criteria'=>$criteria,

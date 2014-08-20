@@ -213,8 +213,8 @@ create table `document` (
   `document` varchar(128) not null unique primary key comment 'document name in server FS',
   `owner` integer not null,
   `description` text not null,
+  `private` boolean default true,
   `type` enum ('jpg', 'png', 'pdf', 'doc', 'xls') default 'pdf',
   `file_name` varchar(128) comment 'original file name',
-  `show_in_list` boolean default false comment 'show document in federation documents list',
   constraint `fk_document_owner` foreign key (`owner`) references `user` (`uid`) on update cascade on delete restrict  
 ) engine = 'InnoDb';
