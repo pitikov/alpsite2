@@ -44,7 +44,15 @@ class GridButtonGroup extends CGridColumn {
 	  $ajaxProps = array(
 		  'type'=>'POST',
 		  'dataType'=>'json',
-		  'complete' => 'function() {$.fn.yiiGridView.update("'.$this->GridId.'")}',
+		  'complete' => 'function(data, status) {
+		      $.fn.yiiGridView.update("'.$this->GridId.'"); 
+		      if(status=="error") {
+			  alert(\'Ошибка выполнения операции.\');
+		      }
+		      if (status==\'parsererror\') {
+			  alert(\'Ошибка парсинга параметров\');
+		      }
+		  }',
 		  /// @bug При данном методе обновления не обновляются скрипты, навешенные Yii (наверное CGridView-ом) на ajaxLink -и
 	  );
 	  if (isset($button['confirm']) and ($button['confirm']!=null)) $ajaxProps['beforeSend'] = "function() {return confirm('{$button['confirm']}')}";

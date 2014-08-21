@@ -168,7 +168,9 @@ class AdminController extends Controller
     
     public function actionRoleDelete($id)
     {
-	FederationRole::model()->deleteByPk($id);
+	if (Yii::app()->request->isAjaxRequest)
+	 $delResult = FederationRole::model()->deleteByPk($id);
+	 echo json_encode($delResult==1?array('result'=>true, 'text'=>'Данные успешно удалены.'):array('result'=>false, 'text'=>'Ошибка удаления данных'));
     }
     
     public function actionRoleAdd($role) {
