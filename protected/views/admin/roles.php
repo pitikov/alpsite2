@@ -4,10 +4,60 @@
 ?>
 <h1><?php echo $pagename; ?></h1>
 <?php
+
 $this->widget('zii.widgets.grid.CGridView', array(
     'dataProvider'=>$roleProvider,
+    'columns'=>array(
+	array(
+	    'header'=>'№',
+	    'value'=>'$row+1',
+	),
+        array(
+	    'name'=>'title'
+        ),
+        array(
+            'class'=>'GridButtonGroup',
+            'buttons' => array(
+		'up'=>array(
+		  'label'=>'Поднять',
+		  'img'=>'/images/up.png',
+		  'url'=>'#',
+		  'confirm'=>null,
+		  'attribute'=>'position'
+		),
+		'down'=>array(
+		  'label'=>'Опустить',
+		  'img'=>'/images/down.png',
+		  'url'=>'#',
+		  'confirm'=>null,
+		  'attribute'=>'position',
+		),
+		'delete'=>array(
+		  'label'=>'Удалить',
+		  'img'=>'/images/delete.png',
+		  'confirm'=>'Удалить запись?',
+		  'action'=>'admin/roleDelete',
+		  'id'=>'id',
+		),
+	    ),
+	    'GridId'=>'RoleTable',
+        ),
+    ),
+    'id'=>'RoleTable',
+    'emptyText'=>"В настоящее время записи в таблице должностей отсутствуют."
 ));
 echo CHtml::link('Создать', "#",array('onclick'=>'$("#FederationRole_title").val(""); $("#RoleAddDialog").dialog("open"); return false;'));
+/*echo CHtml::ajaxLink(
+		      CHtml::image('/images/new.png'),
+		      $this->createAbsoluteUrl('admin/roleAdd', array('role'=>'Тестирование')), 
+		      array(
+			  'type'=>'POST',
+			  'dataType'=>'json',
+			  'complete' => 'function() {$.fn.yiiGridView.update("RoleTable")}',
+		      ),
+		      array(		          
+		      ));*/
+
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'id'=>'RoleAddDialog',
     // additional javascript options for the dialog plugin

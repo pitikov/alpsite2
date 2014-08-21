@@ -166,6 +166,25 @@ class AdminController extends Controller
 	$this->render('roles', array('roleProvider'=>$roleProvider, 'new_role'=>$new_role));
     }
     
+    public function actionRoleDelete($id)
+    {
+	FederationRole::model()->deleteByPk($id);
+    }
+    
+    public function actionRoleAdd($role) {
+	$new_role = new FederationRole();
+	$new_role->title = $role;
+	$new_role->save();
+    }
+    
+    public function actionRoleUp($id, $attribute) {
+	
+    }
+
+    public function actionRoleDown($id, $attribute) {
+	
+    }
+
     public function filters()
     {
         return array(
@@ -186,6 +205,10 @@ class AdminController extends Controller
 		    'about',
 		    'users',
 		    'roles',
+		    'roleAdd',
+		    'roleUp',
+		    'roleDown',
+		    'roleDelete',
 		    'federationmembers',
 		    'documents',
 		    'mountaring',
@@ -203,6 +226,10 @@ class AdminController extends Controller
 		    'about',
 		    'users',
 		    'roles',
+    		    'roleAdd',
+		    'roleUp',
+		    'roleDown',
+		    'roleDelete',
 		    'federationmembers',
 		    'documents',
 		    'mountaring',
