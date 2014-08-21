@@ -7,7 +7,7 @@
 $this->widget('zii.widgets.grid.CGridView', array(
     'dataProvider'=>$roleProvider,
 ));
-echo CHtml::link('Создать', "#",array('onclick'=>'$("#RoleAddDialog").dialog("open"); return false;'));
+echo CHtml::link('Создать', "#",array('onclick'=>'$("#FederationRole_title").val(""); $("#RoleAddDialog").dialog("open"); return false;'));
 $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'id'=>'RoleAddDialog',
     // additional javascript options for the dialog plugin
