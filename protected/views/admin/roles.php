@@ -15,7 +15,10 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'title'=>'Должность',
         'autoOpen'=>false,
         'modal'=>true,
-
+        'buttons'=>array(
+            'Создать'=>'js:function(){$("#federation-role-role-form").submit(); }',
+            'Отменить'=>'js:function(){$("#RoleAddDialog").dialog("close");}',
+        ),
     ),
 ));
 ?>
@@ -36,10 +39,6 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         <?php echo $form->label($new_role,'title'); ?>
         <?php echo $form->textField($new_role,'title'); ?>
         <?php echo $form->error($new_role,'title'); ?>
-    </div>
-
-    <div class="row buttons">
-        <?php echo CHtml::submitButton('Добавить'); ?>
     </div>
 
 <?php $this->endWidget(); ?>
