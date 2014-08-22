@@ -136,7 +136,7 @@ class User extends CActiveRecord
 	protected function afterFind()
 	{
 	    $this->toView();
-	    if ($this->avatar === null) {
+	    if (($this->avatar === null) or ($this->avatar==='')){
 		$this->avatar = '/images/noavatar.png';
 	    }
 	    parent::afterFind();

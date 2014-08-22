@@ -55,7 +55,7 @@ array_push($this->breadcrumbs, $pagename);
 	    <td>
 		<?php echo $form->labelEx($model,'avatar'); ?>
 	    </td><td>
-		<?php echo CHtml::link(CHtml::image($model->avatar, 'Фото', array('title'=>'Щелкните мышью для изменения')), '#', array('onclick'=>'$("#avatarDialog").dialog("open"); return false;')); ?>
+		<?php echo CHtml::link(CHtml::image($model->avatar, 'Фото', array('title'=>'Щелкните мышью для изменения')), '#', array('onclick'=>'$("#avatarDialog").dialog("open"); return false;', 'id'=>'User_avatar')); ?>
 		<?php echo $form->hiddenField($model, 'avatar'); ?>
 		<?php echo $form->error($model,'avatar'); ?>
 	    </td>
@@ -132,7 +132,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'autoOpen'=>false,
         'modal'=>true,
         'buttons'=>array(
-	    'Загрузить'=>'js:function(){$("#avatarDialog").dialog("close"); $("#formAvatarUpload").submit();}',
+	    'Загрузить'=>'js:function(){ $("#formAvatarUpload").submit();}',
         ),
     ),
 ));
@@ -141,10 +141,3 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 <?php echo CHtml::activeFileField($avatar, 'document'); ?>
 <?php echo CHtml::endForm(); ?>
 <?php $this->endWidget('avatarDialog');?>
-
-<script>
-function setAvatar(){
-    $('#avatarDialog').dialog("close");
-}
-</script>
-
