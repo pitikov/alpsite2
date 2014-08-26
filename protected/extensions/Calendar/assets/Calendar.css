@@ -1,0 +1,18 @@
+tr.env {
+  background-color:#FFE5E2;
+}
+tr.nenv {
+  background-color:#D9FFFA;
+}
+tr.nenv td, tr.env td {
+  height:50px;
+  width:14%;
+}
+
+td.day_of_cal, table.Calendar thead tr th{
+  border: 1px solid gray;
+}
+
+table.Calendar caption {
+  text-align:center;
+}
