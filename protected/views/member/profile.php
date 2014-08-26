@@ -132,19 +132,27 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'autoOpen'=>false,
         'modal'=>true,
         'buttons'=>array(
-	    'Загрузить'=>'js:function(){$("#avatarDialog").dialog("close"); $("#formAvatarUpload").submit();}',
+	    'Загрузить'=>'js:function(){setAvatar();}',
         ),
     ),
 ));
-?>
-<?php echo CHtml::form('','post',array('enctype'=>'multipart/form-data', 'id'=>'formAvatarUpload')); ?>
-<?php echo CHtml::activeFileField($avatar, 'document'); ?>
-<?php echo CHtml::endForm(); ?>
-<?php $this->endWidget('avatarDialog');?>
+
+echo CHtml::form('','post',array('enctype'=>'multipart/form-data', 'id'=>'formAvatarUpload'));
+echo CHtml::fileField('avatar_file', 'document');
+echo CHtml::endForm();
+$this->endWidget('avatarDialog');?>
 
 <script>
 function setAvatar(){
-    $('#avatarDialog').dialog("close");
-}
+      jQuery.ajax(
+	  {
+	      url:'/index.php/upload/upload?type=avatar,&document='+$('#avatar_file').val(),
+	      dataType:'json',
+	      enctype:'multipart/form-data'
+	      
+	  });    
+	  $('#avatarDialog').dialog("close");
+};
+
 </script>
 
