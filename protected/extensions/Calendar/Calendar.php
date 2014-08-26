@@ -27,6 +27,7 @@ class Calendar extends CWidget {
 	$this->caption = "{$this->caption} \"{$this->title}\"";
       }
     }
+    $this->html_tag('div', array('id'=>$this->id, 'class'=>'CalendarWidget'));
     $this->html_tag('table', array('id'=>$this->id, 'class'=>'Calendar'));
     $this->html_tag('caption', array('class'=>'Calendar'));
     $this->html_tag('h3');
