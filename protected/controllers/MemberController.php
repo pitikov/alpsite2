@@ -159,7 +159,22 @@ class MemberController extends Controller
 	    
 	    }
 	    
-	    $this->render('profile',array('model'=>$model,));
+	    $avatar=new Document;
+	    if(isset($_POST['Document'])){
+		$avatar->attributes=$_POST['Document'];
+		$file=CUploadedFile::getInstance($avatar,'document');
+		    /// @todo Сохранять в заданную папку под "своим" именем, после чего фиксим и сохраняем модель
+		    $url = '/upload/avatars/profile/'.md5(Yii::app()->user->model()->login).'.'.$file->getExtensionName();
+		    $target = dirname(Yii::app()->basePath).$url;
+		    if ($file->saveAs($target)) {
+			Yii::app()->user->setFlash('flash-profile-success','Аватарка загруженна.');
+			$this->script('$("#avatarDialog").dialog("close");$("input#User_avatar").val("'.Yii::app()->createAbsoluteUrl("/").$url.'");$("img#User_avatar").prop("src", "'.Yii::app()->createAbsoluteUrl("/").$url.'")');
+			$model->avatar=$target;
+			$model->save();
+		    } else Yii::app()->user->setFlash('flash-profile-error','Ошибка загрузки аватарки.');
+
+	    }
+	    $this->render('profile',array('model'=>$model, 'avatar'=>$avatar));
 	}
 	
 	public function actionPeaklist()
@@ -386,4 +401,8 @@ class MemberController extends Controller
 		),
 	    );
 	}	
+	
+	private function script($body) {
+	    echo "<script>$body</script>";	    
+	}
 }

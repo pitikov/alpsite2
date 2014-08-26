@@ -127,7 +127,7 @@ class FederationMember extends CActiveRecord
 	protected function afterFind()
 	{
 	    $this->toView();  
-	    if ($this->photo === null) {
+	    if (($this->photo === null) or ($this->photo==='')) {
 		$this->photo = '/images/noavatar.png';
 	    }
 	    parent::afterFind();

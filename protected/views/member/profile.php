@@ -55,7 +55,7 @@ array_push($this->breadcrumbs, $pagename);
 	    <td>
 		<?php echo $form->labelEx($model,'avatar'); ?>
 	    </td><td>
-		<?php echo CHtml::link(CHtml::image($model->avatar, 'Фото', array('title'=>'Щелкните мышью для изменения')), '#', array('onclick'=>'$("#avatarDialog").dialog("open"); return false;')); ?>
+		<?php echo CHtml::link(CHtml::image($model->avatar, 'Фото', array('title'=>'Щелкните мышью для изменения')), '#', array('onclick'=>'$("#avatarDialog").dialog("open"); return false;', 'id'=>'User_avatar')); ?>
 		<?php echo $form->hiddenField($model, 'avatar'); ?>
 		<?php echo $form->error($model,'avatar'); ?>
 	    </td>
@@ -132,27 +132,13 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         'autoOpen'=>false,
         'modal'=>true,
         'buttons'=>array(
-	    'Загрузить'=>'js:function(){setAvatar();}',
+	    'Загрузить'=>'js:function(){ $("#formAvatarUpload").submit();}',
         ),
     ),
 ));
-
-echo CHtml::form('','post',array('enctype'=>'multipart/form-data', 'id'=>'formAvatarUpload'));
-echo CHtml::fileField('avatar_file', 'document');
-echo CHtml::endForm();
-$this->endWidget('avatarDialog');?>
-
-<script>
-function setAvatar(){
-      jQuery.ajax(
-	  {
-	      url:'/index.php/upload/upload?type=avatar,&document='+$('#avatar_file').val(),
-	      dataType:'json',
-	      enctype:'multipart/form-data'
-	      
-	  });    
-	  $('#avatarDialog').dialog("close");
-};
-
-</script>
+?>
+<?php echo CHtml::form('','post',array('enctype'=>'multipart/form-data', 'id'=>'formAvatarUpload')); ?>
+<?php echo CHtml::activeFileField($avatar, 'document'); ?>
+<?php echo CHtml::endForm(); ?>
+<?php $this->endWidget('avatarDialog');?>
 

@@ -23,6 +23,7 @@ return array(
 		'ext.eauth.services.*',
 		'ext.imperavi-redactor-widget.ImperaviRedactorWidget',
 		'ext.OSM.*',
+		'ext.Calendar.*',
 	),
 
 	'modules'=>array(

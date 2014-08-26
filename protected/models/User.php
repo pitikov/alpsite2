@@ -136,7 +136,7 @@ class User extends CActiveRecord
 	protected function afterFind()
 	{
 	    $this->toView();
-	    if ($this->avatar === null) {
+	    if (($this->avatar === null) or ($this->avatar==='')){
 		$this->avatar = '/images/noavatar.png';
 	    }
 	    parent::afterFind();
@@ -200,7 +200,7 @@ class User extends CActiveRecord
 	    }
 	    $regdate = explode(" ", $this->regdata);
 	    $date = explode('-', $regdate[0]);
-	    $this->regdate = "{$date[2]}.{$date[1]}.{$date[0]} в {$regdate[1]}";
+	    if (isset($date[2]))$this->regdate = "{$date[2]}.{$date[1]}.{$date[0]} в {$regdate[1]}";
 	}
 	
 	
