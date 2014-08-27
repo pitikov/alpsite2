@@ -125,7 +125,12 @@ class AdminController extends Controller
     
     public function actionFederationmembers()
     {
-	$this->render('federationmembers');
+	$dataProvider = new CActiveDataProvider('FederationMember',array(
+		'pagination'=>array(
+			'pageSize'=>10,
+		)
+	));
+	$this->render('federationmembers', array('dataProvider'=>$dataProvider));
     }
     
     public function actionDocuments()

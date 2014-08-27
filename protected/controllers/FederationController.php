@@ -123,7 +123,11 @@ class FederationController extends Controller
   
   public function actionAddmember()
   {
-      $this->render('addmember');
+      if (Yii::app()->request->isAjaxRequest) {
+	  
+      } else {
+	  throw new CHttpException(500, "Only AJAX upload.");;
+      }
   }
   
   public function actionCalendar()
