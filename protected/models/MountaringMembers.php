@@ -11,8 +11,8 @@
  * @property string $role
  *
  * The followings are the available model relations:
- * @property Mountaring $mountaring0
- * @property FederationMember $member0
+ * @property Mountaring $MountaringAction
+ * @property FederationMember $FederationMember
  */
 class MountaringMembers extends CActiveRecord
 {

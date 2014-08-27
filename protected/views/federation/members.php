@@ -1,10 +1,21 @@
 <?php
 /* @var $this FederationController */
-array_push($this->breadcrumbs, 'Члены федерации');
-?>
-<h1>Члены федерации</h1>
+$pagename = 'Члены федерации';
+array_push($this->breadcrumbs, $pagename);
 
-<p>
-	You may change the content of this page by modifying
-	the file <tt><?php echo __FILE__; ?></tt>.
-</p>
+echo CHtml::tag('h1', array(), $pagename);
+
+/// @todo Использовать CListView
+$this->widget('zii.widgets.grid.CGridView', array(
+    'dataProvider'=>$dataProvider,
+    'columns'=>array(
+	'photo', 'name',
+	array(
+	    'name'=>'role',
+	    'value'=>'$data->roles->title',
+	), 
+	'memberfrom', 'memberto'
+    )
+    
+));
+?>

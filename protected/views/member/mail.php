@@ -2,51 +2,44 @@
     // $this = MemberController
     $pagename = "Сообщения";
     array_push($this->breadcrumbs, $pagename);
-?>
 
-<h1><?php echo $pagename; ?></h1>
-<?php
-$this->widget('CTabView', array(
-    'tabs'=>array(
-        'tab_inbox'=>array(
-            'title'=>'Входящие',
-            'view'=>'mail_inbox',
-            'data'=>array('model'=>$inbox),
-        ),
-        'tab_outbox'=>array(
-            'title'=>'Отправленные',
-            'view'=>'mail_sended',
-             'data'=>array('model'=>$outbox),
-        ),
-        'tab_trash'=>array(
-            'title'=>'Корзина',
-            'view'=>'mail_trash',
-             'data'=>array('model'=>$trash),
-        ),
-    ),
-))?>
-<?php
-$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-    'id'=>'SendMailDialog',
-    // additional javascript options for the dialog plugin
-    'options'=>array(
-        'title'=>'Новое сообщение',
-        'autoOpen'=>false,
-    ),
-));
-?>
-<div class="form">
+    echo CHtml::tag('h1', array(), $pagename);
 
-<?php $form=$this->beginWidget('CActiveForm', array(
-    'id'=>'mail-sendmail-form',
-    // Please note: When you enable ajax validation, make sure the corresponding
-    // controller action is handling ajax validation correctly.
-    // See class documentation of CActiveForm for details on this,
-    // you need to use the performAjaxValidation()-method described there.
-    'enableAjaxValidation'=>true,
-)); ?>
+    $this->widget('CTabView', array(
+	'tabs'=>array(
+	    'tab_inbox'=>array(
+		'title'=>'Входящие',
+		'view'=>'mail_inbox',
+		'data'=>array('model'=>$inbox),
+	    ),
+	    'tab_outbox'=>array(
+		'title'=>'Отправленные',
+		'view'=>'mail_sended',
+		'data'=>array('model'=>$outbox),
+	    ),
+	    'tab_trash'=>array(
+		'title'=>'Корзина',
+		'view'=>'mail_trash',
+		'data'=>array('model'=>$trash),
+	    ),
+	),
+    ));
+    $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+	'id'=>'SendMailDialog',
+	// additional javascript options for the dialog plugin
+	'options'=>array(
+	    'title'=>'Новое сообщение',
+	    'autoOpen'=>false,
+	),
+    ));
+    echo CHtml::tag('div', array('class'=>"form"),null,false);
 
-    <?php echo $form->errorSummary($model); ?>
+    $form=$this->beginWidget('CActiveForm', array(
+	'id'=>'mail-sendmail-form',
+	'enableAjaxValidation'=>true,
+    )); 
+    echo $form->errorSummary($model); ?>
+    
 <table>
   <tr>
     <td>
@@ -101,27 +94,23 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	?>
     </div>
 
-    <div class="row buttons">
-        <?php echo CHtml::submitButton('Отправить'); ?>
-    </div>
+    <?php 
+    echo CHtml::tag('div',array('class'=>'row buttons'), CHtml::submitButton('Отправить'));
+    
+    $this->endWidget('CActiveForm');
+    
+    echo CHtml::closeTag('div');
 
-<?php $this->endWidget('CActiveForm');?>
-
-</div>
-<?php
-$this->endWidget('zii.widgets.jui.CJuiDialog');
-
-// the link that may open the dialog
-echo CHtml::link('Написать сообщение', '#', array(
-   'onclick'=>'$("#SendMailDialog").dialog("open"); return false;',
-)); ?>
-<?php if (Yii::app()->user->hasFlash('flash-send-mail')) { ?>
-<div class="flash-success">
-    <?php echo Yii::app()->user->getFlash('flash-send-mail'); ?>
-</div>
-<?php } ?>
-<?php if (Yii::app()->user->hasFlash('flash-send-mail-error')) { ?>
-<div class="flash-error">
-    <?php echo Yii::app()->user->getFlash('flash-send-mail-error'); ?>
-</div>
-<?php } ?>
+    $this->endWidget('zii.widgets.jui.CJuiDialog');
+    
+    // the link that may open the dialog
+    echo CHtml::link('Написать сообщение', '#', array(
+	'onclick'=>'$("#SendMailDialog").dialog("open"); return false;',
+    ));
+    if (Yii::app()->user->hasFlash('flash-send-mail')) { 
+	echo CHtml::tag('div', array('class'=>"flash-success"), Yii::app()->user->getFlash('flash-send-mail'));
+    }
+    if (Yii::app()->user->hasFlash('flash-send-mail-error')) { 
+	echo CHtml::tag('div', array('class'=>"flash-error"), Yii::app()->user->getFlash('flash-send-mail-error'));
+    } 
+?>

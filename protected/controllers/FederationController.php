@@ -75,7 +75,8 @@ class FederationController extends Controller
   
   public function actionMountaring()
   {
-      $this->render('mountaring');
+      $dataProvider = new CActiveDataProvider('Mountaring');
+      $this->render('mountaring', array('dataProvider'=>$dataProvider));
   }
   
   
@@ -157,7 +158,8 @@ class FederationController extends Controller
   
   public function actionMembers()
   {
-      $this->render('members');
+      $dataProvider=new CActiveDataProvider('FederationMember');
+      $this->render('members', array('dataProvider'=>$dataProvider));
   }
   
   public function actionDocuments()

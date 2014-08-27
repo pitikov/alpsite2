@@ -9,8 +9,14 @@ $this->widget('zii.widgets.grid.CGridView',
 	    ),
 	    'subject',
 	    'folder',
-	    'sender',
-	    'receiver',
+	    array(
+		'name'=>'sender',
+		'value'=>'"{$data->Sender->name} <{$data->Sender->email}>"'
+	    ),
+	    array(
+		'name'=>'receiver',
+		'value'=>'"{$data->Receiver->name} <{$data->Receiver->email}>"',
+	    ),
 	    'sended',
 	    array(            // display a column with "view", "update" and "delete" buttons
 		'class'=>'CButtonColumn',

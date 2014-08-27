@@ -12,9 +12,19 @@
  * The followings are the available model relations:
  * @property Route $mountaringRoute
  * @property MountaringMembers[] $mountaringMembers
+ *
+ * The calculated values
+ * @property string $Leader
+ * @property string $Composition
  */
 class Mountaring extends CActiveRecord
 {
+	/// @brief Руководитель восхождения
+	public $Leader;
+	
+	/// @brief Состав
+	public $Composition;
+		
 	/**
 	 * @return string the associated database table name
 	 */
@@ -64,6 +74,8 @@ class Mountaring extends CActiveRecord
 			'date' => 'дата',
 			'route' => 'по маршруту',
 			'description' => 'Описание',
+			'Leader'=>'Руководитель',
+			'Composition'=>'в составе',
 		);
 	}
 
@@ -112,5 +124,21 @@ class Mountaring extends CActiveRecord
 	    if ($route===null) {
 		$this->addError($attribute, "Указанный маршрут отсутствует в базе данных");
 	    }
+	}
+	
+	public function afterFind()
+	{
+// 	    $this->Peak = $mountaringRoute->
+// 	    
+// 	    $leader = MountaringMember::model()->find('mountaring=:Mountaring, role=:Role', array(':Mountaring'=>$this->id, ':Role'=>'руководитель'));
+// 	    if (isset($leader)) {
+// 		if ($leader->member !== null) {
+// 		    $this->Leader = $leader->member0->name;
+// 		} else {
+// 		    $this->Leader = $leader->name;
+// 		}
+// 	    }
+	    
+	    return parent::aftrFind();
 	}
 }
