@@ -27,66 +27,45 @@ class Calendar extends CWidget {
 	$this->caption = "{$this->caption} \"{$this->title}\"";
       }
     }
-    $this->html_tag('div', array('id'=>$this->id, 'class'=>'CalendarWidget'));
-    $this->html_tag('table', array('id'=>$this->id, 'class'=>'Calendar'));
-    $this->html_tag('caption', array('class'=>'Calendar'));
-    $this->html_tag('h3');
-    echo $this->caption;
-    $this->html_end_tag();
-    $this->html_tag('span', array('class'=>'Calendar', 'id'=>'Paginator')); echo "{Туда} {{$date->format('m.Y')}}  {Сейчас {$now->format('m.Y')}} {Сюда}"; $this->html_end_tag();
+    echo CHtml::tag('div', array('id'=>$this->id, 'class'=>'CalendarWidget'), false);
+    echo CHtml::tag('table', array('id'=>$this->id, 'class'=>'Calendar'), false);
+    echo CHtml::tag('caption', 
+	array('class'=>'Calendar'),
+	CHtml::tag('h3', array(), $this->caption). 
+	CHtml::tag('span', 
+	    array('class'=>'Calendar', 'id'=>'Paginator'), 
+	    "{Туда} {{$date->format('m.Y')}}  {Сейчас {$now->format('m.Y')}} {Сюда}"
+	)
+    );
 
-    $this->html_end_tag();	// caption
-    $this->html_tag('thead');
-    $this->html_tag('th'); echo "Понедельник"; $this->html_end_tag();
-    $this->html_tag('th'); echo "Вторник"; $this->html_end_tag();
-    $this->html_tag('th'); echo "Среда"; $this->html_end_tag();
-    $this->html_tag('th'); echo "Четверг"; $this->html_end_tag();
-    $this->html_tag('th'); echo "Пятница"; $this->html_end_tag();
-    $this->html_tag('th'); echo "Суббота"; $this->html_end_tag();
-    $this->html_tag('th'); echo "Воскресенье"; $this->html_end_tag();
-    $this->html_end_tag();	// thead
-    $this->html_tag('tbody');
+    echo CHtml::tag('thead', array(), 
+	CHtml::tag('th', array(), "Понедельник"). 
+	CHtml::tag('th', array(), "Вторник"). 
+	CHtml::tag('th', array(), "Среда"). 
+	CHtml::tag('th', array(), "Четверг"). 
+	CHtml::tag('th', array(), "Пятница"). 
+	CHtml::tag('th', array(), "Суббота"). 
+	CHtml::tag('th', array(), "Воскресенье")
+    );
+    CHtml::tag('tbody',array(),'',false);
     $env = false;
     for ($week = 1; $week <=5; $week++) {
-      $this->html_tag('tr', array('class'=>$env?'env':'nenv'));
+      echo CHtml::tag('tr', array('class'=>$env?'env':'nenv'));
       for ($day=0; $day<7; $day++) {
-	$this->html_tag('td', array('class'=>'day_of_cal'));
-	$this->html_end_tag();
+	echo CHtml::tag('td', array('class'=>'day_of_cal'));
+	echo CHtml::closeTag('td');      
       }
-      $this->html_end_tag();
+      echo CHtml::closeTag('tr');;
       $env = !$env;
     }
-    $this->html_end_tag();	// tbody
+    echo CHtml::closeTag('tbody');	// tbody
 
-    $this->html_end_tag();	// table
+    echo CHtml::closeTag('table');	// table
     
-    $this->html_tag('div', array('id'=>'day_briefing', 'class'=>'Calendar'));
-    $this->html_tag('hr');
-    echo "@TODO Здесь разместить брифинг на день (по выбору дня)<br/>По умолчанию выбирать текущую дату";
-    $this->html_end_tag();
-    // Подчистить теги, если что забыл
-    foreach ($this->_tags as $tag) {
-      $this->html_end_tag();
-    }
+    echo CHtml::tag('div', array('id'=>'day_briefing', 'class'=>'Calendar'), "@TODO Здесь разместить брифинг на день (по выбору дня)<br/>По умолчанию выбирать текущую дату"
+    );
+    echo CHtml::closeTag('div');
   }
   
-  public function render() {
-  
-  }
-  
-  private function html_tag($tag, $options = array(), $value=null)
-  {
-    echo "<{$tag}";
-    foreach ($options as $key=>$value) {
-      echo " {$key}='{$value}'";
-    }
-    echo ">";
-    array_push($this->_tags, $tag);
-  }
-  
-  private function html_end_tag() 
-  {
-    echo "</".array_pop($this->_tags).">";
-  }
 }
 ?>
