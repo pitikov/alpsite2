@@ -1,5 +1,7 @@
 <?php
   array_push($this->breadcrumbs, "Новости");
+  
+  /// @todo Привести к использованию CHtml::tag
 ?>
 <div class = "twoColumns">
   <div id="federationContent" class = "span-9">
