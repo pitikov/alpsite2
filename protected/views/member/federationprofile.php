@@ -5,8 +5,9 @@
 $pagename = "Членство в ФАПО";
 array_push($this->breadcrumbs, $pagename);
 $fromprofile = 'Взять из профиля';
+
+echo CHtml::tag('h1', array(), $pagename);
 ?>
-<h1><?php echo $pagename; ?></h1>
 <div class="form">
 <script>
 function profileFoto() {
@@ -158,20 +159,15 @@ function profileDob() {
   </tbody>
 </table>
 
-
-	<div class="row buttons">
-		<?php echo CHtml::submitButton('Сохранить'); ?>
-	</div>
-<?php if (Yii::app()->user->hasFlash('flash-federation-profile-success')) { ?>
-<div class="flash-success">
-    <?php echo Yii::app()->user->getFlash('flash-federation-profile-success'); ?>
-</div>
-<?php } ?>
-<?php if (Yii::app()->user->hasFlash('flash-federation-profile-error')) { ?>
-<div class="flash-error">
-    <?php echo Yii::app()->user->getFlash('flash-federation-profile-error'); ?>
-</div>
-<?php } ?>
-<?php $this->endWidget(); ?>
+<?php 
+  echo CHtml::tag('div', array('class'=>'row buttons'), CHtml::submitButton('Сохранить'));
+  if (Yii::app()->user->hasFlash('flash-federation-profile-success')) { 
+      echo CHtml::tag('div', array('class'=>'flash-success'), Yii::app()->user->getFlash('flash-federation-profile-success'));
+  };
+  if (Yii::app()->user->hasFlash('flash-federation-profile-error')) { 
+      echo CHtml::tag('div', array('class'=>'flash-error'), Yii::app()->user->getFlash('flash-federation-profile-error'));
+  };
+  $this->endWidget(); 
+?>
 
 </div><!-- form -->

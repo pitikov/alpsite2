@@ -21,23 +21,21 @@ if (Yii::app()->user->hasFlash('registration-success')) {
     ));
 
     echo CHtml::tag('p', array('class'=>'note'), 'Поля, отмеченные '. CHtml::tag('span', array('class'=>'required'), '*').', обязательны для заполнения.');
-    echo $form->errorSummary($model); ?>
+    echo $form->errorSummary($model);
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'password'); ?>
-		<?php echo $form->passwordField($model,'password'); ?>
-		<?php echo $form->error($model,'password'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'password_confirm'); ?>
-		<?php echo $form->passwordField($model,'password_confirm'); ?>
-		<?php echo $form->error($model,'password_confirm'); ?>
-	</div>
-
-<?php
+    echo CHtml::tag('div', array('id'=>'row'), 
+	$form->labelEx($model,'password'). 
+	$form->passwordField($model,'password').
+	$form->error($model,'password')
+    );
+    echo CHtml::tag('div', array('id'=>'row'), 
+	$form->labelEx($model,'password_confirm'). 
+	$form->passwordField($model,'password_confirm').
+	$form->error($model,'password_confirm')
+    );
     echo CHtml::tag('div', array('class'=>"row buttons"), CHtml::submitButton('Сохранть пароль'));
     $this->endWidget(); 
 	
     echo CHtml::closeTag('div'); //form
-} ?>
+} 
+?>
