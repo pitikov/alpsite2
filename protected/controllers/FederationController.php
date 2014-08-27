@@ -162,7 +162,15 @@ class FederationController extends Controller
   
   public function actionDocuments()
   {
-      $this->render('documents');
+      $dataProvider = new CActiveDataProvider('Document', array(
+	  'criteria'=>array(
+	      'condition'=>'private=false'
+	  ),
+	  'pagination'=>array(
+	      'pageSize'=>25
+	  ),
+      ));
+      $this->render('documents', array('dataProvider'=>$dataProvider));
   }
 
   public function actionLoaddocument()
