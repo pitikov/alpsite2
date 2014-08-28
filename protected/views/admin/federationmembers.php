@@ -25,14 +25,6 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	array(
 	    'class'=>'GridButtonGroup',
 	    'buttons'=>array(
-// 		'edit'=>array(
-// 		    'label'=>'Редактировать',
-// 		    'img'=>'/images/edit.png',
-// 		    'url'=>'#',
-// 		    'confirm'=>null,
-// 		    'action'=>null,
-// 		    'id'=>null,
-// 		 ),
 		 'delete'=>array(
 		    'label'=>'Удалить',
 		    'img'=>'/images/delete.png',
@@ -61,7 +53,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	  ),  
 ));
 echo CHtml::tag('table', array(), 
-    CHtml::tag('caption', array(),null).
+    CHtml::tag('caption', array('id'=>'MemberFormCaption'),null).
     CHtml::tag('tbody', array(),null)
 ,false);
   echo CHtml::tag('tr', array(),
@@ -70,8 +62,22 @@ echo CHtml::tag('table', array(),
   );
   echo CHtml::tag('tr', array(),
     CHtml::tag('th', array(), 'Родился(ась)').
-    CHtml::tag('td', array(), CHtml::dateField('memberDob',''))
-  );
+    CHtml::tag('td', array(), null, false)
+  ,false);
+  $this->widget('zii.widgets.jui.CJuiDatePicker',array(
+    'name'=>'memberDob',
+    // additional javascript options for the date picker plugin
+    'options'=>array(
+        'showAnim'=>'fold',
+    ),
+    'htmlOptions'=>array(
+        'style'=>'height:20px;'
+    ),
+    'language'=>'ru',
+  ));
+  echo CHtml::closeTag('td');
+  echo CHtml::closeTag('tr');
+    
   echo CHtml::tag('tr', array(),
     CHtml::tag('th', array(), 'фото').
     CHtml::tag('td', array(), CHtml::image('/images/noavatar.png', 'фото', array('title'=>'Щелкните для изменения фотографии')))
@@ -99,32 +105,81 @@ echo CHtml::tag('table', array(),
   
   echo CHtml::tag('tr', array(),
     CHtml::tag('th', array(), 'член с').
-    CHtml::tag('td', array(), CHtml::dateField('memberFrom',''))
-  );
+    CHtml::tag('td', array(), null, false)
+  ,false);
+  $this->widget('zii.widgets.jui.CJuiDatePicker',array(
+    'name'=>'memberFrom',
+    // additional javascript options for the date picker plugin
+    'options'=>array(
+        'showAnim'=>'fold',
+    ),
+    'htmlOptions'=>array(
+        'style'=>'height:20px;'
+    ),
+    'language'=>'ru',
+  ));
+  echo CHtml::closeTag('td');
+  echo CHtml::closeTag('tr');
+
   echo CHtml::tag('tr', array(),
     CHtml::tag('th', array(), 'член по').
-    CHtml::tag('td', array(), CHtml::dateField('memberTo',''))
-  );
+    CHtml::tag('td', array(), null, false)
+  ,false);
+  $this->widget('zii.widgets.jui.CJuiDatePicker',array(
+    'name'=>'memberTo',
+    // additional javascript options for the date picker plugin
+    'options'=>array(
+        'showAnim'=>'fold',
+    ),
+    'htmlOptions'=>array(
+        'style'=>'height:20px;'
+    ),
+    'language'=>'ru',
+  ));
+  echo CHtml::closeTag('td');
+  echo CHtml::closeTag('tr');
+
   echo CHtml::tag('tr', array(),
     CHtml::tag('th', array(), 'Занимаемая должность').
     CHtml::tag('td', array(), CHtml::dropDownList('memberRole',null,array()))
   );
   echo CHtml::tag('tr', array(),
     CHtml::tag('th', array(), 'Пользователь сайта').
-    CHtml::tag('td', array(), CHtml::dropDownList('memberUid',null,array()))
+    CHtml::tag('td', array(), CHtml::dropDownList('memberUid',null,array())).
   );
 
 echo CHtml::closeTag('tbody');
 echo CHtml::closeTag('table');
 
+echo CHtml::tag('div',array('id'=>'action_status'), null);
 $this->endWidget('zii.widgets.jui.CJuiDialog');
 
 ?>
 
 <script>
 function newFederationMember() {
+    $('#MemberFormCaption').html('<h2>Новая учетная запись</h2>');
+    memberFormPrepare();
+    $('#memberId').val('');
+    $('#memberName').val('');
+    $('#memberDob').val('');
+    $('#memberPhoto').prop('src', '/images/noavatar.png');
+    $('#memberDescription').val('');
+    $('#memberFrom').val('');
+    $('#memberTo').val('');
+    
+    $('#FederationMemberDialog').dialog('open');
+};
+
+function memberFormPrepare()
+{
+    var status = $('#action_status');
+    status.removeClass('flash-error');
+    status.removeClass('flash-success');
+    status.html('');
+    
     jQuery.ajax({
-	url:'/index.php/federation/roles',
+        url:'/index.php/federation/roles',
 	dataType:'json',
 	success:function(data){
 	  var roles = $('#memberRole');
@@ -153,7 +208,6 @@ function newFederationMember() {
 	    alert('Что - пошло не так. Запрос списка пользователей сайта вернул '+status+" "+errorThrow);
 	}
     });
-    $('#FederationMemberDialog').dialog('open');
 };
 
 function saveFederationMember()
@@ -164,10 +218,13 @@ function saveFederationMember()
 	dataType:'josn',
 	data:({name:'Noname'}),	/// @todo Здесь разместить передеваемые параметры
 	success:function(msg, textStatus){
-	    alert(msg);
+	    cancelFederationMember();
 	},
 	error:function(xhtml, textStatus, errorThrow){
-	  $('#FederationMemberDialog').append('Что-то не так:\n\tСтатус:'+textStatus);
+	  var status = $('#action_status');
+          status.html('Что-то не так:\n\tСтатус:'+textStatus);
+          status.addClass('flash-error');
+          
 	},
 	beforeSend:function(xhtml){
 	}
@@ -178,4 +235,5 @@ function cancelFederationMember()
 {
     $("#FederationMemberDialog").dialog('close');
 };
+
 </script>
