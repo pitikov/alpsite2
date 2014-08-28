@@ -9,10 +9,15 @@ echo CHtml::tag('h1', array(), $pagename);
 $this->widget('zii.widgets.grid.CGridView', array(
     'dataProvider'=>$dataProvider,
     'columns'=>array(
-	'photo', 'name',
+	array(
+	    'name'=>'photo',
+	    'value'=>'CHtml::image("$data->photo","$data->name",array("width"=>"60px"))',
+	    'type'=>'raw'
+	),
+	'name',
 	array(
 	    'name'=>'role',
-	    'value'=>'$data->roles->title',
+	    'value'=>'isset($data->roles)?$data->roles->title:""',
 	), 
 	'memberfrom', 'memberto'
     )

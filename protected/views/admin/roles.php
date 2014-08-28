@@ -106,4 +106,5 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 <div class="flash-error">
     <?php echo Yii::app()->user->getFlash('flash-role-save-error'); ?>
 </div>
-<?php } ?>
+<?php } 
+?>

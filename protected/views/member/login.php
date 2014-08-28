@@ -5,45 +5,42 @@
 
 $this->pageTitle=Yii::app()->name . ' - Login';
 array_push($this->breadcrumbs, 'Авторизация');
-?>
 
-<h1>Авторизация пользователя</h1>
+echo CHtml::tag('h1', array(), 'Авторизация пользователя');
+echo CHtml::tag('p', array(), 'Введите свои учетные данные для входа на сайт:');
 
-<p>Введите свои учетные данные для входа на сайт:</p>
+echo CHtml::tag('div', array('class'=>'form'), null, false);
 
-<div class="form">
-<?php $form=$this->beginWidget('CActiveForm', array(
+    $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'login-form',
 	'enableClientValidation'=>true,
 	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
+	    'validateOnSubmit'=>true,
 	),
-)); ?>
+    ));
+    
+    echo CHtml::tag('p', array('class'=>'note'), 
+	'Поля, отмеченные'.CHtml::tag('span', array('class'=>'required'), '*').', обязательны для заполнения.'
+    );
+    
+    echo CHtml::tag('div', array('class'=>'row'),
+	$form->labelEx($model, 'username').$form->textField($model,'username').$form->error($model,'username')
+    );
 
-	<p class="note">Поля, отмеченные <span class="required">*</span>, обязательны для заполнения.</p>
+    echo CHtml::tag('div', array('class'=>'row'),
+	$form->labelEx($model, 'password').$form->passwordField($model,'password').$form->error($model,'password')
+    );
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'username'); ?>
-		<?php echo $form->textField($model,'username'); ?>
-		<?php echo $form->error($model,'username'); ?>
-	</div>
+    echo CHtml::tag('div', array('class'=>'row rememberMe'),
+	$form->checkBox($model, 'rememberMe')." ".$form->label($model,'rememberMe').$form->error($model,'rememberMe')
+    );
+    
+    echo CHtml::link('Восстановить пароль', array($this->id.'/pwdrestore'));
+    
+    echo CHtml::tag('div', array('class'=>'row buttons'), CHtml::submitButton('Войти'));
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'password'); ?>
-		<?php echo $form->passwordField($model,'password'); ?>
-		<?php echo $form->error($model,'password'); ?>
-	</div>
+    $this->endWidget();
+    
+echo CHtml::closeTag('div'); //form
 
-	<div class="row rememberMe">
-		<?php echo $form->checkBox($model,'rememberMe'); ?>
-		<?php echo $form->label($model,'rememberMe'); ?>
-		<?php echo $form->error($model,'rememberMe'); ?>
-	</div>
-	<?php echo CHtml::link('Восстановить пароль', array($this->id.'/pwdrestore')); ?>
-
-	<div class="row buttons">
-		<?php echo CHtml::submitButton('Войти'); ?>
-	</div>
-
-<?php $this->endWidget(); ?>
-</div><!-- form -->
+?>

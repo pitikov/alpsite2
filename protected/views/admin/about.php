@@ -27,7 +27,7 @@ array_push($this->breadcrumbs, $pagename);
 		'model' => $model,
 		'attribute' => 'body',
 		// or just for input field
-		'name' => 'фищге_аувукфешщт',
+		'name' => 'about_federation',
 		
 		// Some options, see http://imperavi.com/redactor/docs/
 		'options' => array(

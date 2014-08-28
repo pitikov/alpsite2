@@ -126,7 +126,7 @@ class FederationController extends Controller
       if (Yii::app()->request->isAjaxRequest) {
 	  
       } else {
-	  throw new CHttpException(500, "Only AJAX upload.");;
+	  throw new CHttpException(500, "Only AJAX request.");
       }
   }
   
@@ -140,9 +140,14 @@ class FederationController extends Controller
       $this->render('deleteaction');
   }
   
-  public function actionDeletemember()
+  public function actionDeletemember($id)
   {
-      $this->render('deletemember');
+      if (Yii::app()->request->isAjaxRequest) {
+	  if (FederationMember::model()->deleteByPk($id)) echo json_encode(array('status'=>'successed'));
+	  else throw new CHttpException(404, "Запись не найденна.");
+      } else {
+	  throw new CHttpException(500, "Only AJAX request.");
+      }
   }
   
   public function actionEditaction()
@@ -188,7 +193,33 @@ class FederationController extends Controller
   {
       $this->render('documents');
   }
- 
+  
+  public function actionRoles()
+  {
+      if (Yii::app()->request->isAjaxRequest) {
+	  $rolesBase=FederationRole::model()->findAll();
+	  $roles=array(null=>'член федерации');
+	  foreach ($rolesBase as $role) {
+	      $roles[$role->id]=$role->title;
+	  }
+	  echo json_encode($roles);
+      } else {
+ 	  throw new CHttpException(500, "Only AJAX request.");
+      }
+  }
+  public function actionUsers()
+  {
+      if (Yii::app()->request->isAjaxRequest) {
+	  $usersBase=User::model()->findAll();
+	  $users=array(null=>'-- не привязывать к аккаунту --');
+	  foreach ($usersBase as $user) {
+	      $users[$user->uid]=$user->name.': '.$user->login.'['.$user->email.']';
+	  }
+	  echo json_encode($users);
+      } else {
+ 	  throw new CHttpException(500, "Only AJAX request.");
+      }
+  } 
   public function filters()
   {
       return array(
@@ -213,6 +244,7 @@ class FederationController extends Controller
 		  'deleteroute',
 		  'addaction', 
 		  'editaction',
+		  'getroles',
 	      ),
 	      'roles'=>array('admin'),
 	  ),
@@ -225,6 +257,7 @@ class FederationController extends Controller
 		  'addmount',
 		  'addroute',
 		  'editroute',
+		  'getroles',
 	      ),
 	      'roles'=>array('fapo'),
 	  ),
@@ -246,6 +279,7 @@ class FederationController extends Controller
 		  'addmount',
 		  'addroute',
 		  'editroute',
+		  'getroles',
 	      ),
 	      'roles'=>array('guest'),
 	  )
