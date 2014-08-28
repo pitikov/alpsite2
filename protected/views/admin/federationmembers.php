@@ -145,7 +145,7 @@ echo CHtml::tag('table', array(),
   );
   echo CHtml::tag('tr', array(),
     CHtml::tag('th', array(), 'Пользователь сайта').
-    CHtml::tag('td', array(), CHtml::dropDownList('memberUid',null,array())).
+    CHtml::tag('td', array(), CHtml::dropDownList('memberUid',null,array()))
   );
 
 echo CHtml::closeTag('tbody');
