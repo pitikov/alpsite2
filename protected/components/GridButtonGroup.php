@@ -43,23 +43,51 @@ class GridButtonGroup extends CGridColumn {
 	  if (!isset($button['url'])) {
               $button['url'] = Yii::app()->createUrl($button['action'], array('id'=>$data[$button['id']]));
           }
-          echo CHtml::link(CHtml::image($button['img'], $button['label'], array()),
-                  '#',
-                  array('onclick'=>"GridButtonGroupAction('{$button['url']}', '{$data->attributes[$button['id']]}','{$button['confirm']}');")
-                  );
+          if (isset($button['onclick'])) {
+              echo CHtml::link(CHtml::image($button['img'], 
+                      $button['label'], 
+                      array(
+                          'key'=>$data->attributes[$button['id']],
+                          'class'=>'GridButtonImage'
+                          )),
+                      '#',
+                      array(
+                          'onclick'=>$button['onclick'])
+                          );
+          } else {
+              echo CHtml::link(CHtml::image($button['img'], 
+                      $button['label'], 
+                      array(
+                          'key'=>$data->attributes[$button['id']],
+                          'class'=>'GridButtonImage'
+                          )),
+                      '#',
+                      array(
+                          'onclick'=>"GridButtonGroupAction('{$button['url']}', '{$button['confirm']}');")
+                          );
+          }
       }      
       parent::renderDataCellContent($row, $data);
   }
 }
 ?>
 <script>
-    function GridButtonGroupAction(url, id, confirmText) {
-        if (confirmText=='unfefined') 
+    function GridButtonGroupAction(url, confirmText) {
+        if (confirmText==='unfefined') 
         {
+            $.ajax({
+                url:url,
+                success:function(){
+                    $('.grid-view').yiiGridView('update');
+                },                    
+                error:function(jqXHR, textStatus, errorThrown){
+                    alert('Ошибка выполнения операции.'+'\n'+'Сервер вернул : '+errorThrown);
+                }
+            });
         } else {
             if (confirm(confirmText)) {
                 $.ajax({
-                    url:url+'?id='+id,
+                    url:url,
                     success:function(){
                         $('.grid-view').yiiGridView('update');
                     },

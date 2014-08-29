@@ -100,8 +100,6 @@ class FederationController extends Controller
   {
     $model=new FederationCalendar('create');
 
-    // uncomment the following code to enable ajax-based validation
-    
     if(isset($_POST['ajax']) && $_POST['ajax']==='federation-calendar-addaction-form')
     {
 	echo CActiveForm::validate($model);
@@ -123,8 +121,8 @@ class FederationController extends Controller
   
   public function actionAddmember($id, $name, $dob, $photo, $description, $from, $to, $role, $uid)
   {
-      $member = null;
       if (Yii::app()->request->isAjaxRequest) {
+          $member = null;
           if ($id === 'undefined') {
               $member = new FederationMember();
           } else {
@@ -178,8 +176,11 @@ class FederationController extends Controller
   public function actionDeletemember($id)
   {
       if (Yii::app()->request->isAjaxRequest) {
-	  if (FederationMember::model()->deleteByPk($id)) echo json_encode(array('status'=>'successed'));
-	  else throw new CHttpException(404, "Запись не найденна.");
+	  if (FederationMember::model()->deleteByPk($id)) {
+              echo json_encode(array('status'=>'successed'));
+          } else {
+              throw new CHttpException(404, "Запись не найденна.");
+          }
       } else {
 	  throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }
@@ -190,9 +191,28 @@ class FederationController extends Controller
       $this->render('editaction');
   }
   
-  public function actionEditmember()
+  public function actionEditmember($id)
   {
-      $this->render('editmember');
+      if (Yii::app()->request->isAjaxRequest) {
+          $member = FederationMember::model()->findByPk($id);
+	  if ($member !== null) {
+              echo json_encode(array(
+                  'id'=>$member->id,
+                  'name'=>$member->name,
+                  'photo'=>$member->photo,
+                  'dob'=>$member->dob,
+                  'from'=>$member->memberfrom,
+                  'to'=>$member->memberto,
+                  'description'=>$member->description,
+                  'role'=>$member->role,
+                  'uid'=>$member->user
+                      ));
+          } else {
+              throw new CHttpException(404, "Запись не найденна.");
+          }
+      } else {
+	  throw new CHttpException(500, "Разрешен только AJAX запрос.");
+      }
   }
   
   public function actionMember()

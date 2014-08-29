@@ -34,7 +34,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 		)
 	    ),
 	)
-    )
+    ),
 ));
 
 echo CHtml::link('Зарегистрировать', '#', array('id'=>'linkNewFederationMember', 'onclick'=>'newFederationMember();'));
@@ -93,10 +93,7 @@ echo CHtml::tag('table', array(),
     CHtml::tag('td', array(), null, false)
   , false);
   $this->widget('ImperaviRedactorWidget', array(
-      // You can either use it for model attribute
-//       'model' => $model,
-//       'attribute' => 'body',
-      // or just for input field
+      'id'=>'memberAbout',
       'name' => 'memberAbout',
       // Some options, see http://imperavi.com/redactor/docs/
       'options' => array(
@@ -169,7 +166,7 @@ function newFederationMember() {
     $('#memberName').val('');
     $('#memberDob').val('');
     $('#memberPhoto').prop('src', '/images/noavatar.png');
-    $('#memberDescription').val('');
+    $('#memberAbout').val('');
     $('#memberFrom').val('');
     $('#memberTo').val('');
     
@@ -252,5 +249,38 @@ function cancelFederationMember()
 function uploadPhoto()
 {
     alert('This function not implicted');
-}
+};
+
+function editFederationMember(id) 
+{   
+    $.ajax({
+        url:'/index.php/federation/editmember?id='+id,
+        dataType: 'json',
+        success:function(data, textStatus, jqXHR){
+            memberFormPrepare();
+            $('#MemberFormCaptionHeader').html('Редактирование учетной записи члена федерации');
+            
+            $('#memberName').val(data.name);
+            $('#memberDob').val(data.dob);
+            $('#memberDescription').val(data.description);
+            $('#memberFrom').val(data.from);
+            $('#memberTo').val(data.to);
+            $('#memberRole').val(data.role);
+            $('#memberUid').val(1);
+            $('#memberId').val(data.id);
+        
+            $("#FederationMemberDialog").dialog('open');
+
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+                        
+        }
+    });
+};
+
+$('tr.odd, tr.even').dblclick(function(){
+    var id = $(this).find('img.GridButtonImage').attr('key');
+    editFederationMember(id);
+});
+
 </script>

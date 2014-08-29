@@ -12,8 +12,12 @@ defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
 $assets = dirname(__FILE__).'/assets';
 $runtime = dirname(__FILE__).'/protected/runtime';
 
-if (!is_dir($assets)) mkdir($assets);
-if (!is_dir($runtime)) mkdir($runtime);
+if (!is_dir($assets)) {
+    mkdir($assets);
+}
+if (!is_dir($runtime)) {
+    mkdir($runtime);
+}
 
 require_once($yii);
 Yii::createWebApplication($config)->run();
