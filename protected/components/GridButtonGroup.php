@@ -40,31 +40,34 @@ class GridButtonGroup extends CGridColumn {
   protected function renderDataCellContent($row, $data)
   {
       foreach($this->buttons as $key=>$button) {      
-	  if (!isset($button['url'])) $button['url'] = Yii::app()->createUrl($button['action'], array('id'=>$data[$button['id']]));
-	  $ajaxProps = array(
-		  'type'=>'POST',
-		  'dataType'=>'json',
-		  'complete' => 'function(data, status) {
-		      $.fn.yiiGridView.update("'.$this->GridId.'"); 
-		      if(status=="error") {
-			  alert(\'Ошибка выполнения операции.\');
-		      }
-		      if (status==\'parsererror\') {
-			  alert(\'Ошибка парсинга параметров\');
-		      }
-		  }',
-		  /// @bug При данном методе обновления не обновляются скрипты, навешенные Yii (наверное CGridView-ом) на ajaxLink -и
-	  );
-	  if (isset($button['confirm']) and ($button['confirm']!=null)) $ajaxProps['beforeSend'] = "function() {return confirm('{$button['confirm']}')}";
-          echo CHtml::ajaxLink(
-	      CHtml::image($button['img'],$button['label'],array('title'=>$button['label'])),
-	      $button['url'],
-	      $ajaxProps,
-	      array(
-		  'id'=>"btn_{$data->id}_{$key}", 
-	  ));	  
+	  if (!isset($button['url'])) {
+              $button['url'] = Yii::app()->createUrl($button['action'], array('id'=>$data[$button['id']]));
+          }
+          echo CHtml::link(CHtml::image($button['img'], $button['label'], array()),
+                  '#',
+                  array('onclick'=>"GridButtonGroupAction('{$button['url']}', '{$data->attributes[$button['id']]}','{$button['confirm']}');")
+                  );
       }      
       parent::renderDataCellContent($row, $data);
   }
 }
 ?>
+<script>
+    function GridButtonGroupAction(url, id, confirmText) {
+        if (confirmText=='unfefined') 
+        {
+        } else {
+            if (confirm(confirmText)) {
+                $.ajax({
+                    url:url+'?id='+id,
+                    success:function(){
+                        $('.grid-view').yiiGridView('update');
+                    },
+                    error:function(jqXHR, textStatus, errorThrown){
+                        alert('Ошибка выполнения операции.'+'\n'+'Сервер вернул : '+errorThrown);
+                    }
+                });
+            }
+        }
+    };
+</script>

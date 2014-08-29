@@ -121,12 +121,47 @@ class FederationController extends Controller
     $this->render('addaction',array('model'=>$model));	
   }
   
-  public function actionAddmember()
+  public function actionAddmember($id, $name, $dob, $photo, $description, $from, $to, $role, $uid)
   {
+      $member = null;
       if (Yii::app()->request->isAjaxRequest) {
-	  
+          if ($id === 'undefined') {
+              $member = new FederationMember();
+          } else {
+              $member = FederationMember::model()->findByPk($id);
+          }
+          $member->name = $name;
+          $member->dob = $dob;
+          if ( $description === 'undefined' ) {
+              $member->description = null; 
+          } else { 
+              $member->description = $description;
+          }
+          $member->memberfrom = $from;
+          $member->memberto = $to;
+          if ( $role === 'undefined' ) {
+              $member->role = null; 
+          } else { 
+              $member->role = $role;
+          }
+          if ( $uid === 'undefined' ) {
+              $member->user = null;
+          } else {
+              $member->user = $uid;
+          }
+          
+          if ($member->validate()) {
+              if ($member->save()) {
+                  echo json_encode(array('action'=>'success'));                  
+              } else {
+                  echo json_decode(array('action'=>'Ошибка при работе С БД. Попробуйте повторить попытку позднее.'));                  
+              }
+          } else {
+              echo json_encode(array());
+          }
+          
       } else {
-	  throw new CHttpException(500, "Only AJAX request.");
+	  throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }
   }
   
@@ -146,7 +181,7 @@ class FederationController extends Controller
 	  if (FederationMember::model()->deleteByPk($id)) echo json_encode(array('status'=>'successed'));
 	  else throw new CHttpException(404, "Запись не найденна.");
       } else {
-	  throw new CHttpException(500, "Only AJAX request.");
+	  throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }
   }
   
@@ -204,7 +239,7 @@ class FederationController extends Controller
 	  }
 	  echo json_encode($roles);
       } else {
- 	  throw new CHttpException(500, "Only AJAX request.");
+ 	  throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }
   }
   public function actionUsers()
@@ -217,7 +252,7 @@ class FederationController extends Controller
 	  }
 	  echo json_encode($users);
       } else {
- 	  throw new CHttpException(500, "Only AJAX request.");
+ 	  throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }
   } 
   public function filters()

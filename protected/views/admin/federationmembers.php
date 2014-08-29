@@ -53,7 +53,10 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	  ),  
 ));
 echo CHtml::tag('table', array(), 
-    CHtml::tag('caption', array('id'=>'MemberFormCaption'),null).
+    CHtml::tag('caption', array('id'=>'MemberFormCaption'),
+            CHtml::tag('h2', array('id'=>'MemberFormCaptionHeader'),null).
+            CHtml::tag('div',array('id'=>'action_status'), null)
+            ).
     CHtml::tag('tbody', array(),null)
 ,false);
   echo CHtml::tag('tr', array(),
@@ -80,7 +83,10 @@ echo CHtml::tag('table', array(),
     
   echo CHtml::tag('tr', array(),
     CHtml::tag('th', array(), 'фото').
-    CHtml::tag('td', array(), CHtml::image('/images/noavatar.png', 'фото', array('title'=>'Щелкните для изменения фотографии')))
+    CHtml::tag('td', array(), CHtml::image('/images/noavatar.png', 'фото', array(
+        'title'=>'Щелкните для изменения фотографии',
+        'id'=>'memberPhoto',
+        'onclick'=>'uploadPhoto();')))
   );
   echo CHtml::tag('tr', array(),
     CHtml::tag('th', array(), 'информация о участнике').
@@ -151,14 +157,13 @@ echo CHtml::tag('table', array(),
 echo CHtml::closeTag('tbody');
 echo CHtml::closeTag('table');
 
-echo CHtml::tag('div',array('id'=>'action_status'), null);
 $this->endWidget('zii.widgets.jui.CJuiDialog');
 
 ?>
 
 <script>
 function newFederationMember() {
-    $('#MemberFormCaption').html('<h2>Новая учетная запись</h2>');
+    $('#MemberFormCaptionHeader').html('Новая учетная запись');
     memberFormPrepare();
     $('#memberId').val('');
     $('#memberName').val('');
@@ -178,7 +183,7 @@ function memberFormPrepare()
     status.removeClass('flash-success');
     status.html('');
     
-    jQuery.ajax({
+    $.ajax({
         url:'/index.php/federation/roles',
 	dataType:'json',
 	success:function(data){
@@ -193,7 +198,7 @@ function memberFormPrepare()
 	    alert('Что - пошло не так. Запрос должностей федераци вернул '+status);
 	}
     });
-    jQuery.ajax({
+    $.ajax({
 	url:'/index.php/federation/users',
 	dataType:'json',
 	success:function(data){
@@ -212,23 +217,31 @@ function memberFormPrepare()
 
 function saveFederationMember()
 {
-    var request = jQuery.ajax({
-	url:'/index.php/federation/addmember',
-	type:'POST',
-	dataType:'josn',
-	data:({name:'Noname'}),	/// @todo Здесь разместить передеваемые параметры
-	success:function(msg, textStatus){
-	    cancelFederationMember();
-	},
-	error:function(xhtml, textStatus, errorThrow){
-	  var status = $('#action_status');
-          status.html('Что-то не так:\n\tСтатус:'+textStatus);
-          status.addClass('flash-error');
-          
-	},
-	beforeSend:function(xhtml){
-	}
-    }).responseText;;
+    $.ajax({
+	url:'/index.php/federation/addmember'+
+                '?id='+$('#memberId').val()+
+                '&name='+$('#memberName').val()+
+                '&dob='+$('#memberDob').val()+
+                '&photo='+$('#memberPhoto').attr('src')+
+                '&description='+$('#memberDescription').val()+
+                '&from='+$('#memberFrom').val()+
+                '&to='+$('#memberTo').val()+
+                '&role='+$('#memberRole').val()+
+                '&uid='+$('#memberUid').val(),
+        dataType: 'json',
+        success: function (data, textStatus, jqXHR) {
+            var status = $('#action_status');
+            status.addClass('flash-success');
+            status.html('Данные сохраненны');
+            cancelFederationMember();
+            $('#FederationMembers').yiiGridView('update');
+                    },
+        error: function (jqXHR, textStatus, errorThrown) {
+            var status = $('#action_status');
+            status.addClass('flash-error');
+            status.html(errorThrown);
+                    }
+    });
 };
 
 function cancelFederationMember()
@@ -236,4 +249,8 @@ function cancelFederationMember()
     $("#FederationMemberDialog").dialog('close');
 };
 
+function uploadPhoto()
+{
+    alert('This function not implicted');
+}
 </script>
