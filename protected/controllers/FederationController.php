@@ -123,7 +123,7 @@ class FederationController extends Controller
   {
       if (Yii::app()->request->isAjaxRequest) {
           $member = null;
-          if ($id === 'undefined') {
+          if (($id === 'undefined')or($id==0)) {
               $member = new FederationMember();
           } else {
               $member = FederationMember::model()->findByPk($id);

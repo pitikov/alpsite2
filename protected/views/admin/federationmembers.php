@@ -13,15 +13,36 @@ $this->widget('zii.widgets.grid.CGridView', array(
 	array(
 	    'name'=>'photo',
 	    'value'=>'CHtml::image("$data->photo","$data->name",array("width"=>"60px"))',
-	    'type'=>'raw'
+	    'type'=>'raw',
+            'class'=>'CDblClickColumn',
+            'onDblClick'=>'editFederationMember',
+            'key'=>'id',
 	),
-	'name', 
+	array(
+            'name'=>'name',
+            'class'=>'CDblClickColumn',
+            'onDblClick'=>'editFederationMember',
+            'key'=>'id',
+        ),
 	array(
 	    'name'=>'role',
 	    'value'=>'isset($data->roles)?$data->roles->title:""',
+            'class'=>'CDblClickColumn',
+            'onDblClick'=>'editFederationMember',
+            'key'=>'id',
 	), 
-	'memberfrom', 
-	'memberto',
+        array(
+            'name'=>'memberfrom',
+            'class'=>'CDblClickColumn',
+            'onDblClick'=>'editFederationMember',
+            'key'=>'id',
+        ),
+        array(
+            'name'=>'memberto',
+            'class'=>'CDblClickColumn',
+            'onDblClick'=>'editFederationMember',
+            'key'=>'id',
+        ),
 	array(
 	    'class'=>'GridButtonGroup',
 	    'buttons'=>array(
@@ -55,7 +76,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 echo CHtml::tag('table', array(), 
     CHtml::tag('caption', array('id'=>'MemberFormCaption'),
             CHtml::tag('h2', array('id'=>'MemberFormCaptionHeader'),null).
-            CHtml::tag('div',array('id'=>'action_status'), null)
+            CHtml::tag('div',array('id'=>'action_status'), null).
+            CHtml::hiddenField('memberId')
             ).
     CHtml::tag('tbody', array(),null)
 ,false);
@@ -158,18 +180,18 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
 
 ?>
 
-<script>
+<script type="text/javascript">
+    
 function newFederationMember() {
     $('#MemberFormCaptionHeader').html('Новая учетная запись');
     memberFormPrepare();
-    $('#memberId').val('');
+    $('#memberId').val(0);
     $('#memberName').val('');
     $('#memberDob').val('');
     $('#memberPhoto').prop('src', '/images/noavatar.png');
     $('#memberAbout').val('');
     $('#memberFrom').val('');
     $('#memberTo').val('');
-    
     $('#FederationMemberDialog').dialog('open');
 };
 
@@ -187,7 +209,7 @@ function memberFormPrepare()
 	  var roles = $('#memberRole');
 	  roles.html('');
 	  $.each(data, function(i, item){
-	      roles.append("<option value="+i+">"+item+"</option>");
+	      roles.append("<option class='role' value="+i+">"+item+"</option>");
 	  });
  	  $('#memberRole').val(null);
 	},
@@ -214,8 +236,12 @@ function memberFormPrepare()
 
 function saveFederationMember()
 {
+    if($('#memberId').val()==='') {
+        $('#memberId').val('undeined');
+    }
     $.ajax({
 	url:'/index.php/federation/addmember'+
+                /// @todo при создании 500 по пустому параметру
                 '?id='+$('#memberId').val()+
                 '&name='+$('#memberName').val()+
                 '&dob='+$('#memberDob').val()+
@@ -265,7 +291,7 @@ function editFederationMember(id)
             $('#memberDescription').val(data.description);
             $('#memberFrom').val(data.from);
             $('#memberTo').val(data.to);
-            $('#memberRole').val(data.role);
+            $('#memberRole').val(3);
             $('#memberUid').val(1);
             $('#memberId').val(data.id);
         
@@ -277,10 +303,5 @@ function editFederationMember(id)
         }
     });
 };
-
-$('tr.odd, tr.even').dblclick(function(){
-    var id = $(this).find('img.GridButtonImage').attr('key');
-    editFederationMember(id);
-});
 
 </script>
