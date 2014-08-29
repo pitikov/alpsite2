@@ -26,7 +26,7 @@ class UploadController extends Controller {
 	    }
 	    $file = CUploadedFile::getInstanceByName($document);
 	    if ($file == null) {
-	      echo json_encode('error'=>$file->getError());
+	      echo json_encode(array('error'=>$file->getError()));
 	    } else {
 	      //echo json_encode('url'=>'correct url');
 	    }
