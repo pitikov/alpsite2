@@ -79,15 +79,15 @@ class FederationController extends Controller
       $this->render('mountaring', array('dataProvider'=>$dataProvider));
   }
   
-  
   public function actionError()
   {
     if($error=Yii::app()->errorHandler->error)
     {
-      if(Yii::app()->request->isAjaxRequest)
+      if(Yii::app()->request->isAjaxRequest) {
 	echo $error['message'];
-	else
+      } else {
 	$this->render('error', $error);
+      }
     }
   }
   
@@ -106,7 +106,6 @@ class FederationController extends Controller
 	Yii::app()->end();
     }
     
-
     if(isset($_POST['FederationCalendar']))
     {
 	$model->attributes=$_POST['FederationCalendar'];
@@ -119,43 +118,47 @@ class FederationController extends Controller
     $this->render('addaction',array('model'=>$model));	
   }
   
-  public function actionAddmember($id, $name, $dob, $photo, $description, $from, $to, $role, $uid)
+  public function actionAddmember()
   {
       if (Yii::app()->request->isAjaxRequest) {
           $member = null;
-          if (($id === 'undefined')or($id==0)) {
-              $member = new FederationMember();
-          } else {
-              $member = FederationMember::model()->findByPk($id);
-          }
-          $member->name = $name;
-          $member->dob = $dob;
-          if ( $description === 'undefined' ) {
-              $member->description = null; 
-          } else { 
-              $member->description = $description;
-          }
-          $member->memberfrom = $from;
-          $member->memberto = $to;
-          if ( $role === 'undefined' ) {
-              $member->role = null; 
-          } else { 
-              $member->role = $role;
-          }
-          if ( $uid === 'undefined' ) {
-              $member->user = null;
-          } else {
-              $member->user = $uid;
-          }
-          
-          if ($member->validate()) {
-              if ($member->save()) {
-                  echo json_encode(array('action'=>'success'));                  
+          if (isset($_POST)) { 
+              if (($_POST['id'] === 'undefined')or($_POST['id']==0)) {
+                  $member = new FederationMember();
               } else {
-                  echo json_decode(array('action'=>'Ошибка при работе С БД. Попробуйте повторить попытку позднее.'));                  
+                  $member = FederationMember::model()->findByPk($_POST['id']);
+              }
+              $member->name = $_POST['name'];
+              $member->dob = $_POST['dob'];
+              if ( $_POST['description'] === 'undefined' ) {
+                  $member->description = null; 
+              } else { 
+                  $member->description = $_POST['description'];
+              }
+              $member->memberfrom = $_POST['from'];
+              $member->memberto = $_POST['to'];
+              if ( $_POST['role'] === 'undefined' ) {
+                  $member->role = null; 
+              } else { 
+                  $member->role = $_POST['role'];
+              }
+              if ( $_POST['uid'] === 'undefined' ) {
+                  $member->user = null;
+              } else {
+                  $member->user = $_POST['uid'];
+              }
+              
+              if ($member->validate()) {
+                  if ($member->save()) {
+                      echo json_encode(array('action'=>'success'));                  
+                  } else {
+                      echo json_decode(array('action'=>'Ошибка при работе С БД. Попробуйте повторить попытку позднее.'));
+                  }
+              } else {
+                  echo json_encode(array());
               }
           } else {
-              echo json_encode(array());
+              echo json_encode(array('status'=>'error'));
           }
           
       } else {

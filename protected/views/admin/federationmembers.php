@@ -9,6 +9,9 @@ echo CHtml::tag('h1', array(), $pagename);
 $this->widget('zii.widgets.grid.CGridView', array(
     'id'=>'FederationMembers',
     'dataProvider'=>$dataProvider,
+    'emptyText'=>  CHtml::tag('div', array(
+        'class'=>'emptyMemberList'
+        ), 'В настоящее время нет данных о зарегистрированных членах федерации.'),
     'columns'=>array(
 	array(
 	    'name'=>'photo',
@@ -42,6 +45,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
             'class'=>'CDblClickColumn',
             'onDblClick'=>'editFederationMember',
             'key'=>'id',
+            'value'=>'isset($data->memberto)?$data->memberto:"по настоящее время"'
         ),
 	array(
 	    'class'=>'GridButtonGroup',
@@ -189,7 +193,7 @@ function newFederationMember() {
     $('#memberName').val('');
     $('#memberDob').val('');
     $('#memberPhoto').prop('src', '/images/noavatar.png');
-    $('#memberAbout').val('');
+    $('.redactor_').html('');
     $('#memberFrom').val('');
     $('#memberTo').val('');
     $('#FederationMemberDialog').dialog('open');
@@ -240,18 +244,20 @@ function saveFederationMember()
         $('#memberId').val('undeined');
     }
     $.ajax({
-	url:'/index.php/federation/addmember'+
-                /// @todo при создании 500 по пустому параметру
-                '?id='+$('#memberId').val()+
-                '&name='+$('#memberName').val()+
-                '&dob='+$('#memberDob').val()+
-                '&photo='+$('#memberPhoto').attr('src')+
-                '&description='+$('#memberDescription').val()+
-                '&from='+$('#memberFrom').val()+
-                '&to='+$('#memberTo').val()+
-                '&role='+$('#memberRole').val()+
-                '&uid='+$('#memberUid').val(),
+	url:'/index.php/federation/addmember',
         dataType: 'json',
+        type: 'POST',
+        data: {
+            'id':$('#memberId').val(),
+            'name':$('#memberName').val(),
+            'dob':$('#memberDob').val(),
+            'photo':$('#memberPhoto').attr('src'),
+            'description':$('.redactor_').html(),
+            'from':$('#memberFrom').val(),
+            'to':$('#memberTo').val(),
+            'role':$('#memberRole').val(),
+            'uid':$('#memberUid').val()
+            },
         success: function (data, textStatus, jqXHR) {
             var status = $('#action_status');
             status.addClass('flash-success');
@@ -288,15 +294,13 @@ function editFederationMember(id)
             
             $('#memberName').val(data.name);
             $('#memberDob').val(data.dob);
-            $('#memberDescription').val(data.description);
+            $('.redactor_').html(data.description);
             $('#memberFrom').val(data.from);
             $('#memberTo').val(data.to);
             $('#memberRole').val(3);
             $('#memberUid').val(1);
             $('#memberId').val(data.id);
-        
             $("#FederationMemberDialog").dialog('open');
-
         },
         error: function (jqXHR, textStatus, errorThrown) {
                         
