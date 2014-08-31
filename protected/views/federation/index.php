@@ -27,3 +27,4 @@
       echo CHtml::closeTag('div');  // clubContent
       
   echo CHtml::closeTag('div'); // twoColumns
+?>

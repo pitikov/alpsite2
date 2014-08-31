@@ -1,7 +1,6 @@
 <?php
 /* @var $this AdminController */
 $pagename = 'Члены федерации';
-Yii::app()->getClientScript()->registerScriptFile('/js/FederationMember.js');
 
 array_push($this->breadcrumbs, $pagename);
 
@@ -182,3 +181,131 @@ echo CHtml::closeTag('tbody');
 echo CHtml::closeTag('table');
 
 $this->endWidget('zii.widgets.jui.CJuiDialog');
+
+?>
+
+<script type="text/javascript">
+    
+function newFederationMember() {
+    $('#MemberFormCaptionHeader').html('Новая учетная запись');
+    memberFormPrepare();
+    $('#memberId').val(0);
+    $('#memberName').val('');
+    $('#memberDob').val('');
+    $('#memberPhoto').prop('src', '/images/noavatar.png');
+    $('.redactor_').html('');
+    $('#memberFrom').val('');
+    $('#memberTo').val('');
+    $('#FederationMemberDialog').dialog('open');
+};
+
+function memberFormPrepare()
+{
+    var status = $('#action_status');
+    status.removeClass('flash-error');
+    status.removeClass('flash-success');
+    status.html('');
+    
+    $.ajax({
+        url:'/index.php/federation/roles',
+	dataType:'json',
+	success:function(data){
+	  var roles = $('#memberRole');
+	  roles.html('');
+	  $.each(data, function(i, item){
+	      roles.append("<option class='role' value="+i+">"+item+"</option>");
+	  });
+ 	  $('#memberRole').val(null);
+	},
+	error:function(xhtml, status, errorThrow) {
+	    alert('Что - пошло не так. Запрос должностей федераци вернул '+status);
+	}
+    });
+    $.ajax({
+	url:'/index.php/federation/users',
+	dataType:'json',
+	success:function(data){
+	  var users = $('#memberUid');
+	  users.html('');
+	  $.each(data, function(i, item){
+	      users.append("<option value="+i+">"+item+"</option>");
+	  });
+ 	  $('#memberUid').val(null);
+	},
+	error:function(xhtml, status, errorThrow) {
+	    alert('Что - пошло не так. Запрос списка пользователей сайта вернул '+status+" "+errorThrow);
+	}
+    });
+};
+
+function saveFederationMember()
+{
+    if($('#memberId').val()==='') {
+        $('#memberId').val('undeined');
+    }
+    $.ajax({
+	url:'/index.php/federation/addmember',
+        dataType: 'json',
+        type: 'POST',
+        data: {
+            'id':$('#memberId').val(),
+            'name':$('#memberName').val(),
+            'dob':$('#memberDob').val(),
+            'photo':$('#memberPhoto').attr('src'),
+            'description':$('.redactor_').html(),
+            'from':$('#memberFrom').val(),
+            'to':$('#memberTo').val(),
+            'role':$('#memberRole').val(),
+            'uid':$('#memberUid').val()
+            },
+        success: function (data, textStatus, jqXHR) {
+            var status = $('#action_status');
+            status.addClass('flash-success');
+            status.html('Данные сохраненны');
+            cancelFederationMember();
+            $('#FederationMembers').yiiGridView('update');
+                    },
+        error: function (jqXHR, textStatus, errorThrown) {
+            var status = $('#action_status');
+            status.addClass('flash-error');
+            status.html(errorThrown);
+                    }
+    });
+};
+
+function cancelFederationMember()
+{
+    $("#FederationMemberDialog").dialog('close');
+};
+
+function uploadPhoto()
+{
+    alert('This function not implicted');
+};
+
+function editFederationMember(id) 
+{   
+    $.ajax({
+        url:'/index.php/federation/editmember?id='+id,
+        dataType: 'json',
+        success:function(data, textStatus, jqXHR){
+            memberFormPrepare();
+            $('#MemberFormCaptionHeader').html('Редактирование учетной записи члена федерации');
+            
+            $('#memberName').val(data.name);
+            $('#memberDob').val(data.dob);
+            $('.redactor_').html(data.description);
+            $('#memberFrom').val(data.from);
+            $('#memberTo').val(data.to);
+            $('#memberRole').val(3);
+            $('#memberUid').val(1);
+            $('#memberId').val(data.id);
+            $("#FederationMemberDialog").dialog('open');
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+                        
+        }
+    });
+};
+
+</script>
