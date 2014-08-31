@@ -6,6 +6,15 @@
 function showFederationProfile(id) {
     $.ajax({
         url:'/index.php/federation/editmember?id='+id,
+        beforeSend: function(xhr) {
+            $('.memberName').html('');
+            $('#memberPhoto').prop('src', '/images/noavatar.png');
+            $('#memberDob').html('');
+            $('#memberFrom').html('');
+            $('#memberTo').html('');
+            $('#memberDescription').html('');
+            $('#memberRole').html('');
+        },
         success: function(data, textStatus, jqXHR) {
             $('.memberName').html(data.name);
             $('#memberPhoto').prop('src', data.photo);
