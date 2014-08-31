@@ -34,15 +34,14 @@ function showFederationProfile(id) {
                     $('#memberRole').html('член федерации');
                 }
             });
+            $('#MemberProfile').dialog('open');
         },
         error: function(jqXHR, textStatus, errorThrown) {
             alert('Что - пошло не так. Запрос данных ччлена федерации вернул '+status+" "+errorThrow);
         },
         dataType: 'json',
         type: 'POST'
-    });
-    
-    $('#MemberProfile').dialog('open');
+    }); 
 };
 
 function newFederationMember() {
