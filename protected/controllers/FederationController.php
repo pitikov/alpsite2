@@ -340,7 +340,6 @@ class FederationController extends Controller
 		  'deletemember',
 		  'deleteaction',
 		  'addmember', 
-		  'editmember', 
 		  'loaddocument', 
 		  'deletedocument',
 		  'deleteregion',
