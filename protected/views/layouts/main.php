@@ -2,6 +2,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
 <?php
+echo CHtml::tag('html', array(
+    'xmlns'=>"http://www.w3.org/1999/xhtml",
+    'xml:lang'=>"ru",
+    'lang'=>"ru"
+    ),null, false);
 echo CHtml::tag('head',array(),
     CHtml::tag('meta', array('http-equiv'=>'Content-Type', 'content'=>'text/html; charset=utf-8')).
     CHtml::tag('meta', array('name'=>'language', 'content'=>'ru')).
@@ -57,6 +62,4 @@ echo CHtml::tag('body',array(),
     echo CHtml::closeTag('div'); // div#page
 echo CHtml::closeTag('body');
 	
-?>
-
-</html>
+echo CHtml::closeTag('html');
