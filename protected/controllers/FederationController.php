@@ -265,6 +265,23 @@ class FederationController extends Controller
  	  throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }
   }
+  
+  public function actionGetrole($id) {
+      if (Yii::app()->request->isAjaxRequest) {
+          $role = FederationRole::model()->findByPk($id);
+          if ($role === null) {
+             throw new CHttpException(404, "Запись не найденна."); 
+          } else {
+              echo json_encode(array(
+                  'id'=>$role->id,
+                  'title'=>$role->title
+              ));
+          }
+      } else {
+          throw new CHttpException(500, "Разрешен только AJAX запрос.");
+      }
+  }
+
   public function actionUsers()
   {
       if (Yii::app()->request->isAjaxRequest) {
@@ -302,7 +319,6 @@ class FederationController extends Controller
 		  'deleteroute',
 		  'addaction', 
 		  'editaction',
-		  'getroles',
 	      ),
 	      'roles'=>array('admin'),
 	  ),
@@ -315,7 +331,6 @@ class FederationController extends Controller
 		  'addmount',
 		  'addroute',
 		  'editroute',
-		  'getroles',
 	      ),
 	      'roles'=>array('fapo'),
 	  ),
@@ -337,7 +352,6 @@ class FederationController extends Controller
 		  'addmount',
 		  'addroute',
 		  'editroute',
-		  'getroles',
 	      ),
 	      'roles'=>array('guest'),
 	  )
