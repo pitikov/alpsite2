@@ -5,7 +5,9 @@
 
 function showFederationProfile(id) {
     $.ajax({
-        url:'/index.php/federation/editmember?id='+id,
+        url:'/index.php/federation/editmember',
+        data:{'id':id},
+        type:'GET',
         beforeSend: function(xhr) {
             $('.memberName').html('');
             $('#memberPhoto').prop('src', '/images/noavatar.png');
@@ -24,9 +26,10 @@ function showFederationProfile(id) {
             $('#memberDescription').html(data.description);
 
             $.ajax({
-                url:'/index.php/federation/getrole?id='+data.role,
+                url:'/index.php/federation/getrole',
                 dataType: 'json',
-                type: 'POST',
+                data:{'id':data.role},
+                type: 'GET',
                 success: function(role, textStatus, jqXHR) {
                     $('#memberRole').html(role.title);
                 },
@@ -40,7 +43,6 @@ function showFederationProfile(id) {
             alert('Что - пошло не так. Запрос данных ччлена федерации вернул '+status+" "+errorThrow);
         },
         dataType: 'json',
-        type: 'POST'
     }); 
 };
 
@@ -144,8 +146,10 @@ function uploadPhoto()
 function editFederationMember(id) 
 {   
     $.ajax({
-        url:'/index.php/federation/editmember?id='+id,
+        url:'/index.php/federation/editmember',
         dataType: 'json',
+        type:'GET',
+        data:{'id':id},
         success:function(data, textStatus, jqXHR){
             memberFormPrepare();
             $('#MemberFormCaptionHeader').html('Редактирование учетной записи члена федерации');

@@ -295,6 +295,25 @@ class FederationController extends Controller
  	  throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }
   } 
+  
+  /** @fn actionGetmembermountarings
+   *  @brief Получить список восхождений участника по заданному id
+   */
+  public function actionGetmembermountarings($id)
+  {
+      if (Yii::app()->request->isAjaxRequest) {
+          $memberMountarings = array();
+          $mountarings = MountaringMembers::model()->find('member=:Id', array(':Id'=>$id));
+          foreach ($mountarings as $mountaring) {
+              
+          }
+          
+          echo json_encode($memberMountarings);
+      } else {
+          throw new CHttpException(500, "Разрешен только AJAX запрос.");
+      }
+  }
+  
   public function filters()
   {
       return array(
