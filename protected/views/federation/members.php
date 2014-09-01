@@ -82,9 +82,10 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
         CHtml::tag('div',array('class'=>'row', 'id'=>'memberDescription'),null)
     );
     // Отобразить список восхождений
-    $this->widget('MemberMountaringTable', array(
-        'id'=>'memberMountarings',
-    ));
-    
+    echo CHtml::tag('div', array('class'=>'clear'), null);
+    echo CHtml::tag('div', array('id'=>'memberMountarings'), null);
     echo CHtml::closeTag('div');
+            
+    
+
 $this->endWidget();

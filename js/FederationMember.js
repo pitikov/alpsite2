@@ -16,14 +16,16 @@ function showFederationProfile(id) {
             $('#memberTo').html('');
             $('#memberDescription').html('');
             $('#memberRole').html('');
+            $('#memberMountarings').html('');
         },
         success: function(data, textStatus, jqXHR) {
             $('.memberName').html(data.name);
             $('#memberPhoto').prop('src', data.photo);
             $('#memberDob').html(data.dob===null?'не известно':data.dob);
             $('#memberFrom').html(data.from===null?'не известно':data.from);
-            $('#memberTo').html(data.to===null?'по настоящее время':data.to);
+            $('#memberTo').html(data.to===null?'настоящее время':data.to);
             $('#memberDescription').html(data.description);
+            $('#memberMountarings').load('/index.php/federation/getmembermountarings?id='+id);
 
             $.ajax({
                 url:'/index.php/federation/getrole',

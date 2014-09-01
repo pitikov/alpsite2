@@ -302,13 +302,34 @@ class FederationController extends Controller
   public function actionGetmembermountarings($id)
   {
       if (Yii::app()->request->isAjaxRequest) {
-          $memberMountarings = array();
-          $mountarings = MountaringMembers::model()->find('member=:Id', array(':Id'=>$id));
-          foreach ($mountarings as $mountaring) {
-              
-          }
+          $mounatringList = MountaringMembers::model()->findAll('member=:MemberId', array(':MemberId'=>$id));
           
-          echo json_encode($memberMountarings);
+          //if ($mounatringList->count()>0)
+          echo CHtml::tag('table', array('id'=>'mountaringListTable'), 
+                  CHtml::tag('caption',array('style'=>'text-align:center'),CHtml::tag('b', array(),'список восходжений')).
+                  CHtml::tag('thead', array(), 
+                          CHtml::tag('th',array(),'дата').
+                          CHtml::tag('th',array(),'на вершину').
+                          CHtml::tag('th',array(),'по маршруту').
+                          CHtml::tag('th',array(),'КС').
+                          CHtml::tag('th',array(),'в составе')
+                  ).
+                  CHtml::tag('tbody',array(),null,false)
+                  ,false);
+          $rowClass = 'even';
+          foreach ($mounatringList as $mountaring) {
+              echo CHtml::tag('tr', array('class'=>$rowClass),
+                      CHtml::tag('td', array(), null).
+                      CHtml::tag('td', array(), null).
+                      CHtml::tag('td', array(), null).
+                      CHtml::tag('td', array(), null).
+                      CHtml::tag('td', array(), null)
+              );
+              
+              $rowClass = $rowClass==='even'?'odd':'even';
+          }
+          echo CHtml::closeTag('tbody');
+          echo CHtml::closeTag('table');
       } else {
           throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }
