@@ -148,16 +148,24 @@ create table `region` (
   `description` text default null
 ) engine = 'InnoDb';
 
+create table `subregion` (
+    `id` integer primary key not null unique auto_increment,
+    `region` integer not null,
+    `title` varchar(255) not null unique,
+    `description` text default null,
+    constraint `fk_subregion_region` foreign key (`region`) references `region`(`id`) on update cascade on delete restrict
+) engine = 'InnoDb';
+
 create table `mountain` 
 (
   `id` integer primary key not null unique auto_increment,
-  `region` integer not null,
+  `subregion` integer not null,
   `title` varchar(128) not null unique comment 'mountain title',
   -- tutoral на использование google maps смотри на http://habrahabr.ru/post/110460/
   `location_lat` float comment 'position from latitude',
   `location_lng` float comment 'position from logitude',
   `description` text default null,
-  constraint `fk_mountain_region` foreign key (`region`) references `region`(`id`) on update cascade on delete restrict
+  constraint `fk_mountain_subregion` foreign key (`subregion`) references `subregion`(`id`) on update cascade on delete restrict
 ) engine = 'InnoDb';
 
 create table `route` (

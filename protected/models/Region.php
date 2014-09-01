@@ -9,7 +9,7 @@
  * @property string $description
  *
  * The followings are the available model relations:
- * @property Mountain[] $mountains
+ * @property Subregion[] $subregion
  */
 class Region extends CActiveRecord
 {
@@ -46,7 +46,7 @@ class Region extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'mountains' => array(self::HAS_MANY, 'Mountain', 'region'),
+			'subregion' => array(self::HAS_MANY, 'Subregion', 'region'),
 		);
 	}
 
@@ -57,7 +57,7 @@ class Region extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'title' => 'Горный район',
+			'title' => 'Регион',
 			'description' => 'описание',
 		);
 	}

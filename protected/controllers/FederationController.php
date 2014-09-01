@@ -304,32 +304,38 @@ class FederationController extends Controller
       if (Yii::app()->request->isAjaxRequest) {
           $mounatringList = MountaringMembers::model()->findAll('member=:MemberId', array(':MemberId'=>$id));
           
-          //if ($mounatringList->count()>0)
-          echo CHtml::tag('table', array('id'=>'mountaringListTable'), 
-                  CHtml::tag('caption',array('style'=>'text-align:center'),CHtml::tag('b', array(),'список восходжений')).
-                  CHtml::tag('thead', array(), 
-                          CHtml::tag('th',array(),'дата').
-                          CHtml::tag('th',array(),'на вершину').
-                          CHtml::tag('th',array(),'по маршруту').
-                          CHtml::tag('th',array(),'КС').
-                          CHtml::tag('th',array(),'в составе')
-                  ).
-                  CHtml::tag('tbody',array(),null,false)
-                  ,false);
-          $rowClass = 'even';
-          foreach ($mounatringList as $mountaring) {
-              echo CHtml::tag('tr', array('class'=>$rowClass),
-                      CHtml::tag('td', array(), null).
-                      CHtml::tag('td', array(), null).
-                      CHtml::tag('td', array(), null).
-                      CHtml::tag('td', array(), null).
-                      CHtml::tag('td', array(), null)
-              );
-              
-              $rowClass = $rowClass==='even'?'odd':'even';
+       
+          if (count($mounatringList)>0) {
+
+              echo CHtml::tag('table', array('id'=>'mountaringListTable'), 
+                      CHtml::tag('caption',array('style'=>'text-align:center'),
+                              CHtml::tag('b', array(),'список восходжений')).
+                              CHtml::tag('thead', array(), 
+                                      CHtml::tag('th',array(),'дата').
+                                      CHtml::tag('th',array(),'на вершину').
+                                      CHtml::tag('th',array(),'по маршруту').
+                                      CHtml::tag('th',array(),'КС').
+                                      CHtml::tag('th',array(),'в составе')
+                                      ).
+                              CHtml::tag('tbody',array(),null,false)
+                      ,false);
+              $rowClass = 'even';
+              foreach ($mounatringList as $item) {
+                  $mountaring = $item->Mountaring;
+                  echo CHtml::tag('tr', array('class'=>$rowClass),
+                          CHtml::tag('td', array(), $mountaring->date).
+                          CHtml::tag('td', array(), $mountaring->mountaringRoute->RouteMountain->title).
+                          CHtml::tag('td', array(), $mountaring->mountaringRoute->title).
+                          CHtml::tag('td', array(), $mountaring->mountaringRoute->difficulty).
+                          CHtml::tag('td', array(), $mountaring->Composition)
+                          );
+                  $rowClass = $rowClass==='even'?'odd':'even';  
+              }
+              echo CHtml::closeTag('tbody');
+              echo CHtml::closeTag('table');       
           }
-          echo CHtml::closeTag('tbody');
-          echo CHtml::closeTag('table');
+
+
       } else {
           throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }

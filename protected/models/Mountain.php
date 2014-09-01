@@ -5,7 +5,7 @@
  *
  * The followings are the available columns in table 'mountain':
  * @property integer $id
- * @property integer $region
+ * @property integer $subregion
  * @property string $title
  * @property double $location_lat
  * @property double $location_lng
@@ -33,15 +33,15 @@ class Mountain extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('region, title', 'required'),
-			array('region', 'numerical', 'integerOnly'=>true),
+			array('subregion, title', 'required'),
+			array('subregion', 'numerical', 'integerOnly'=>true),
 			array('location_lat, location_lng', 'numerical'),
 			array('title', 'length', 'max'=>128),
 			array('description', 'safe'),
-			array('region','existed'),
+			array('subregion','existed'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, region, title, location_lat, location_lng, description', 'safe', 'on'=>'search'),
+			array('id, subregion, title, location_lat, location_lng, description', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,7 +53,7 @@ class Mountain extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'MountaringRegion' => array(self::BELONGS_TO, 'Region', 'region'),
+			'MountaringRegion' => array(self::BELONGS_TO, 'Subregion', 'region'),
 			'Routes' => array(self::HAS_MANY, 'Route', 'mountain'),
 		);
 	}
@@ -65,7 +65,7 @@ class Mountain extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'region' => 'район',
+			'subregion' => 'район',
 			'title' => 'вершина',
 			'location_lat' => 'широта',
 			'location_lng' => 'долгота',
@@ -92,7 +92,7 @@ class Mountain extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('region',$this->region);
+		$criteria->compare('subregion',$this->subregion);
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('location_lat',$this->location_lat);
 		$criteria->compare('location_lng',$this->location_lng);
@@ -116,9 +116,9 @@ class Mountain extends CActiveRecord
 	
 	public function existed($attribute,$params)
 	{
-	    $region = Region::model()->findByPk($this->region);
+	    $region = Subregion::model()->findByPk($this->region);
 	    $label = $this->getAttributeLabel($attribute);
-	    if ($region===null) $this->addError('region', "{$label} отсутствует в базе данных");
+	    if ($region===null) $this->addError('subregion', "{$label} отсутствует в базе данных");
 	}
 	
 }
