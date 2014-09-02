@@ -226,3 +226,12 @@ create table `document` (
   `file_name` varchar(128) comment 'original file name',
   constraint `fk_document_owner` foreign key (`owner`) references `user` (`uid`) on update cascade on delete restrict  
 ) engine = 'InnoDb';
+
+-- OpenId & OpenAuth
+create table `social_network_auth` (
+    `id` integer primary key not null unique auto_increment,
+    `uid` integer not null,
+    `email` varchar(128) not null unique,
+    `auth_key` varchar (128) not null,
+    constraint `fk_sna_uid` foreign key (`uid`) references `user` (`uid`) on update cascade on delete cascade
+) engine = 'InnoDb';
