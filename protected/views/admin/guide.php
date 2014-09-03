@@ -1,12 +1,12 @@
 <?php
     $pagename = 'Классификатор';
     array_push($this->breadcrumbs, $pagename);
-?>
-<h1><?php echo $pagename; ?></h1>
-<?php 
+    
+    echo CHtml::tag('h1', array(), $pagename);
+
   $this->widget('system.web.widgets.CTreeView', array(
       'data'=>array(
-          'node1'=>array(
+          array(
 	      'text'=>'Кавказ',
 	      'expanded'=>true,
 	      'children'=>array(
@@ -34,6 +34,12 @@
 		  
 	      )
 	  ),
-      )
+      ),
+      'htmlOptions' =>array(
+          'class'=>'treeview-gray'
+          ),
   ));
-?>
+  
+  $this->widget('Guide', array(
+      'editable'=>true,
+  ));

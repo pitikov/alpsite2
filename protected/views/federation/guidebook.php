@@ -2,7 +2,9 @@
 $pagename = 'Классификатор';
 
 array_push($this->breadcrumbs, $pagename);
-?>
-<h1><?php echo $pagename; ?></h1>
 
-На данной странице будет отображаться каталог классификатора
+echo CHtml::tag('h1', array(), $pagename);
+
+$this->widget('Guide', array(
+    'id'=>'GuideBook'
+));

@@ -24,6 +24,7 @@ return array(
 		'ext.imperavi-redactor-widget.ImperaviRedactorWidget',
 		'ext.OSM.*',
 		'ext.Calendar.*',
+                'ext.Guide.*',
 	),
 
 	'modules'=>array(
