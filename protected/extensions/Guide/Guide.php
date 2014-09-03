@@ -22,8 +22,8 @@ class Guide extends CWidget {
         $cs->registerScriptFile($assets.'/Guide.js');
         $cs->registerCssFile($assets.'/Guide.css');
         
-        
         echo CHtml::tag('div', array('id'=>$this->id, 'class'=>'mountaring-guide'), null, false);
+        echo CHtml::hiddenField("assets", $assets);
         echo CHtml::tag('h3',array(),'Классификатор маршрутов на горные вершины');
         
         echo CHtml::tag('div', array('id'=>'region-list'),null);
@@ -58,6 +58,7 @@ class Guide extends CWidget {
         var existed = $('#region_'+region.id);
         if (existed.length) {
             alert ('Update record '+region.title);
+            ///@todo update existed record
         } else {
             if (region.description === null) region.description = '';
             regionList.append('<div id = "region_'+region.id+'"/>');
@@ -77,18 +78,42 @@ class Guide extends CWidget {
                type: 'POST',
                dataType: 'json',
                success: function (data, textStatus, jqXHR) {
-                   $('#region-content_'+region).html('Все хорошо');
-
-                    },
+                   if(data.length) {
+                       $('#region-content_'+region).html('');
+                       data.forEach(function (subregion, count, array) {
+                           insertSubregion(subregion);
+                       });
+                   } else {
+                       $('#region-content_'+region).html('<div class="empty-content">Не информации о районах</div>');
+                   }
+               },
                error: function (jqXHR, textStatus, errorThrown) {
-                   alert('Что-то пошло не так. Запросс районов вернул: '+errorThrown);
                    $('#region-content_'+region).html('<div class="flash-error">Ошибка получения данных</div>');
-                    },
+                   alert('Что-то пошло не так. Запросс районов вернул: '+errorThrown);
+               },
                beforeSend: function (xhr) {
-                   $('#region-content_'+region).html('Ждите ответа');
-                    }
+                   var assets = $('#assets').val();
+                   $('#region-content_'+region).html('<img src = "'+assets+'/progress.gif">');
+               }
             });
         }
+    }
+    
+    function insertSubregion(subregion) {
+        var subregionList = $('#region-content_'+subregion.region);
+        if ($('#subregion_'+subregion.id).length) {
+            /// @todo Обновить запись
+        } else {
+            subregionList.append('<div class="subregion" id="subregion_'+subregion.id+'"/>');
+            $('#subregion_'+subregion.id).append('<h5 class="subregion-title" onclick="getMountains('+subregion.id+')">'+subregion.title+'</h5>');
+            //$('#subregion_'+subregion.id).append('<p class="subregion-about note" onclick="getMountains('+subregion.id+')">'+subregion.description+'</p>');
+
+            $('#subregion_'+subregion.id).append('<div class="subregion-contetnt" id="subregion-content_'+subregion.id+'"/>');
+
+        }
+    }
+    
+    function getMountains(subregion) {
     }
     
 </script>
