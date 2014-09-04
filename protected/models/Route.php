@@ -9,11 +9,13 @@
  * @property string $title
  * @property string $difficulty
  * @property integer $winter
+ * @property string $author 
+ * @property date $year
  * @property string $description
  *
  * The followings are the available model relations:
  * @property Mountaring[] $mountarings
- * @property Mountain $RouteMountain
+ * @property Mountain $Mountain
  */
 class Route extends CActiveRecord
 {
@@ -36,7 +38,9 @@ class Route extends CActiveRecord
 			array('mountain, title', 'required'),
 			array('mountain, winter', 'numerical', 'integerOnly'=>true),
 			array('title', 'length', 'max'=>128),
+                        array('author', 'length', 'max'=>64),
 			array('difficulty', 'length', 'max'=>3),
+                        array('year', 'date'),
 			array('description', 'safe'),
 			array('mountain','existsed'),
 			// The following rule is used by search().
@@ -54,7 +58,7 @@ class Route extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'mountarings' => array(self::HAS_MANY, 'Mountaring', 'route'),
-			'RouteMountain' => array(self::BELONGS_TO, 'Mountain', 'mountain'),
+			'Mountain' => array(self::BELONGS_TO, 'Mountain', 'mountain'),
 		);
 	}
 
@@ -69,6 +73,8 @@ class Route extends CActiveRecord
 			'title' => 'маршрут',
 			'difficulty' => 'к.с.',
 			'winter' => 'зимний',
+			'author' => 'автор',
+			'year' => 'год',
 			'description' => 'описание',
 		);
 	}
@@ -96,6 +102,8 @@ class Route extends CActiveRecord
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('difficulty',$this->difficulty,true);
 		$criteria->compare('winter',$this->winter);
+		$criteria->compare('author',$this->author);
+		$criteria->compare('year',$this->year);
 		$criteria->compare('description',$this->description,true);
 
 		return new CActiveDataProvider($this, array(

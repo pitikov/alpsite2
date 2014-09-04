@@ -161,6 +161,7 @@ create table `mountain`
   `id` integer primary key not null unique auto_increment,
   `subregion` integer not null,
   `title` varchar(128) not null unique comment 'mountain title',
+  `height` int not null comment 'absolute height',
   -- tutoral на использование google maps смотри на http://habrahabr.ru/post/110460/
   `location_lat` float comment 'position from latitude',
   `location_lng` float comment 'position from logitude',
@@ -174,6 +175,8 @@ create table `route` (
   `title` varchar(128) not null unique comment 'mountaring route title',
   `difficulty` enum ('1Б', '2А', '2Б', '3А', '3Б', '4А', '4Б', '5А', '5Б', '6А', '6Б') not null default '1Б',
   `winter` boolean not null default false,
+  `author` varchar(64) default null comment 'first mountaring author',
+  `year` date default null,
   `description` text default null,
   constraint `fk_route_mountain` foreign key (`mountain`) references `mountain`(`id`) on update cascade on delete cascade
 ) engine = 'InnoDb';

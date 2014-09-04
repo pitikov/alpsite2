@@ -340,35 +340,7 @@ class FederationController extends Controller
           throw new CHttpException(500, "Разрешен только AJAX запрос.");
       }
   }
-  
-  public function actionGetregions()
-  {
-      if (Yii::app()->request->isAjaxRequest) {
-          $regionList = Region::model()->findAll();
-          $regions = array();
-          foreach ($regionList as $region) {
-              $regions[] = array('id'=>$region->id, 'title'=>$region->title, 'description'=>$region->description);
-          }
-          echo json_encode($regions);
-      } else {
-          throw new CHttpException(500, "Разрешен только AJAX запрос.");
-      }
-  }
-  
-  public function actionGetsubregions()
-  {
-      if (Yii::app()->request->isAjaxRequest) {
-          $subregionList = Subregion::model()->findAll('region=:Region', array(':Region'=>$_POST['regionId']));
-          $subregions = array();
-          foreach ($subregionList as $subregion) {
-              $subregions[] = array('id'=>$subregion->id, 'title'=>$subregion->title, 'description'=>$subregion->description, 'region'=>$subregion->region);
-          }
-          echo json_encode($subregions);
-      } else {
-          throw new CHttpException(500, "Разрешен только AJAX запрос.");
-      }
-  }
-
+    
   public function filters()
   {
       return array(

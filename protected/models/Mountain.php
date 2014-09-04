@@ -7,6 +7,7 @@
  * @property integer $id
  * @property integer $subregion
  * @property string $title
+ * @property integer $height Absolute mountain peak height
  * @property double $location_lat
  * @property double $location_lng
  * @property string $description
@@ -33,8 +34,8 @@ class Mountain extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('subregion, title', 'required'),
-			array('subregion', 'numerical', 'integerOnly'=>true),
+			array('subregion, title, height', 'required'),
+			array('subregion, height', 'numerical', 'integerOnly'=>true),
 			array('location_lat, location_lng', 'numerical'),
 			array('title', 'length', 'max'=>128),
 			array('description', 'safe'),
@@ -70,6 +71,7 @@ class Mountain extends CActiveRecord
 			'location_lat' => 'широта',
 			'location_lng' => 'долгота',
 			'description' => 'описание',
+                        'height' => 'высота',
 		);
 	}
 
@@ -94,6 +96,7 @@ class Mountain extends CActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('subregion',$this->subregion);
 		$criteria->compare('title',$this->title,true);
+		$criteria->compare('height',$this->height);
 		$criteria->compare('location_lat',$this->location_lat);
 		$criteria->compare('location_lng',$this->location_lng);
 		$criteria->compare('description',$this->description,true);

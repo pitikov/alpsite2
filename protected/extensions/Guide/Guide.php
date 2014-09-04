@@ -31,6 +31,21 @@ class Guide extends CWidget {
         echo CHtml::closeTag('div');
         echo CHtml::script('getRegions();');
         parent::init();
+        
+        $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+            'id'=>'RouteEditDialog',
+            'options'=>array(
+		    'title'=>'Классификатор',
+		    'autoOpen'=>false,
+                    'buttons'=>array(
+                        array('text'=>'Сохранить', 'click'=>'js:function(){saveRoute()}'),
+                        array('text'=>'Отмена', 'click'=>'js:function(){$("#RouteEditDialog").dialog("close");}'),
+                    ),
+
+		),
+        ));
+        
+        $this->endWidget();
     }
 }
 ?>
@@ -39,7 +54,7 @@ class Guide extends CWidget {
     
     function getRegions() {
         $.ajax({
-            url:'/index.php/federation/getregions',
+            url:'/index.php/guide/getregions',
             success: function (data, textStatus, jqXHR) {
                 data.forEach(function (region, count, array) {
                     insetRegion(region);
@@ -73,7 +88,7 @@ class Guide extends CWidget {
             $('#region-content_'+region).html('');
         } else {
             $.ajax({
-               url:'/index.php/federation/getsubregions',
+               url:'/index.php/guide/getsubregions',
                data: {'regionId':region},
                type: 'POST',
                dataType: 'json',
@@ -114,6 +129,80 @@ class Guide extends CWidget {
     }
     
     function getMountains(subregion) {
+        var subregionContent = $('#subregion-content_'+subregion);
+        if (subregionContent.html()!=='') {
+            subregionContent.html('');
+        } else {
+            $.ajax({
+                url:'/index.php/guide/getmountains',
+                data:{'subregionId':subregion},
+                dataType: 'json',
+                type: 'POST',
+                beforeSend: function (xhr) {
+                    var assets = $('#assets').val();
+                    subregionContent.html('<img src = "'+assets+'/progress.gif">');
+                },
+                success: function (data, textStatus, jqXHR) {
+                        if (data.length) {
+                            subregionContent.html('');
+                            data.forEach(function (mountain, count, array) {
+                                insertMountain(mountain);
+                       });
+                        } else {
+                            subregionContent.html('<div class="empty-content">Не информации о вершинах района</div>');
+                        }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    subregionContent.html('<div class="flash-error">Ошибка получения данных</div>');
+                    alert('Что-то пошло не так. Запросс вершин района вернул: '+errorThrown);
+
+                }
+            });
+        }
+    }
+    
+    function insertMountain(mountain)
+    {
+        var mountainItem = $('#mountain_'+mountain.id);
+        var subregionContent = $('#subregion-content_'+mountain.subregion);
+        if (mountainItem.length) {
+            /// @todo Update moumountainItem record
+        } else {
+            subregionContent.append('<div class="mountain" id="mountain_'+mountain.id+'"/>');
+            mountainItem = $('#mountain_'+mountain.id);
+            mountainItem.append('<h6 class="mountain-title" onclick="getRoutes('+mountain.id+')">'+mountain.title+'</h6>');
+            // mountainItem.append('<div class="mountain-lonlat"><span class="lon">'+mountain.lon+'</span>, <span class="lat">'+mountain.lat+'</span></div>');
+            mountainItem.append('<div class="mountain-routes" id="mountain-routes_'+mountain.id+'"/>');
+
+        }
+    }
+    
+    function getRoutes(mountain) {
+        var mountainRoutes = $('#mountain-routes_'+mountain);
+        if (mountainRoutes.html()==='') {
+            $.ajax({
+                url:'/index.php/guide/getroutes',
+                data:{'mountainId':mountain},
+                dataType: 'html',
+                type: 'POST',
+                success: function (data, textStatus, jqXHR) {
+                    mountainRoutes.html(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                        
+                },
+                beforeSend: function (xhr) {
+                    var assets = $('#assets').val();
+                    mountainRoutes.html('<img src = "'+assets+'/progress.gif">');                        
+                }
+            });
+        } else {
+            mountainRoutes.html('');
+        }
+    }
+    
+    function addRoute(mountain) {
+        $('#RouteEditDialog').dialog('open');
     }
     
 </script>
