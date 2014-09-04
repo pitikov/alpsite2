@@ -41,9 +41,59 @@ class Guide extends CWidget {
                         array('text'=>'Сохранить', 'click'=>'js:function(){saveRoute()}'),
                         array('text'=>'Отмена', 'click'=>'js:function(){$("#RouteEditDialog").dialog("close");}'),
                     ),
-
+                    'width'=>'800px'
 		),
         ));
+        echo CHtml::hiddenField('mountainId');
+        echo CHtml::tag('div', array('id'=>'routeLocation'), 
+                CHtml::tag('div', array('class'=>"row"), 
+                        CHtml::label('Регион', 'mountaringRegions').
+                        CHtml::dropDownList('mountaringRegions', null, array()).
+                        CHtml::image('/images/new.png', 'Добавить регион', array('onclick'=>'addNewRegion()'))
+                        ).
+                CHtml::tag('div', array('class'=>"row"), 
+                        CHtml::label('Район', 'mountaringSubRegions').
+                        CHtml::dropDownList('mountaringSubRegions', null, array()).
+                        CHtml::image('/images/new.png', 'Добавить район', array('onclick'=>'addNewSubRegion()'))
+                        ).
+                CHtml::tag('div', array('class'=>"row"), 
+                        CHtml::label('Вершина', 'mountaringMountain').
+                        CHtml::dropDownList('mountaringMountain', null, array()).
+                        CHtml::image('/images/new.png', 'Добавить вершину', array('onclick'=>'addNewMountain()'))
+                        ).
+                CHtml::tag('hr')
+                );
+        echo CHtml::tag('div', array('id'=>'route-detail'),
+                CHtml::tag('div', array('class'=>'row'), 
+                        CHtml::label('маршрут', 'RouteTitle').
+                        CHtml::textField('RouteTitle')
+                        ).
+                CHtml::tag('div', array('class'=>'row'), 
+                        CHtml::label('КС', 'RouteDifficulty').
+                        CHtml::dropDownList('RouteDifficulty', null, array()).
+                        CHtml::label('зимний', 'RouteWinter').
+                        CHtml::checkBox('RouteWinter', false)
+                        ).
+                CHtml::tag('div', array('class'=>'row'), 
+                        CHtml::label('автор', 'RouteAuthor').
+                        CHtml::textField('RouteAuthor').
+                        CHtml::label('год', 'RouteYear').
+                        CHtml::numberField('RouteYear')
+                        )
+                ,false);
+        
+        $this->widget('ImperaviRedactorWidget', array(
+		'name' => 'RouteDescription',
+		
+		// Some options, see http://imperavi.com/redactor/docs/
+		'options' => array(
+		    'lang' => 'ru',
+		    'toolbar' => true,
+		    'iframe' => false,
+		    'css' => 'wym.css',
+		  ),
+		));
+        echo CHtml::closeTag('div');
         
         $this->endWidget();
     }
@@ -205,4 +255,19 @@ class Guide extends CWidget {
         $('#RouteEditDialog').dialog('open');
     }
     
+    function saveRoute() {
+        alert('Implict me, please.');
+    }
+    
+    function addNewRegion() {
+        alert('Implict me, please.');
+    }
+    
+    function addNewSubRegion() {
+        alert('Implict me, please.');
+    }
+    
+    function addNewMountain() {
+        alert('Implict me, please.');
+    }
 </script>
