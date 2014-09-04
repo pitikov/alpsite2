@@ -11,6 +11,7 @@
  * @property integer $winter
  * @property string $author 
  * @property date $year
+ * @property string $type
  * @property string $description
  *
  * The followings are the available model relations:
@@ -40,7 +41,8 @@ class Route extends CActiveRecord
 			array('title', 'length', 'max'=>128),
                         array('author', 'length', 'max'=>64),
 			array('difficulty', 'length', 'max'=>3),
-                        array('year', 'date'),
+                        array('year', 'date', 'format'=>'yyyy'),
+                        array('type', 'in', 'range'=>  array_keys(self::getOptions())),
 			array('description', 'safe'),
 			array('mountain','existsed'),
 			// The following rule is used by search().
@@ -75,6 +77,7 @@ class Route extends CActiveRecord
 			'winter' => 'зимний',
 			'author' => 'автор',
 			'year' => 'год',
+                        'type' => 'тип',
 			'description' => 'описание',
 		);
 	}
@@ -130,4 +133,12 @@ class Route extends CActiveRecord
 		$this->addError($attribute, "{$label} отсутствует в базе данных");
 	    }
 	}
+     
+        public static function getOptions() {
+        return array(
+            self::TYPE_ROCK=>'Ск',
+            self::TYPE_SNOWANDICE=>'ЛС',
+            self::TYPE_MIXED=>'К',
+        );
+    }
 }

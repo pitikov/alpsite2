@@ -93,6 +93,10 @@ class GuideController extends Controller {
                     'value'=>'$data->difficulty'
                     ),
                 array(
+                    'header'=>'тип',
+                    'value'=>'$data->type'
+                    ),
+                array(
                     'header'=>'зимний',
                     'value'=>'$data->winter?"*":""'
                     ),
@@ -115,6 +119,33 @@ class GuideController extends Controller {
         $route = Route::model()->findByPk($_POST['routeId']);
         if (sizeof($route)==0) {
             throw new CHttpException(404, "Маршрут с номером {$_POST['routeId']} не найден");
+        } else {
+            /// @todo Send route detail
+        }
+    }
+    
+    public function actionAddregion() {
+        $model= new Region();
+        $model->title = $_GET['region'];
+        if ($model->validate()) {
+            if ($model->save()) {
+                echo 'Ok';
+            }
+        } else {
+            throw new CHttpException(500, 'Ошибка валидации');
+        }
+    }
+    
+    public function actionAddsubregion() {
+        $model = new Subregion();
+        $model->region = $_GET['region'];
+        $model->title = $_GET['subregion'];
+        if ($model->validate()) {
+            if ($model->save()) {
+                echo json_encode(array('subregion'=>$model->id));
+            }
+        } else {
+            throw new CHttpException(500, 'Ошибка валидации');
         }
     }
     

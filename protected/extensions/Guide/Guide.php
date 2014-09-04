@@ -25,6 +25,12 @@ class Guide extends CWidget {
         echo CHtml::tag('div', array('id'=>$this->id, 'class'=>'mountaring-guide'), null, false);
         echo CHtml::hiddenField("assets", $assets);
         echo CHtml::tag('h3',array(),'Классификатор маршрутов на горные вершины');
+
+        echo CHtml::image('/images/new.png', 'Добавить маршрут', array(
+            'onclick'=>'addRoute();',
+            'title'=>'Добавить описание маршрута'
+        ));
+
         
         echo CHtml::tag('div', array('id'=>'region-list'),null);
         
@@ -48,7 +54,7 @@ class Guide extends CWidget {
         echo CHtml::tag('div', array('id'=>'routeLocation'), 
                 CHtml::tag('div', array('class'=>"row"), 
                         CHtml::label('Регион', 'mountaringRegions').
-                        CHtml::dropDownList('mountaringRegions', null, array()).
+                        CHtml::dropDownList('mountaringRegions', null, array(), array('onchange'=>'regionChanged();')).
                         CHtml::image('/images/new.png', 'Добавить регион', array('onclick'=>'addNewRegion()'))
                         ).
                 CHtml::tag('div', array('class'=>"row"), 
@@ -70,7 +76,9 @@ class Guide extends CWidget {
                         ).
                 CHtml::tag('div', array('class'=>'row'), 
                         CHtml::label('КС', 'RouteDifficulty').
-                        CHtml::dropDownList('RouteDifficulty', null, array()).
+                        CHtml::dropDownList('RouteDifficulty', null, array(
+                            '1Б','2А','2Б','3А','3Б','4А','4Б','5А','5Б','6А','6Б'
+                        )).
                         CHtml::label('зимний', 'RouteWinter').
                         CHtml::checkBox('RouteWinter', false)
                         ).
@@ -78,10 +86,12 @@ class Guide extends CWidget {
                         CHtml::label('автор', 'RouteAuthor').
                         CHtml::textField('RouteAuthor').
                         CHtml::label('год', 'RouteYear').
-                        CHtml::numberField('RouteYear')
+                        CHtml::numberField('RouteYear').
+                        CHtml::label('тип', 'RouteType').
+                        CHtml::dropDownList('RouteType',3,array(1=>'Ск', 2=>'ЛС', 3=>'К'))
                         )
                 ,false);
-        
+        echo CHtml::label('описание', 'RouteDescription');
         $this->widget('ImperaviRedactorWidget', array(
 		'name' => 'RouteDescription',
 		
@@ -121,15 +131,24 @@ class Guide extends CWidget {
     function insetRegion(region) {
         regionList = $('#region-list');
         var existed = $('#region_'+region.id);
+        var select = $('#mountaringRegionSelect_'+region.id);
+
         if (existed.length) {
-            alert ('Update record '+region.title);
+            //alert ('Update record '+region.title);
+            select.removeAttr('selected');
+            select.html(region.title);
+
             ///@todo update existed record
         } else {
             if (region.description === null) region.description = '';
             regionList.append('<div id = "region_'+region.id+'"/>');
             $('#region_'+region.id).append('<h4 class="region-title" onclick="getSubregions('+region.id+')">'+region.title+"</h4>");
-            //$('#region_'+region.id).append('<div class="region-about" id="region-about_'+region.id+'">'+region.description+'</div>');
             $('#region_'+region.id).append('<div class="region-contetnt" id="region-content_'+region.id+'"/>');
+            if (select.length) {
+            } else {
+                $('#mountaringRegions').append('<option id="mountaringRegionSelect_'+region.id+'" value='+region.id+' selected="selected">'+region.title+'</option>');
+                $('#mountaringRegions').select(region.id);
+            }
         }
     }
     
@@ -252,6 +271,7 @@ class Guide extends CWidget {
     }
     
     function addRoute(mountain) {
+        dialogPrepare();
         $('#RouteEditDialog').dialog('open');
     }
     
@@ -260,14 +280,53 @@ class Guide extends CWidget {
     }
     
     function addNewRegion() {
-        alert('Implict me, please.');
+        var region = prompt('Введите название региона');
+        if (region.length) {
+            $.ajax({
+                url:'/index.php/guide/addregion',
+                data:{'region':region},
+                success: function (data, textStatus, jqXHR) {
+                    getRegions();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Ошибка добавления региона');
+                }
+            });
+        }
     }
-    
+         
     function addNewSubRegion() {
-        alert('Implict me, please.');
+        var subregion = prompt('Введите название района');
+        if (subregion.length) {
+            $.ajax({
+                url:'/index.php/guide/addsubregion',
+                dataType: 'json',
+                type: 'GET',
+                data:{
+                    'region':$('#mountaringRegions').val(),
+                    'subregion':subregion
+                },
+                success: function (data, textStatus, jqXHR) {
+                    getSubregions($('#mountaringRegions').val());
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Ошибка добавления района');
+                }
+            });
+        }    
     }
     
     function addNewMountain() {
         alert('Implict me, please.');
+    }
+    
+    function dialogPrepare() {
+        $('#mountainId').val(0);
+       
+    }
+    
+    function regionChanged() {
+        getSubregions($('#mountaringRegions').val());
+        if ($('#region-content_'+$('#mountaringRegions').val()).html()==='') getSubregions($('#mountaringRegions').val());
     }
 </script>

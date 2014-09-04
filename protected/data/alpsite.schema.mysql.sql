@@ -177,6 +177,7 @@ create table `route` (
   `winter` boolean not null default false,
   `author` varchar(64) default null comment 'first mountaring author',
   `year` date default null,
+  `type` enum ('Ск','ЛС','К') default 'К',
   `description` text default null,
   constraint `fk_route_mountain` foreign key (`mountain`) references `mountain`(`id`) on update cascade on delete cascade
 ) engine = 'InnoDb';
