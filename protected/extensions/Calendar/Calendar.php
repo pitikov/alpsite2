@@ -16,6 +16,7 @@ class Calendar extends CWidget {
     $cs->registerCoreScript('jquery');
     $cs->registerScriptFile($assets.'/Calendar.js');
     $cs->registerCssFile($assets.'/Calendar.css');
+		date_default_timezone_set("Europe/Moscow"); //@NOTE для предотвращения сообщения о небезопасности дефолтных настроек
     $now = date_create('now');
     
     if ($this->date===null) $this->date=$now;

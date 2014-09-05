@@ -59,7 +59,7 @@ return array(
 		*/
 		// uncomment the following to use a MySQL database
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=alpsite',
+			'connectionString' => 'mysql:host=127.0.0.1;dbname=alpsite', // @NOTE host устанавливаю адресом, т.к. localhost не работает
 			'emulatePrepare' => true,
 			'username' => 'root',
 			'password' => '',
