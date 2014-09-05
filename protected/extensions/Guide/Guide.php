@@ -42,6 +42,7 @@ class Guide extends CWidget {
             'id'=>'RouteEditDialog',
             'options'=>array(
 		    'title'=>'Классификатор',
+                    'modal'=>true,
 		    'autoOpen'=>false,
                     'buttons'=>array(
                         array('text'=>'Сохранить', 'click'=>'js:function(){saveRoute()}'),
@@ -59,7 +60,7 @@ class Guide extends CWidget {
                         ).
                 CHtml::tag('div', array('class'=>"row"), 
                         CHtml::label('Район', 'mountaringSubRegions').
-                        CHtml::dropDownList('mountaringSubRegions', null, array()).
+                        CHtml::dropDownList('mountaringSubRegions', null, array(), array('onchange'=>'subregionChanged();')).
                         CHtml::image('/images/new.png', 'Добавить район', array('onclick'=>'addNewSubRegion()'))
                         ).
                 CHtml::tag('div', array('class'=>"row"), 
@@ -103,6 +104,58 @@ class Guide extends CWidget {
 		    'css' => 'wym.css',
 		  ),
 		));
+        echo CHtml::closeTag('div');
+        
+        $this->endWidget();
+        
+        $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+            'id'=>'EditMountainDialog',
+            'options'=>array(
+		    'title'=>'Вершина',
+		    'autoOpen'=>false,
+                    'modal'=>true,
+                    'buttons'=>array(
+                        array('text'=>'Сохранить', 'click'=>'js:function(){saveMountain()}'),
+                        array('text'=>'Отмена', 'click'=>'js:function(){$("#EditMountainDialog").dialog("close");}'),
+                    ),
+                    'width'=>'600px',
+		),
+        ));
+        
+        echo CHtml::tag('div', array('id'=>'mountainDialogForm'), 
+                CHtml::tag('div', array('class'=>'row'), 
+                        CHtml::label('вершина', 'mountainTitle').
+                        CHtml::textField('mountainTitle')
+                        ).
+                CHtml::tag('div', array('class'=>'row'), 
+                        CHtml::label('высота', 'mountainHeight').
+                        CHtml::numberField('mountainHeight')
+                        ).
+                CHtml::tag('div', array('class'=>'row'), 
+                        CHtml::label('lon', 'mountainLon').
+                        CHtml::numberField('mountainLon').
+                        CHtml::label('lat', 'mountainLat').
+                        CHtml::numberField('mountainLat').
+                        CHtml::image('/images/getFromMap.png','Получить с карты', array(
+                            'title'=>'Получить с карты',
+                            'onclick'=>'getMountainLonLat();',
+                            'width'=>'16px'
+                        ))
+                        )
+                ,false);
+        $this->widget('ImperaviRedactorWidget', array(
+		'name' => 'mountainDescription',
+		
+		// Some options, see http://imperavi.com/redactor/docs/
+		'options' => array(
+		    'lang' => 'ru',
+		    'toolbar' => true,
+		    'iframe' => false,
+		    'css' => 'wym.css',
+		  ),
+		));
+        
+
         echo CHtml::closeTag('div');
         
         $this->endWidget();
@@ -153,6 +206,8 @@ class Guide extends CWidget {
     }
     
     function getSubregions(region) {
+        var select = $('#mountaringSubRegions');
+        var oldValue = select.val();
         if ($('#region-content_'+region).html()!=='') {
             $('#region-content_'+region).html('');
         } else {
@@ -178,6 +233,7 @@ class Guide extends CWidget {
                beforeSend: function (xhr) {
                    var assets = $('#assets').val();
                    $('#region-content_'+region).html('<img src = "'+assets+'/progress.gif">');
+                   select.html('');
                }
             });
         }
@@ -185,15 +241,18 @@ class Guide extends CWidget {
     
     function insertSubregion(subregion) {
         var subregionList = $('#region-content_'+subregion.region);
+        var select = $('#mountaringSubRegionSelect_'+subregion.id);
+
         if ($('#subregion_'+subregion.id).length) {
             /// @todo Обновить запись
+            select.removeAttr('selected');
         } else {
             subregionList.append('<div class="subregion" id="subregion_'+subregion.id+'"/>');
             $('#subregion_'+subregion.id).append('<h5 class="subregion-title" onclick="getMountains('+subregion.id+')">'+subregion.title+'</h5>');
-            //$('#subregion_'+subregion.id).append('<p class="subregion-about note" onclick="getMountains('+subregion.id+')">'+subregion.description+'</p>');
 
             $('#subregion_'+subregion.id).append('<div class="subregion-contetnt" id="subregion-content_'+subregion.id+'"/>');
-
+            $('#mountaringSubRegions').append('<option id="mountaringSubRegionSelect_'+subregion.id+'" value='+subregion.id+' selected="selected">'+subregion.title+'</option>');
+            $('#mountaringSubRegions').select(subregion.id);
         }
     }
     
@@ -224,7 +283,6 @@ class Guide extends CWidget {
                 error: function (jqXHR, textStatus, errorThrown) {
                     subregionContent.html('<div class="flash-error">Ошибка получения данных</div>');
                     alert('Что-то пошло не так. Запросс вершин района вернул: '+errorThrown);
-
                 }
             });
         }
@@ -317,16 +375,53 @@ class Guide extends CWidget {
     }
     
     function addNewMountain() {
-        alert('Implict me, please.');
+        $('#EditMountainDialog').dialog('open');
     }
     
     function dialogPrepare() {
         $('#mountainId').val(0);
-       
+        regionChanged(); 
     }
     
     function regionChanged() {
         getSubregions($('#mountaringRegions').val());
         if ($('#region-content_'+$('#mountaringRegions').val()).html()==='') getSubregions($('#mountaringRegions').val());
+        subregionChanged();
+    }
+    
+    function subregionChanged() {
+        getMountains($('#mountaringSubRegions').val());
+        if ($('#subregion-content_'+$('#mountaringSubRegions').val()).html()==='') getSubregions($('#mountaringSubRegions').val());
+    }
+    
+    function getMountainLonLat()
+    {
+        alert('Not implicted. For implict that use OSM extension');
+    }
+    
+    function saveMountain()
+    {
+        $.ajax({
+            url:'/index.php/guide/savemountain',
+            dataType: 'json',
+            type: 'POST',
+            data: {
+                'subregion':$('#mountaringSubRegions').val(),
+                'title':$('#mountainTitle').val(),
+                'height':$('#mountainHeight').val(),
+                'lon':$('#mountainLon').val(),
+                'lat':$('#mountainLat').val(),
+                'description':$('#mountainDescription').html()                
+            },
+            success: function (data, textStatus, jqXHR) {
+                        
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                        
+            },
+            beforeSend: function (xhr) {
+                        
+            }
+        });
     }
 </script>
